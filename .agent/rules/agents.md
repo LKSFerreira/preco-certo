@@ -32,12 +32,12 @@ Todo o código e comunicação devem seguir estritamente:
 As regras de ambiente, execução, dependências e documentação são específicas para cada linguagem. O LLM deve:
 
 1. Identificar a linguagem do projeto através do campo `LINGUAGEM_PROJETO` acima.
-2. Buscar as regras específicas no arquivo: `.agents/rules/<linguagem>.md`
+2. Buscar as regras específicas no arquivo: `.agent/rules/<linguagem>.md`
 
 **Exemplos de arquivos de regras:**
 
-- Python: `.agents/rules/python.md`
-- Java: `.agents/rules/java.md`
+- Python: `.agent/rules/python.md`
+- Java: `.agent/rules/java.md`
 - JavaScript: `.agents/rules/javascript.md`
 
 > **Nota:** O campo `LINGUAGEM_PROJETO` é preenchido automaticamente pelo workflow `/start` durante a inicialização do projeto.
