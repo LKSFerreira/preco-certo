@@ -10,10 +10,9 @@ Estou retomando o desenvolvimento deste projeto. Para garantir alinhamento total
 
 Leia os seguintes arquivos de configuração e metadados para entender as regras e o estado atual:
 
-1.  **Regras & Comportamento:** `.agent/rules/agents.md`
-2.  **Planejamento Macro:** `.metadocs/roadmap.md`
-3.  **Definição de Escopo:** `.metadocs/escopo.md`
-4.  **Visão Geral:** `README.md`
+1. **Regras & Comportamento:** `.agent/rules/agents.md`
+2. **Planejamento Macro:** `.metadocs/roadmap.md`
+3. **Visão Geral:** `README.md`
 
 ## 2. Análise de Estrutura e Ferramentas
 
@@ -26,12 +25,14 @@ Analise a raiz do diretório para identificar a stack tecnológica (ex: procure 
 Com base na leitura do `.metadocs/roadmap.md` e do estado atual dos arquivos:
 
 - **Qual é a próxima etapa pendente no roadmap?**
-- **Verifique se essa etapa pendente esta concluída ou não.**
+- **Verifique se essa etapa pendente está concluída ou não.**
 - **Caso esteja concluída, me notifique para que possamos resolver a marcação.**
-  >
-- **Caso a etapa pendente realmente não esteja concluida então diga o que envolve essa etapa.**
-- **O que essa etapa envolve tecnicamente?**
-- **Existe algum gap técnico ou dependência bloqueante?**
+
+> Caso a etapa pendente realmente não esteja concluída:
+>
+> - Diga o que envolve essa etapa
+> - O que essa etapa envolve tecnicamente?
+> - Existe algum gap técnico ou dependência bloqueante?
 
 ---
 
