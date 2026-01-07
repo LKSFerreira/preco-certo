@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // O navegador exige caminhos relativos iniciando com ./ ou ../ para módulos locais
-import dadosPix from '../chave_pix/chave_pix.json' assert { type: 'json' };
+import dadosPix from '../chave_pix/chave_pix.json' with { type: 'json' };
 
 interface PropsModalDoacao {
   aoFechar: () => void;
