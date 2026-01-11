@@ -46,11 +46,9 @@ Aplicativo web (PWA) para controle de gastos em compras de supermercado, com sca
 > **Objetivo:** Dev Container configurado e funcional
 > **Duração:** 1-2 dias
 
-- [ ] **0.1** Configurar Dev Container com Node 20
-- [ ] **0.2** Adicionar PostgreSQL local para desenvolvimento
-- [ ] **0.3** Configurar extensões VS Code (Prettier, ESLint, Prisma)
-- [ ] **0.4** Criar estrutura de variáveis de ambiente
-- [ ] **0.5** Documentar setup no README
+- [x] **0.1** Adicionar PostgreSQL no `.devcontainer/compose.yaml` para desenvolvimento
+- [x] **0.2** Criar estrutura de variáveis de ambiente
+- [x] **0.3** Documentar setup no README
 
 **Critério de sucesso:** `npm run dev` funciona dentro do container
 
