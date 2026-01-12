@@ -337,35 +337,20 @@ export default function App() {
               <li key={item.codigo_barras} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex gap-3 animate-fade-in relative group">
                 
                 {/* Imagem */}
-                <div className="w-16 h-16 flex-shrink-0 bg-gray-100 rounded overflow-hidden">
+                <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
                     <img 
                       src={item.foto_base64 || IMAGEM_PADRAO} 
                       alt={item.nome} 
-                      className="w-full h-full object-cover"
+                      className="max-w-full max-h-full object-contain"
                     />
                   </div>
 
                 {/* Conteúdo */}
                 <div className="flex-1 min-w-0 flex flex-col justify-between">
                   <div>
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-semibold text-gray-800 truncate pr-8">
-                        {item.nome}
-                      </h3>
-                      
-                      {/* Botão de Remoção Explícito (Lixeira) */}
-                      <button 
-                        onClick={() => {
-                          if (window.confirm(`Remover "${item.nome}" do carrinho?`)) {
-                            removerItem(item.codigo_barras);
-                          }
-                        }} 
-                        className="absolute top-3 right-3 text-gray-300 hover:text-red-500 p-2 transition-colors"
-                        title="Remover item"
-                      >
-                        <i className="fas fa-trash-alt"></i>
-                      </button>
-                    </div>
+                    <h3 className="font-semibold text-gray-800 truncate">
+                      {item.nome}
+                    </h3>
                     <p className="text-xs text-gray-500 truncate">
                       {item.marca} • {item.tamanho_massa}
                     </p>
