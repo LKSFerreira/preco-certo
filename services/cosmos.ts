@@ -12,7 +12,11 @@ import { formatarTitulo } from './utilitarios';
 // Em produção, tenta acesso direto (sujeito a regras de CORS do backend).
 const IS_DEV = import.meta.env.DEV;
 const COSMOS_API_URL = IS_DEV ? '/api-cosmos' : 'https://api.cosmos.bluesoft.com.br';
-const COSMOS_TOKEN = 'zOBQAGX-tS4BoV-_J2L7Pw';
+const COSMOS_TOKEN = import.meta.env.VITE_COSMOS_TOKEN;
+
+if (!COSMOS_TOKEN) {
+  console.warn("⚠️ Token COSMOS não configurado (.env)");
+}
 
 /**
  * Interface exata dos dados retornados pela API Cosmos.
