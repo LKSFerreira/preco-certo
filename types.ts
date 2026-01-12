@@ -1,17 +1,17 @@
-// Modelo de dados conforme especificação
+// Modelo de dados padronizado com API Cosmos (Inglês)
 export interface Produto {
-  codigo_barras: string;
-  nome: string;
-  marca: string;
-  tamanho_massa: string;
-  preco_unitario: number;
-  foto_base64?: string;
+  gtin: string;          // Antigo: codigo_barras
+  description: string;   // Antigo: nome
+  brand: string;        // Antigo: marca
+  size: string;         // Antigo: tamanho_massa
+  price: number;        // Antigo: preco_unitario
+  thumbnail?: string;    // Antigo: foto_base64
 }
 
 // Extensão do produto para o carrinho (adiciona quantidade)
 export interface ItemCarrinho extends Produto {
-  quantidade: number;
-  id_unico: string; // Útil para React keys e remoção
+  quantity: number;      // Antigo: quantidade
+  uuid: string;         // Antigo: id_unico
 }
 
 // Estados possíveis da tela da aplicação
@@ -24,8 +24,8 @@ export interface ConfiguracaoApp {
 
 // Histórico de Compras
 export interface Compra {
-  id: string; // UUID ou Timestamp
+  id: string;
   data: string; // ISO String
-  itens: ItemCarrinho[];
+  items: ItemCarrinho[]; // Antigo: itens
   total: number;
 }

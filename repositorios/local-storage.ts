@@ -10,8 +10,8 @@
  * .. code-block:: typescript
  * 
  *     const repositorioProdutos = new RepositorioProdutosLocalStorage();
- *     await repositorioProdutos.salvar({ codigo_barras: "123", nome: "Leite", ... });
- *     const produto = await repositorioProdutos.buscarPorCodigo("123");
+ *     await repositorioProdutos.salvar({ gtin: "123", description: "Leite", ... });
+ *     const produto = await repositorioProdutos.buscarPorGTIN("123");
  */
 
 import { Produto, ItemCarrinho, Compra } from '../types';
@@ -21,7 +21,7 @@ import { CHAVE_STORAGE_CATALOGO, CHAVE_STORAGE_CARRINHO, CHAVE_STORAGE_HISTORICO
 /**
  * Implementação do repositório de produtos usando localStorage.
  * 
- * Os produtos são armazenados como um objeto indexado pelo código de barras,
+ * Os produtos são armazenados como um objeto indexado pelo GTIN,
  * permitindo busca O(1) por código.
  */
 export class RepositorioProdutosLocalStorage implements RepositorioProdutos {
@@ -29,7 +29,7 @@ export class RepositorioProdutosLocalStorage implements RepositorioProdutos {
   /**
    * Carrega o catálogo do localStorage.
    * 
-   * :returns: Objeto com produtos indexados por código de barras
+   * :returns: Objeto com produtos indexados por GTIN
    */
   private carregarCatalogo(): Record<string, Produto> {
     try {
@@ -56,9 +56,9 @@ export class RepositorioProdutosLocalStorage implements RepositorioProdutos {
     }
   }
 
-  async buscarPorCodigo(codigo: string): Promise<Produto | null> {
+  async buscarPorGTIN(gtin: string): Promise<Produto | null> {
     const catalogo = this.carregarCatalogo();
-    return catalogo[codigo] || null;
+    return catalogo[gtin] || null;
   }
 
   async listarTodos(): Promise<Produto[]> {
@@ -68,13 +68,13 @@ export class RepositorioProdutosLocalStorage implements RepositorioProdutos {
 
   async salvar(produto: Produto): Promise<void> {
     const catalogo = this.carregarCatalogo();
-    catalogo[produto.codigo_barras] = produto;
+    catalogo[produto.gtin] = produto;
     this.salvarCatalogo(catalogo);
   }
 
-  async remover(codigo: string): Promise<void> {
+  async remover(gtin: string): Promise<void> {
     const catalogo = this.carregarCatalogo();
-    delete catalogo[codigo];
+    delete catalogo[gtin];
     this.salvarCatalogo(catalogo);
   }
 }
@@ -125,12 +125,12 @@ export class RepositorioCarrinhoLocalStorage implements RepositorioCarrinho {
     
     // Verifica se o produto já existe no carrinho
     const indiceExistente = itens.findIndex(
-      existente => existente.codigo_barras === item.codigo_barras
+      existente => existente.gtin === item.gtin
     );
     
     if (indiceExistente >= 0) {
       // Incrementa quantidade se já existe
-      itens[indiceExistente].quantidade += item.quantidade;
+      itens[indiceExistente].quantity += item.quantity;
     } else {
       // Adiciona novo item
       itens.push(item);
@@ -139,25 +139,27 @@ export class RepositorioCarrinhoLocalStorage implements RepositorioCarrinho {
     this.salvarCarrinho(itens);
   }
 
-  async atualizarQuantidade(codigo: string, quantidade: number): Promise<void> {
+  // Antigo: atualizarQuantidade(codigo, quantidade)
+  async atualizarQuantidade(gtin: string, quantity: number): Promise<void> {
     const itens = this.carregarCarrinho();
     
-    const indice = itens.findIndex(item => item.codigo_barras === codigo);
+    const indice = itens.findIndex(item => item.gtin === gtin);
     
     if (indice >= 0) {
-      if (quantidade <= 0) {
+      if (quantity <= 0) {
         // Remove item se quantidade for zero ou negativa
         itens.splice(indice, 1);
       } else {
-        itens[indice].quantidade = quantidade;
+        itens[indice].quantity = quantity;
       }
       this.salvarCarrinho(itens);
     }
   }
 
-  async removerItem(codigo: string): Promise<void> {
+  // Antigo: removerItem(codigo)
+  async removerItem(gtin: string): Promise<void> {
     const itens = this.carregarCarrinho();
-    const itensFiltrados = itens.filter(item => item.codigo_barras !== codigo);
+    const itensFiltrados = itens.filter(item => item.gtin !== gtin);
     this.salvarCarrinho(itensFiltrados);
   }
 

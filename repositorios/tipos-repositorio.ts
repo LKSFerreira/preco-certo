@@ -4,16 +4,6 @@
  * Usando o Repository Pattern, podemos trocar a implementação de
  * localStorage para PostgreSQL (ou qualquer outro storage) sem
  * alterar os componentes que consomem esses dados.
- * 
- * **Exemplo:**
- * 
- * .. code-block:: typescript
- * 
- *     // Hoje usamos localStorage
- *     const repositorio = new RepositorioProdutosLocalStorage();
- *     
- *     // Amanhã trocamos para Postgres sem mudar o App.tsx
- *     const repositorio = new RepositorioProdutosPostgres();
  */
 
 import { Produto, ItemCarrinho, Compra } from '../types';
@@ -21,17 +11,17 @@ import { Produto, ItemCarrinho, Compra } from '../types';
 /**
  * Contrato para operações de persistência de produtos.
  * 
- * O catálogo de produtos é indexado pelo código de barras,
+ * O catálogo de produtos é indexado pelo GTIN (código de barras),
  * garantindo unicidade e busca rápida.
  */
 export interface RepositorioProdutos {
   /**
-   * Busca um produto pelo código de barras.
+   * Busca um produto pelo GTIN.
    * 
-   * :param codigo: Código de barras do produto (ex: "7891000100103")
+   * :param gtin: Código de barras do produto (ex: "7891000100103")
    * :returns: Produto encontrado ou null se não existir
    */
-  buscarPorCodigo(codigo: string): Promise<Produto | null>;
+  buscarPorGTIN(gtin: string): Promise<Produto | null>; // Antigo: buscarPorCodigo
 
   /**
    * Lista todos os produtos cadastrados.
@@ -43,7 +33,7 @@ export interface RepositorioProdutos {
   /**
    * Salva ou atualiza um produto no catálogo.
    * 
-   * Se o produto já existir (mesmo código de barras), será atualizado.
+   * Se o produto já existir (mesmo GTIN), será atualizado.
    * 
    * :param produto: Dados do produto a salvar
    */
@@ -52,9 +42,9 @@ export interface RepositorioProdutos {
   /**
    * Remove um produto do catálogo.
    * 
-   * :param codigo: Código de barras do produto a remover
+   * :param gtin: GTIN do produto a remover
    */
-  remover(codigo: string): Promise<void>;
+  remover(gtin: string): Promise<void>; // Antigo: remover(codigo)
 }
 
 /**
@@ -84,17 +74,17 @@ export interface RepositorioCarrinho {
   /**
    * Atualiza a quantidade de um item no carrinho.
    * 
-   * :param codigo: Código de barras do produto
-   * :param quantidade: Nova quantidade (deve ser > 0)
+   * :param gtin: GTIN do produto
+   * :param quantity: Nova quantidade (deve ser > 0)
    */
-  atualizarQuantidade(codigo: string, quantidade: number): Promise<void>;
+  atualizarQuantidade(gtin: string, quantity: number): Promise<void>; // Antigo: codigo, quantidade
 
   /**
    * Remove um item do carrinho.
    * 
-   * :param codigo: Código de barras do produto a remover
+   * :param gtin: GTIN do produto a remover
    */
-  removerItem(codigo: string): Promise<void>;
+  removerItem(gtin: string): Promise<void>; // Antigo: removerItem(codigo)
 
   /**
    * Limpa todo o carrinho.
