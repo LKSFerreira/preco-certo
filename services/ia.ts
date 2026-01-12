@@ -3,7 +3,7 @@ import { servicoIA } from "./ia/fabrica";
 /**
  * Entidade para abstrair o uso da IA no sistema.
  * Atualmente suporta: Gemini, Mock.
- * Configuração via variável de ambiente: VITE_AI_PROVIDER e VITE_GEMINI_API_KEY.
+ * Configuração via variável de ambiente: VITE_OPENROUTER_TOKEN ou VITE_GOOGLE_TOKEN.
  */
 export const extrairDadosDoRotulo = async (imagemBase64: string) => {
   return await servicoIA.extrairDados(imagemBase64);

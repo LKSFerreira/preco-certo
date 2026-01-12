@@ -5,10 +5,10 @@ import { ServicoIAMock } from "./mock";
 
 export class FabricaServicoIA {
   static criar(): ServicoLeituraRotulo {
-    // Prioriza a nova variável genérica, mantendo compatibilidade com a antiga se existir
-    const apiKey = import.meta.env.VITE_LLM_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+    // Prioriza a nova variável genérica
+    const apiKey = import.meta.env.VITE_OPENROUTER_TOKEN || import.meta.env.VITE_GOOGLE_TOKEN;
     
-    // Se não tiver chave válida, usa Mock (exceto se for explicitamente setado outro provider)
+    // Se não tiver chave válida, usa Mock
     if (!apiKey || apiKey === 'PLACEHOLDER_API_KEY') {
       console.log("🏭 FabricaIA: Sem chave válida, usando MOCK.");
       return new ServicoIAMock();
