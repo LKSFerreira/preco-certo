@@ -55,6 +55,17 @@
 - [x] **0.5.12** Testar fluxo completo no browser local
 - [x] **0.5.13** Corrigir bugs encontrados (Keyboard overlap, CORS, API Key security)
 
+### Melhorias de UX (Pós-Testes com Usuários)
+
+- [x] **0.5.14** Validação de formulário com foco automático no primeiro campo inválido
+- [x] **0.5.15** Campo de tamanho aceita vírgula como separador decimal (pt-BR)
+- [x] **0.5.16** Imagens do carrinho redimensionadas e centralizadas (`object-contain`)
+- [x] **0.5.17** Remover botão de lixeira duplicado na lista de produtos
+- [x] **0.5.18** Modais customizados substituindo `window.confirm` e `alert`
+- [x] **0.5.19** Modal de doação exibido após finalizar/esvaziar carrinho
+- [x] **0.5.20** Aumentar contraste do botão cancelar no modal de recorte
+- [x] **0.5.21** Tutorial visual de primeiro acesso (2 slides: scanner + foto OCR)
+
 **Critério de sucesso:** Usar o app do início ao fim no `localhost:5173` sem erros.
 
 ---

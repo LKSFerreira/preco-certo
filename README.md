@@ -38,7 +38,8 @@ Consumidores frequentemente perdem o controle do valor total durante compras, re
 | 🛒 **Carrinho Inteligente**        | Controle de quantidade com atualização do total em tempo real  |
 | 💾 **Catálogo Persistente**        | Produtos cadastrados ficam salvos para futuras compras         |
 | 📱 **Design Responsivo**           | Interface otimizada para uso durante as compras                |
-| 🌙 **Modo Offline**                | Funciona sem conexão após primeiro carregamento                |
+| 🎓 **Tutorial de Primeiro Acesso** | Guia visual ensinando a usar scanner e foto para OCR           |
+| ✅ **Validação Inteligente**       | Foco automático no campo inválido ao tentar salvar             |
 
 ---
 
