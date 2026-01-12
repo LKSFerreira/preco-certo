@@ -8,6 +8,29 @@ export const formatarMoeda = (valor: number): string => {
   }).format(valor);
 };
 
+/**
+ * Formata texto para Title Case (Primeira Letra Maiúscula), ignorando preposições.
+ * Ex: "LEITE EM PÓ INTEGRAL" -> "Leite em Pó Integral"
+ */
+export const formatarTitulo = (texto: string): string => {
+  if (!texto) return '';
+  const conectivos = [
+    'de', 'da', 'do', 'dos', 'das', 'com', 'e', 'em', 'para', 'por', 'sem', 
+    'a', 'o', 'as', 'os', 'um', 'uns', 'uma', 'umas',
+    'no', 'na', 'nos', 'nas', 'pelo', 'pela', 'pelos', 'pelas',
+    'até', 'sob', 'sobre', 'ante', 'após', 'desde', 'entre'
+  ];
+  
+  return texto
+    .toLowerCase()
+    .split(' ')
+    .map((palavra, index) => {
+       if (index > 0 && conectivos.includes(palavra)) return palavra;
+       return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+    })
+    .join(' ');
+};
+
 // --- Canvas Utils para Recorte ---
 const criarImagem = (url: string): Promise<HTMLImageElement> =>
   new Promise((resolve, reject) => {
