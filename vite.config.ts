@@ -17,6 +17,14 @@ export default defineConfig({
     port: 5173,
     watch: {
       usePolling: true,
+    },
+    proxy: {
+      '/api-cosmos': {
+        target: 'https://api.cosmos.bluesoft.com.br',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api-cosmos/, ''),
+        secure: false
+      }
     }
   },
   resolve: {
