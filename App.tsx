@@ -1,16 +1,26 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Produto, ItemCarrinho, TelaApp } from './types';
-import { CHAVE_STORAGE_CARRINHO, CHAVE_STORAGE_CATALOGO, IMAGEM_PADRAO } from './constants';
+import { IMAGEM_PADRAO } from './constants';
 import { formatarMoeda } from './services/utilitarios';
 import { ScannerBarras } from './components/ScannerBarras';
 import { FormularioProduto } from './components/FormularioProduto';
+import { DebugConsole } from './components/DebugConsole';
 import { ModalDoacao } from './components/ModalDoacao';
+import { useRepositorios } from './contextos/ContextoRepositorios';
 
 export default function App() {
+  // --- Acesso aos repositórios via contexto ---
+  const { produtos: repositorioProdutos, carrinho: repositorioCarrinho } = useRepositorios();
+
   // --- Estados ---
   const [telaAtual, setTelaAtual] = useState<TelaApp>('DASHBOARD');
+  
+  // Catálogo agora é carregado do repositório
   const [catalogo, setCatalogo] = useState<Record<string, Produto>>({});
   const [carrinho, setCarrinho] = useState<ItemCarrinho[]>([]);
+  
+  // Flag para indicar se os dados foram carregados
+  const [carregado, setCarregado] = useState(false);
   
   // Estado para fluxo de cadastro/adição
   const [codigoLido, setCodigoLido] = useState<string | null>(null);
@@ -19,37 +29,38 @@ export default function App() {
   const [mostrarFotos, setMostrarFotos] = useState(true);
   const [mostrarDoacao, setMostrarDoacao] = useState(false);
 
-  // --- Efeitos (Persistência) ---
+  // --- Efeitos (Carregamento inicial) ---
   
-  // Carregar dados ao iniciar
+  /**
+   * Carrega dados do repositório ao iniciar o app.
+   * 
+   * Como os repositórios retornam Promises, usamos async/await.
+   * O estado `carregado` evita múltiplos carregamentos.
+   */
   useEffect(() => {
-    const catalogoSalvo = localStorage.getItem(CHAVE_STORAGE_CATALOGO);
-    const carrinhoSalvo = localStorage.getItem(CHAVE_STORAGE_CARRINHO);
-
-    if (catalogoSalvo) {
+    const carregarDados = async () => {
       try {
-        setCatalogo(JSON.parse(catalogoSalvo));
-      } catch (e) { console.error("Erro ao carregar catálogo", e); }
-    }
+        // Carrega catálogo (converte array para objeto indexado)
+        const listaProdutos = await repositorioProdutos.listarTodos();
+        const catalogoCarregado: Record<string, Produto> = {};
+        listaProdutos.forEach(produto => {
+          catalogoCarregado[produto.codigo_barras] = produto;
+        });
+        setCatalogo(catalogoCarregado);
 
-    if (carrinhoSalvo) {
-      try {
-        setCarrinho(JSON.parse(carrinhoSalvo));
-      } catch (e) { console.error("Erro ao carregar carrinho", e); }
-    }
-  }, []);
+        // Carrega carrinho
+        const itensCarrinho = await repositorioCarrinho.obterItens();
+        setCarrinho(itensCarrinho);
+        
+        setCarregado(true);
+      } catch (erro) {
+        console.error('Erro ao carregar dados:', erro);
+        setCarregado(true); // Marca como carregado mesmo com erro para não travar a UI
+      }
+    };
 
-  // Salvar catálogo sempre que mudar
-  useEffect(() => {
-    if (Object.keys(catalogo).length > 0) {
-      localStorage.setItem(CHAVE_STORAGE_CATALOGO, JSON.stringify(catalogo));
-    }
-  }, [catalogo]);
-
-  // Salvar carrinho sempre que mudar
-  useEffect(() => {
-    localStorage.setItem(CHAVE_STORAGE_CARRINHO, JSON.stringify(carrinho));
-  }, [carrinho]);
+    carregarDados();
+  }, [repositorioProdutos, repositorioCarrinho]);
 
   // --- Lógica de Negócio ---
 
@@ -57,7 +68,13 @@ export default function App() {
     return carrinho.reduce((acc, item) => acc + (item.preco_unitario * item.quantidade), 0);
   }, [carrinho]);
 
-  const aoLerCodigo = (codigo: string) => {
+  /**
+   * Callback quando um código de barras é lido.
+   * 
+   * Se o produto já existe no catálogo, adiciona direto ao carrinho.
+   * Se não existe, abre o formulário de cadastro.
+   */
+  const aoLerCodigo = useCallback((codigo: string) => {
     setCodigoLido(codigo);
     
     if (catalogo[codigo]) {
@@ -69,16 +86,22 @@ export default function App() {
       // Produto novo, ir para cadastro
       setTelaAtual('CADASTRO');
     }
-  };
+  }, [catalogo]);
 
-  const adicionarAoCarrinho = (produto: Produto) => {
+  /**
+   * Adiciona um produto ao carrinho.
+   * 
+   * Se o produto já estiver no carrinho, incrementa a quantidade.
+   * Persiste a alteração no repositório.
+   */
+  const adicionarAoCarrinho = useCallback(async (produto: Produto) => {
     const novoItem: ItemCarrinho = {
       ...produto,
       quantidade: 1,
-      id_unico: Date.now().toString() // Identificador simples
+      id_unico: Date.now().toString()
     };
     
-    // Verifica se já existe o mesmo item no carrinho para agrupar
+    // Atualiza estado local primeiro (UI responsiva)
     setCarrinho(prev => {
       const index = prev.findIndex(item => item.codigo_barras === produto.codigo_barras);
       if (index >= 0) {
@@ -88,34 +111,74 @@ export default function App() {
       }
       return [...prev, novoItem];
     });
-  };
 
-  const salvarProdutoNoCatalogo = (produto: Produto) => {
+    // Persiste no repositório
+    try {
+      await repositorioCarrinho.adicionarItem(novoItem);
+    } catch (erro) {
+      console.error('Erro ao adicionar item ao carrinho:', erro);
+    }
+  }, [repositorioCarrinho]);
+
+  /**
+   * Salva um novo produto no catálogo e adiciona ao carrinho.
+   */
+  const salvarProdutoNoCatalogo = useCallback(async (produto: Produto) => {
+    // Atualiza estado local
     setCatalogo(prev => ({ ...prev, [produto.codigo_barras]: produto }));
-    adicionarAoCarrinho(produto);
+    
+    // Persiste no repositório
+    try {
+      await repositorioProdutos.salvar(produto);
+    } catch (erro) {
+      console.error('Erro ao salvar produto:', erro);
+    }
+    
+    // Adiciona ao carrinho
+    await adicionarAoCarrinho(produto);
+    
     setTelaAtual('DASHBOARD');
     setCodigoLido(null);
-  };
+  }, [repositorioProdutos, adicionarAoCarrinho]);
 
-  const removerItem = (codigoBarras: string) => {
-    // Feedback tátil simples se disponível
+  /**
+   * Remove um item do carrinho.
+   */
+  const removerItem = useCallback(async (codigoBarras: string) => {
+    // Feedback tátil
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(50);
     }
+    
+    // Atualiza estado local
     setCarrinho(prev => prev.filter(item => item.codigo_barras !== codigoBarras));
-  };
+    
+    // Persiste no repositório
+    try {
+      await repositorioCarrinho.removerItem(codigoBarras);
+    } catch (erro) {
+      console.error('Erro ao remover item:', erro);
+    }
+  }, [repositorioCarrinho]);
 
-  const alterarQuantidade = (codigoBarras: string, delta: number) => {
+  /**
+   * Altera a quantidade de um item no carrinho.
+   * 
+   * Se a quantidade chegar a zero, remove o item.
+   */
+  const alterarQuantidade = useCallback(async (codigoBarras: string, delta: number) => {
+    let novaQuantidade = 0;
+    
+    // Atualiza estado local
     setCarrinho(prev => {
       return prev.reduce((acc, item) => {
         if (item.codigo_barras === codigoBarras) {
-          const novaQtd = item.quantidade + delta;
+          novaQuantidade = item.quantidade + delta;
           
-          if (novaQtd > 0) {
-            // Atualiza quantidade
-            acc.push({ ...item, quantidade: novaQtd });
+          if (novaQuantidade > 0) {
+            acc.push({ ...item, quantidade: novaQuantidade });
           } else {
-            // Se chegou a zero, remove (não adiciona ao array) e vibra
+            // Vibra ao remover
             if (typeof navigator !== 'undefined' && navigator.vibrate) {
               navigator.vibrate(50);
             }
@@ -126,9 +189,32 @@ export default function App() {
         return acc;
       }, [] as ItemCarrinho[]);
     });
-  };
 
-  // --- Renderização de Componentes ---
+    // Persiste no repositório
+    try {
+      if (novaQuantidade > 0) {
+        await repositorioCarrinho.atualizarQuantidade(codigoBarras, novaQuantidade);
+      } else {
+        await repositorioCarrinho.removerItem(codigoBarras);
+      }
+    } catch (erro) {
+      console.error('Erro ao alterar quantidade:', erro);
+    }
+  }, [repositorioCarrinho]);
+
+  // --- Renderização ---
+
+  // Mostra loading enquanto carrega dados
+  if (!carregado) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <i className="fas fa-spinner fa-spin text-4xl text-verde-600 mb-4"></i>
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
@@ -290,6 +376,11 @@ export default function App() {
           </button>
         </div>
       </footer>
+
+
+
+      {/* Mobile Debugger */}
+      <DebugConsole />
 
       {/* --- Modais e Telas Sobrepostas --- */}
 

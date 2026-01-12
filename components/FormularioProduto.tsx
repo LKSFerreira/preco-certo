@@ -62,9 +62,10 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
           
           if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([50, 50, 50]);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Erro no processamento de imagem/IA:", err);
-        setErro("Não conseguimos ler os dados do rótulo automaticamente. Por favor, preencha os dados manualmente.");
+        const msg = err instanceof Error ? err.message : String(err);
+        setErro(`Erro IA: ${msg}`);
       } finally {
         setAnalisandoIA(false);
       }
@@ -226,19 +227,22 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
               <p className="text-[10px] text-gray-500 mt-1 text-right">Digite manualmente</p>
             </div>
           </div>
-          {erro && (
+            {erro && (
             <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 font-bold flex items-center animate-fade-in">
               <i className="fas fa-exclamation-triangle mr-2"></i> {erro}
             </div>
           )}
-          <div className="h-2 shrink-0"></div>
+          
+          <div className="pt-4 pb-8 mt-auto">
+            <button 
+              onClick={validarESalvar} 
+              disabled={analisandoIA} 
+              className={`w-full text-white py-4 rounded-xl font-bold text-lg shadow-lg transition-all ${analisandoIA ? 'bg-gray-400 cursor-not-allowed' : 'bg-verde-600 hover:bg-verde-700 active:scale-95'}`}
+            >
+              {analisandoIA ? 'Processando...' : 'Salvar Produto'}
+            </button>
+          </div>
         </form>
-      </div>
-
-      <div className="p-4 bg-white border-t border-gray-100 shrink-0">
-        <button onClick={validarESalvar} disabled={analisandoIA} className={`w-full text-white py-4 rounded-xl font-bold text-lg shadow-lg transition-all ${analisandoIA ? 'bg-gray-400 cursor-not-allowed' : 'bg-verde-600 hover:bg-verde-700 active:scale-95'}`}>
-          {analisandoIA ? 'Processando...' : 'Salvar Produto'}
-        </button>
       </div>
     </div>
   );
