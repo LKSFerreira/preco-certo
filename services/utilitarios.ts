@@ -8,6 +8,41 @@ export const formatarMoeda = (valor: number): string => {
   }).format(valor);
 };
 
+// --- Canvas Utils para Recorte ---
+const criarImagem = (url: string): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
+    const imagem = new Image();
+    imagem.addEventListener('load', () => resolve(imagem));
+    imagem.addEventListener('error', (error) => reject(error));
+    imagem.setAttribute('crossOrigin', 'anonymous');
+    imagem.src = url;
+  });
+
+export async function obterImagemRecortada(imagemSrc: string, pixelCrop: any): Promise<string> {
+  const imagem = await criarImagem(imagemSrc);
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) return '';
+
+  canvas.width = pixelCrop.width;
+  canvas.height = pixelCrop.height;
+
+  ctx.drawImage(
+    imagem,
+    pixelCrop.x,
+    pixelCrop.y,
+    pixelCrop.width,
+    pixelCrop.height,
+    0,
+    0,
+    pixelCrop.width,
+    pixelCrop.height
+  );
+
+  return canvas.toDataURL('image/jpeg', 0.9);
+}
+
 /**
  * Simula a biblioteca 'browser-image-compression' usando Canvas nativo.
  * Isso permite reduzir o tamanho da imagem antes de salvar no LocalStorage

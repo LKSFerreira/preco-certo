@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Produto } from '../types';
 import { REGEX_UNIDADE } from '../constants';
-import { comprimirImagem } from '../services/utilitarios';
+import { comprimirImagem, obterImagemRecortada } from '../services/utilitarios';
 import { extrairDadosDoRotulo } from '../services/ia';
+import { ModalRecorte } from './ModalRecorte';
+import { Area } from 'react-easy-crop/types';
 
 interface PropsFormulario {
   codigoInicial: string;
@@ -25,6 +27,10 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
   const [foto, setFoto] = useState<string | undefined>(undefined);
   const [erro, setErro] = useState<string | null>(null);
   
+  // Estado para recorte
+  const [imagemParaRecorte, setImagemParaRecorte] = useState<string | null>(null);
+  const [mostraRecorte, setMostraRecorte] = useState(false);
+  
   // Estados de processamento
   const [analisandoIA, setAnalisandoIA] = useState(false);
 
@@ -39,37 +45,52 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
     }
   }, [produtoExistente]);
 
-  // Handler unificado para seleção de imagem (Câmera ou Galeria)
+  // 1. Ao selecionar arquivo, abre modal de recorte
   const lidarComSelecaoImagem = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setErro(null);
-      setAnalisandoIA(true);
-      
       try {
-        // 1. Comprime a imagem
-        const imagemBase64 = await comprimirImagem(e.target.files[0]);
-        
-        // 2. Define como foto do produto imediatamente
-        setFoto(imagemBase64);
-
-        // 3. Tenta extrair dados com IA (Nome, Marca, Tamanho)
-        const dadosExtraidos = await extrairDadosDoRotulo(imagemBase64);
-        
-        if (dadosExtraidos) {
-          if (dadosExtraidos.nome) setNome(dadosExtraidos.nome);
-          if (dadosExtraidos.marca) setMarca(dadosExtraidos.marca);
-          if (dadosExtraidos.tamanho) setTamanho(dadosExtraidos.tamanho);
-          
-          if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([50, 50, 50]);
-        }
-      } catch (err: any) {
-        console.error("Erro no processamento de imagem/IA:", err);
-        const msg = err instanceof Error ? err.message : String(err);
-        setErro(`Erro IA: ${msg}`);
-      } finally {
-        setAnalisandoIA(false);
+        const imagemBase64 = await comprimirImagem(e.target.files[0], 0.9, 800); // Qualidade alta para recorte
+        setImagemParaRecorte(imagemBase64);
+        setMostraRecorte(true);
+        // Reset do input para permitir selecionar a mesma foto se cancelar
+        e.target.value = '';
+      } catch (err) {
+        setErro("Erro ao carregar imagem.");
       }
     }
+  };
+
+  // 2. Ao confirmar recorte (recebe Base64 direto agora)
+  const aoConfirmarRecorte = async (fotoRecortadaBase64: string) => {
+    setMostraRecorte(false);
+    setAnalisandoIA(true);
+
+    try {
+      // Define a foto final (já recortada)
+      setFoto(fotoRecortadaBase64);
+      setImagemParaRecorte(null);
+
+      // Envia para IA (Groq/Gemini)
+      const dadosExtraidos = await extrairDadosDoRotulo(fotoRecortadaBase64);
+      
+      if (dadosExtraidos) {
+        if (dadosExtraidos.nome) setNome(dadosExtraidos.nome);
+        if (dadosExtraidos.marca) setMarca(dadosExtraidos.marca);
+        if (dadosExtraidos.tamanho) setTamanho(dadosExtraidos.tamanho);
+        if (navigator?.vibrate) navigator.vibrate([50, 50, 50]);
+      }
+    } catch (err: any) {
+      console.error("Erro no processamento:", err);
+      setErro(`Erro IA: ${err.message || String(err)}`);
+    } finally {
+      setAnalisandoIA(false);
+    }
+  };
+
+  const aoCancelarRecorte = () => {
+    setMostraRecorte(false);
+    setImagemParaRecorte(null);
   };
 
   const removerFoto = (e: React.MouseEvent) => {
@@ -145,6 +166,31 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
       </div>
 
       <div className="flex-1 overflow-y-auto overflow-x-hidden p-5 flex flex-col [&::-webkit-scrollbar]:hidden">
+        {/* ... restante do form ... */}
+        {mostraRecorte && imagemParaRecorte && (
+          <ModalRecorte
+            imagem={imagemParaRecorte}
+            aoConfirmar={aoConfirmarRecorte}
+            aoCancelar={aoCancelarRecorte}
+          />
+        )}
+        <style>{`
+          @keyframes shimmer {
+            0% { transform: translateX(-150%) skewX(-15deg); }
+            40% { transform: translateX(150%) skewX(-15deg); }
+            100% { transform: translateX(150%) skewX(-15deg); }
+          }
+          .animate-shimmer-btn {
+            animation: shimmer 2.5s infinite;
+          }
+           @keyframes slide-up {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+          }
+          .animate-slide-up {
+            animation: slide-up 0.3s ease-out;
+          }
+        `}</style>
         <form id="form-produto" onSubmit={validarESalvar} className="flex flex-col gap-3 h-full">
           {!foto && !produtoExistente ? (
             <div className="flex gap-3 items-stretch h-36">
@@ -163,7 +209,8 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                 <input type="file" accept="image/*" onChange={lidarComSelecaoImagem} disabled={analisandoIA} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
               </div>
 
-              <div className="flex-1 bg-blue-50 border border-blue-100 rounded-xl p-3 flex flex-col justify-between shadow-sm">
+              <div className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-3 flex flex-col justify-between shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 -mr-2 -mt-2 w-12 h-12 bg-blue-500/10 rounded-full blur-xl"></div>
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <div className="bg-blue-100 p-1 rounded-full text-blue-600"><i className="fas fa-magic text-xs"></i></div>
@@ -171,9 +218,16 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                   </div>
                   <p className="text-[11px] text-blue-700 leading-tight">Tire foto frontal do rótulo. Nós preenchemos os dados para você.</p>
                 </div>
-                <label className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-xs cursor-pointer transition-all select-none ${analisandoIA ? 'bg-blue-200 text-blue-800 cursor-wait' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm active:scale-95'}`}>
-                   {analisandoIA ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-camera"></i>}
-                   <span>{analisandoIA ? 'Processando' : 'Usar Câmera'}</span>
+                <label className={`w-full flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-xs cursor-pointer transition-all select-none overflow-hidden relative group ${analisandoIA ? 'bg-blue-200 text-blue-800 cursor-wait' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-[1.02] active:scale-95'}`}>
+                   {analisandoIA ? (
+                     <i className="fas fa-spinner fa-spin"></i>
+                   ) : (
+                     <>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 h-full animate-shimmer-btn"></div>
+                        <i className="fas fa-camera text-sm relative z-10"></i>
+                     </>
+                   )}
+                   <span className="relative z-10">{analisandoIA ? 'Processando...' : 'Usar Câmera'}</span>
                    <input type="file" accept="image/*" capture="environment" onChange={lidarComSelecaoImagem} disabled={analisandoIA} className="hidden" />
                 </label>
               </div>
