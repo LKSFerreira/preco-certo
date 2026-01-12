@@ -27,6 +27,8 @@
 
 Consumidores frequentemente perdem o controle do valor total durante compras, resultando em orçamentos estourados. Este app oferece uma solução prática e inteligente para manter o controle financeiro.
 
+> [!NOTE] > **Histórico:** Este projeto foi originalmente chamado **"Preço Certo"** e renomeado para **"Sem Susto"** em Janeiro/2026 para refletir o novo domínio `semsusto.app.br`. O repositório GitHub pode ainda conter referências ao nome antigo em commits históricos.
+
 ---
 
 ## ✨ Funcionalidades
