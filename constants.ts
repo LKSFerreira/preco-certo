@@ -1,5 +1,6 @@
-// Regex para validar unidades de medida (Ex: 1L, 500ml, 2kg)
-export const REGEX_UNIDADE = /^\d+(\.\d+)?\s?(L|ml|cm|mm|m|mg|g|kg|cm²)$/i;
+// Regex para validar unidades de medida (Ex: 1L, 500ml, 2kg, 1,5L)
+// Aceita vírgula (pt-BR) ou ponto como separador decimal
+export const REGEX_UNIDADE = /^\d+([.,]\d+)?\s?(L|ml|cm|mm|m|mg|g|kg|cm²)$/i;
 
 // Chave para persistência no LocalStorage
 export const CHAVE_STORAGE_CARRINHO = 'preco_certo_carrinho_v1';
