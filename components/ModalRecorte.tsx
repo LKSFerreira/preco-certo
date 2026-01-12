@@ -60,7 +60,7 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
           <button
             onClick={aoCancelar}
             disabled={processando}
-            className="w-14 items-center justify-center font-bold text-white bg-red-100 hover:bg-red-200 text-red-600 rounded-xl active:scale-95 transition-transform flex"
+            className="w-14 items-center justify-center font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl active:scale-95 transition-transform flex"
             aria-label="Cancelar"
           >
             <i className="fas fa-times text-lg"></i>
