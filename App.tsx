@@ -321,7 +321,7 @@ export default function App() {
               <i className="fas fa-shopping-cart"></i>
             </div>
             <div>
-              <h1 className="font-bold text-gray-800 leading-tight">Preço Certo</h1>
+              <h1 className="font-bold text-gray-800 leading-tight">Sem Susto</h1>
               <p className="text-[10px] text-gray-500 uppercase tracking-wide">Controle de Gastos</p>
             </div>
           </div>

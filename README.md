@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛒 Preço Certo
+# 🛒 Sem Susto
 
 **Controle seus gastos no supermercado em tempo real**
 
@@ -21,7 +21,7 @@
 
 ## 📚 Sobre o Projeto
 
-**Preço Certo** é um aplicativo web mobile-first que resolve um problema comum: a surpresa no caixa do supermercado. Com ele, você escaneia os produtos durante a compra e acompanha o total acumulado em tempo real.
+**Sem Susto** é um aplicativo web mobile-first que resolve um problema comum: a surpresa no caixa do supermercado. Com ele, você escaneia os produtos durante a compra e acompanha o total acumulado em tempo real.
 
 ### 🎯 Problema Resolvido
 

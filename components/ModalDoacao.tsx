@@ -36,7 +36,7 @@ export const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
           </div>
           <h2 className="font-bold text-lg">Gostou do App?</h2>
           <p className="text-xs text-verde-100 px-4">
-            O Preço Certo é gratuito. Se ele te ajuda a economizar, considere fazer uma doação de qualquer valor!
+            O Sem Susto é gratuito. Se ele te ajuda a economizar, considere fazer uma doação de qualquer valor!
           </p>
         </div>
 

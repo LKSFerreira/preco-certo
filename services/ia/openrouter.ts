@@ -16,7 +16,7 @@ export class ServicoIAOpenRouter implements ServicoLeituraRotulo {
       dangerouslyAllowBrowser: true, // Necessário pois estamos chamando do front-end
       defaultHeaders: {
         'HTTP-Referer': 'http://localhost:5173', 
-        'X-Title': 'Preço Certo App',
+        'X-Title': 'Sem Susto App',
       },
     });
   }

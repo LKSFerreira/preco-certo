@@ -1,5 +1,5 @@
 {
-  "name": "Preço Certo",
+  "name": "Sem Susto",
   "description": "Gerenciador de carrinho de compras com scanner de código de barras e controle de orçamento.",
   "requestFramePermissions": [
     "camera"
