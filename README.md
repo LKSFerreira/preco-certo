@@ -40,6 +40,7 @@ Consumidores frequentemente perdem o controle do valor total durante compras, re
 | 📱 **Design Responsivo**           | Interface otimizada para uso durante as compras                |
 | 🎓 **Tutorial de Primeiro Acesso** | Guia visual ensinando a usar scanner e foto para OCR           |
 | ✅ **Validação Inteligente**       | Foco automático no campo inválido ao tentar salvar             |
+| 🎨 **Design Premium**              | Botão Rainbow animado, Title Case automático e fluxo ágil      |
 
 ---
 

@@ -65,6 +65,10 @@
 - [x] **0.5.19** Modal de doação exibido após finalizar/esvaziar carrinho
 - [x] **0.5.20** Aumentar contraste do botão cancelar no modal de recorte
 - [x] **0.5.21** Tutorial visual de primeiro acesso (2 slides: scanner + foto OCR)
+- [x] **0.5.22** Padronização de textos em Title Case (API e IA)
+- [x] **0.5.23** Botão "Auto Preencher" com animação Rainbow Border
+- [x] **0.5.24** Finalização direta de compra (bypass de modal)
+- [x] **0.5.25** Proxy reverso para API Cosmos (correção CORS)
 
 **Critério de sucesso:** Usar o app do início ao fim no `localhost:5173` sem erros.
 
@@ -75,7 +79,7 @@
 > **Objetivo:** MVP online acessível publicamente
 > **Duração:** 1-2 dias
 
-- [ ] **1.1** Verificar build de produção (`npm run build`)
+- [ ] **1.1** Verificar build de produção (`docker compose exec app npm run build`)
 - [ ] **1.2** Configurar variáveis de ambiente na Vercel (API Gemini)
 - [ ] **1.3** Deploy e testar no celular
 - [ ] **1.4** Ajustar responsividade se necessário
