@@ -13,35 +13,43 @@ interface PropsFormulario {
   dadosPrePreenchidos?: Partial<Produto> | null;
 }
 
-export const FormularioProduto: React.FC<PropsFormulario> = ({ 
-  gtinInicial, 
-  aoSalvar, 
+export const FormularioProduto: React.FC<PropsFormulario> = ({
+  gtinInicial,
+  aoSalvar,
   aoCancelar,
   produtoExistente,
-  dadosPrePreenchidos
+  dadosPrePreenchidos,
 }) => {
   const [description, setDescription] = useState('');
   const [brand, setBrand] = useState('');
   const [size, setSize] = useState('');
   const [priceInput, setPriceInput] = useState('');
   const [thumbnail, setThumbnail] = useState<string | undefined>(undefined);
-  
+
   const [erro, setErro] = useState<string | null>(null);
   const [campoComErro, setCampoComErro] = useState<string | null>(null);
-  
+
   // Controle de Foco Único
   const [focoInicialFeito, setFocoInicialFeito] = useState(false);
-  
+
   const refDescription = useRef<HTMLInputElement>(null);
   const refBrand = useRef<HTMLInputElement>(null);
   const refSize = useRef<HTMLInputElement>(null);
   const refPrice = useRef<HTMLInputElement>(null);
-  
+
   const [imagemParaRecorte, setImagemParaRecorte] = useState<string | null>(null);
   const [mostraRecorte, setMostraRecorte] = useState(false);
   const [analisandoIA, setAnalisandoIA] = useState(false);
 
+  // Flag para controlar inicialização única
+  const [inicializado, setInicializado] = useState(false);
+
+  // Preenche dados iniciais APENAS uma vez quando o formulário abre
+  // Não sobrescreve valores que o usuário já alterou
   useEffect(() => {
+    // Se já foi inicializado para este GTIN, não faz nada
+    if (inicializado) return;
+
     if (produtoExistente) {
       setDescription(produtoExistente.description);
       setBrand(produtoExistente.brand);
@@ -52,19 +60,30 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
       if (dadosPrePreenchidos.description) setDescription(dadosPrePreenchidos.description);
       if (dadosPrePreenchidos.brand) setBrand(dadosPrePreenchidos.brand);
       if (dadosPrePreenchidos.size) setSize(dadosPrePreenchidos.size);
-      
+
       if (dadosPrePreenchidos.price && dadosPrePreenchidos.price > 0) {
-        setPriceInput(dadosPrePreenchidos.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
-      } else {
-        setPriceInput('');
+        setPriceInput(
+          dadosPrePreenchidos.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })
+        );
       }
-      
+
       if (dadosPrePreenchidos.thumbnail) setThumbnail(dadosPrePreenchidos.thumbnail);
     }
-    
-    // Reseta foco ao abrir novo produto
+
+    // Marca como inicializado para não rodar novamente
+    setInicializado(true);
     setFocoInicialFeito(false);
-  }, [produtoExistente, dadosPrePreenchidos, gtinInicial]);
+  }, [produtoExistente, dadosPrePreenchidos, gtinInicial, inicializado]);
+
+  // Reseta flag de inicialização quando muda de produto (novo GTIN)
+  useEffect(() => {
+    setInicializado(false);
+    setDescription('');
+    setBrand('');
+    setSize('');
+    setPriceInput('');
+    setThumbnail(undefined);
+  }, [gtinInicial]);
 
   // Lógica de Foco Inteligente (Executa apenas uma vez quando os dados estabilizam)
   useEffect(() => {
@@ -79,8 +98,8 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
         refDescription.current?.focus();
         focou = true;
       } else if (!brand) {
-         refBrand.current?.focus();
-         focou = true;
+        refBrand.current?.focus();
+        focou = true;
       } else if (!size) {
         refSize.current?.focus();
         focou = true;
@@ -90,7 +109,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
         setTimeout(() => refPrice.current?.select(), 50);
         focou = true;
       }
-      
+
       if (focou) setFocoInicialFeito(true);
     }, 600); // Delay maior para garantir animação e preenchimento
 
@@ -107,7 +126,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
         setMostraRecorte(true);
         e.target.value = '';
       } catch (err) {
-        setErro("Erro ao carregar imagem.");
+        setErro('Erro ao carregar imagem.');
       }
     }
   };
@@ -135,7 +154,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
         if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([50, 50, 50]);
       }
     } catch (err: any) {
-      console.error("Erro no processamento IA:", err);
+      console.error('Erro no processamento IA:', err);
       setErro(`Não foi possível ler o rótulo automaticamente, mas a foto foi salva.`);
     } finally {
       setAnalisandoIA(false);
@@ -155,17 +174,17 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
 
   const lidarMudancaPreco = (e: React.ChangeEvent<HTMLInputElement>) => {
     const valorDigitado = e.target.value;
-    const apenasDigitos = valorDigitado.replace(/\D/g, "");
+    const apenasDigitos = valorDigitado.replace(/\D/g, '');
 
     if (!apenasDigitos) {
-      setPriceInput("");
+      setPriceInput('');
       return;
     }
 
     const valorNumerico = parseInt(apenasDigitos, 10) / 100;
     const valorFormatado = valorNumerico.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     });
 
     setPriceInput(valorFormatado);
@@ -211,20 +230,24 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
       brand: brand || 'Genérica',
       size: size || '-',
       price: precoNumerico,
-      thumbnail
+      thumbnail,
     };
 
     aoSalvar(novoProduto);
   };
 
-  const classeInput = "w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:ring-2 focus:ring-verde-500 outline-none transition-colors";
-  const classeLabel = "block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1";
+  const classeInput =
+    'w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:ring-2 focus:ring-verde-500 outline-none transition-colors';
+  const classeLabel = 'block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1';
   const origemCosmos = !!dadosPrePreenchidos && !produtoExistente;
 
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col h-full overflow-hidden">
       <div className="bg-verde-600 text-white p-4 shadow-md flex items-center gap-3 shrink-0">
-        <button onClick={aoCancelar} className="p-2 -ml-2 hover:bg-verde-700 rounded-full transition-colors">
+        <button
+          onClick={aoCancelar}
+          className="p-2 -ml-2 hover:bg-verde-700 rounded-full transition-colors"
+        >
           <i className="fas fa-arrow-left"></i>
         </button>
         <h2 className="font-bold text-lg leading-none">
@@ -245,41 +268,71 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
             100% { transform: rotate(360deg); }
           }
         `}</style>
-        
+
         <form id="form-produto" onSubmit={validarESalvar} className="flex flex-col gap-3 h-full">
           {/* FOTO */}
-          <div className={`transition-all duration-300 ${!thumbnail ? 'ring-2 ring-red-100 rounded-xl p-1 bg-red-50' : ''}`}>
-             {!thumbnail ? (
-            <div className="flex gap-3 items-stretch h-36">
-              <div className="w-32 shrink-0 relative rounded-xl border-2 border-dashed border-gray-300 bg-white flex flex-col items-center justify-center text-gray-400 group cursor-pointer">
-                {analisandoIA ? (
-                   <div className="flex flex-col items-center animate-pulse"><i className="fas fa-spinner fa-spin text-2xl mb-1"></i><span className="text-[10px] font-bold uppercase">Lendo...</span></div>
-                ) : (
-                  <><i className="fas fa-images text-3xl mb-2 opacity-50"></i><span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">Galeria</span></>
-                )}
-                <input type="file" accept="image/*" onChange={lidarComSelecaoImagem} disabled={analisandoIA} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
-              </div>
-              <div className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-3 flex flex-col justify-between shadow-sm relative overflow-hidden">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="bg-blue-100 p-1 rounded-full text-blue-600"><i className="fas fa-camera text-xs"></i></div>
-                    <span className="font-bold text-blue-800 text-xs uppercase">Foto Obrigatória</span>
-                  </div>
-                  <p className="text-[11px] text-blue-700 leading-tight">{origemCosmos ? 'Confirmar visual do produto.' : 'Tire foto para preenchimento IA.'}</p>
+          <div
+            className={`transition-all duration-300 ${
+              !thumbnail ? 'ring-2 ring-red-100 rounded-xl p-1 bg-red-50' : ''
+            }`}
+          >
+            {!thumbnail ? (
+              <div className="flex gap-3 items-stretch h-36">
+                <div className="w-32 shrink-0 relative rounded-xl border-2 border-dashed border-gray-300 bg-white flex flex-col items-center justify-center text-gray-400 group cursor-pointer">
+                  {analisandoIA ? (
+                    <div className="flex flex-col items-center animate-pulse">
+                      <i className="fas fa-spinner fa-spin text-2xl mb-1"></i>
+                      <span className="text-[10px] font-bold uppercase">Lendo...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <i className="fas fa-images text-3xl mb-2 opacity-50"></i>
+                      <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">
+                        Galeria
+                      </span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={lidarComSelecaoImagem}
+                    disabled={analisandoIA}
+                    className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                  />
                 </div>
-                
-                {/* Botão com Borda Rainbow Animada Corrigida */}
-                <label className={`w-full relative group cursor-pointer rounded-lg overflow-hidden p-[3px] transition-all active:scale-95 ${analisandoIA ? 'cursor-wait opacity-80' : 'shadow-lg'}`}>
-                   {/* Gradient Layer */}
-                   {!analisandoIA && (
-                     <div 
-                       className="absolute inset-[-500%] bg-[conic-gradient(from_0deg,#ff0000,#ff8800,#ffff00,#00ff00,#0000ff,#8800ff,#ff0000)]"
-                       style={{ animation: 'border-spin 3s linear infinite' }}
-                     ></div>
-                   )}
-                   
-                   {/* Content Layer */}
-                   <div className="relative w-full h-full rounded-[5px] flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-blue-700 to-indigo-700 text-white z-10">
+                <div className="flex-1 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-3 flex flex-col justify-between shadow-sm relative overflow-hidden">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="bg-blue-100 p-1 rounded-full text-blue-600">
+                        <i className="fas fa-camera text-xs"></i>
+                      </div>
+                      <span className="font-bold text-blue-800 text-xs uppercase">
+                        Foto Obrigatória
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-blue-700 leading-tight">
+                      {origemCosmos
+                        ? 'Confirmar visual do produto.'
+                        : 'Tire foto para preenchimento IA.'}
+                    </p>
+                  </div>
+
+                  {/* Botão com Borda Rainbow Animada Corrigida */}
+                  <label
+                    className={`w-full relative group cursor-pointer rounded-lg overflow-hidden p-[3px] transition-all active:scale-95 ${
+                      analisandoIA ? 'cursor-wait opacity-80' : 'shadow-lg'
+                    }`}
+                  >
+                    {/* Gradient Layer */}
+                    {!analisandoIA && (
+                      <div
+                        className="absolute inset-[-500%] bg-[conic-gradient(from_0deg,#ff0000,#ff8800,#ffff00,#00ff00,#0000ff,#8800ff,#ff0000)]"
+                        style={{ animation: 'border-spin 3s linear infinite' }}
+                      ></div>
+                    )}
+
+                    {/* Content Layer */}
+                    <div className="relative w-full h-full rounded-[5px] flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-blue-700 to-indigo-700 text-white z-10">
                       {analisandoIA ? (
                         <i className="fas fa-spinner fa-spin"></i>
                       ) : (
@@ -288,57 +341,151 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                       <span className="font-bold text-xs uppercase tracking-wide">
                         {analisandoIA ? 'Processando...' : 'AUTO PREENCHER'}
                       </span>
-                   </div>
-                   
-                   <input type="file" accept="image/*" capture="environment" onChange={lidarComSelecaoImagem} disabled={analisandoIA} className="hidden" />
-                </label>
-              </div>
-            </div>
-             ) : (
-            <div className="flex flex-col items-center shrink-0 animate-fade-in">
-              <div className="relative group">
-                <div className={`w-32 h-32 rounded-xl overflow-hidden border-2 border-dashed flex items-center justify-center relative transition-colors ${thumbnail ? 'border-verde-500 bg-white shadow-sm' : 'border-gray-300'}`}>
-                  <img src={thumbnail} alt="Preview" className="w-full h-full object-contain p-1" />
-                  <button onClick={removerFoto} className="absolute top-1 right-1 bg-red-500 text-white w-7 h-7 rounded-full shadow-lg flex items-center justify-center hover:bg-red-600 z-20"><i className="fas fa-trash-alt text-xs"></i></button>
-                  <input type="file" accept="image/*" onChange={lidarComSelecaoImagem} disabled={analisandoIA} className="absolute inset-0 opacity-0 cursor-pointer z-10" />
+                    </div>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={lidarComSelecaoImagem}
+                      disabled={analisandoIA}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
               </div>
-            </div>
-             )}
+            ) : (
+              <div className="flex flex-col items-center shrink-0 animate-fade-in">
+                <div className="relative group">
+                  <div
+                    className={`w-32 h-32 rounded-xl overflow-hidden border-2 border-dashed flex items-center justify-center relative transition-colors ${
+                      thumbnail ? 'border-verde-500 bg-white shadow-sm' : 'border-gray-300'
+                    }`}
+                  >
+                    <img
+                      src={thumbnail}
+                      alt="Preview"
+                      className="w-full h-full object-contain p-1"
+                    />
+                    <button
+                      onClick={removerFoto}
+                      className="absolute top-1 right-1 bg-red-500 text-white w-7 h-7 rounded-full shadow-lg flex items-center justify-center hover:bg-red-600 z-20"
+                    >
+                      <i className="fas fa-trash-alt text-xs"></i>
+                    </button>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={lidarComSelecaoImagem}
+                      disabled={analisandoIA}
+                      className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="bg-gray-100 py-2 px-3 rounded-lg text-center border border-gray-200 flex items-center justify-center gap-2 shrink-0">
-             <i className="fas fa-barcode text-gray-400"></i><span className="font-mono font-bold text-gray-600 text-sm tracking-wider">{gtinInicial}</span>
+            <i className="fas fa-barcode text-gray-400"></i>
+            <span className="font-mono font-bold text-gray-600 text-sm tracking-wider">
+              {gtinInicial}
+            </span>
           </div>
 
           <div className="flex flex-col gap-3 flex-1">
             <div>
               <label className={classeLabel}>Nome do Produto</label>
-              <input ref={refDescription} value={description} onChange={e => { setDescription(e.target.value); if (campoComErro === 'description') setCampoComErro(null); }} className={`${classeInput} ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${campoComErro === 'description' ? 'border-red-500 ring-2 ring-red-400' : ''}`} placeholder="Ex: Leite Integral" disabled={analisandoIA} />
+              <input
+                ref={refDescription}
+                value={description}
+                onChange={e => {
+                  setDescription(e.target.value);
+                  if (campoComErro === 'description') setCampoComErro(null);
+                }}
+                className={`${classeInput} ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${
+                  campoComErro === 'description' ? 'border-red-500 ring-2 ring-red-400' : ''
+                }`}
+                placeholder="Ex: Leite Integral"
+                disabled={analisandoIA}
+              />
             </div>
             <div className="flex gap-3">
               <div className="flex-[3]">
                 <label className={classeLabel}>Marca</label>
-                <input ref={refBrand} value={brand} onChange={e => setBrand(e.target.value)} className={`${classeInput} ${analisandoIA ? 'animate-pulse bg-gray-600' : ''}`} placeholder="Ex: Longa Vida" disabled={analisandoIA} />
+                <input
+                  ref={refBrand}
+                  value={brand}
+                  onChange={e => setBrand(e.target.value)}
+                  className={`${classeInput} ${analisandoIA ? 'animate-pulse bg-gray-600' : ''}`}
+                  placeholder="Ex: Longa Vida"
+                  disabled={analisandoIA}
+                />
               </div>
               <div className="flex-[2]">
                 <label className={classeLabel}>Tamanho</label>
-                <input ref={refSize} value={size} onChange={e => { setSize(e.target.value); if (campoComErro === 'size') setCampoComErro(null); }} className={`${classeInput} ${size && !REGEX_UNIDADE.test(size) ? 'border-red-400 text-red-100' : ''} ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${campoComErro === 'size' ? 'border-red-500 ring-2 ring-red-400' : ''}`} placeholder="Ex: 1L" disabled={analisandoIA} />
+                <input
+                  ref={refSize}
+                  value={size}
+                  onChange={e => {
+                    setSize(e.target.value);
+                    if (campoComErro === 'size') setCampoComErro(null);
+                  }}
+                  className={`${classeInput} ${
+                    size && !REGEX_UNIDADE.test(size) ? 'border-red-400 text-red-100' : ''
+                  } ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${
+                    campoComErro === 'size' ? 'border-red-500 ring-2 ring-red-400' : ''
+                  }`}
+                  placeholder="Ex: 1L"
+                  disabled={analisandoIA}
+                />
               </div>
             </div>
             <div className="bg-gray-50 p-2 rounded-lg border border-gray-200">
-               <label className="block text-xs font-bold text-verde-700 uppercase tracking-wide mb-1">Preço Unitário (R$) <span className="text-red-500">*</span></label>
-               <input ref={refPrice} type="tel" inputMode="decimal" value={priceInput} onFocus={(e) => e.target.select()} onChange={e => { lidarMudancaPreco(e); if (campoComErro === 'price') setCampoComErro(null); }} className={`w-full p-2 bg-white border-2 rounded-lg text-gray-900 font-bold text-2xl placeholder-gray-300 focus:outline-none shadow-sm ${campoComErro === 'price' ? 'border-red-500 ring-2 ring-red-400' : 'border-verde-500'}`} placeholder="0,00" />
-               <p className="text-[10px] text-gray-500 mt-1 text-right">Toque para selecionar tudo</p>
+              <label className="block text-xs font-bold text-verde-700 uppercase tracking-wide mb-1">
+                Preço Unitário (R$) <span className="text-red-500">*</span>
+              </label>
+              <input
+                ref={refPrice}
+                type="tel"
+                inputMode="decimal"
+                value={priceInput}
+                onFocus={e => e.target.select()}
+                onChange={e => {
+                  lidarMudancaPreco(e);
+                  if (campoComErro === 'price') setCampoComErro(null);
+                }}
+                className={`w-full p-2 bg-white border-2 rounded-lg text-gray-900 font-bold text-2xl placeholder-gray-300 focus:outline-none shadow-sm ${
+                  campoComErro === 'price'
+                    ? 'border-red-500 ring-2 ring-red-400'
+                    : 'border-verde-500'
+                }`}
+                placeholder="0,00"
+              />
+              <p className="text-[10px] text-gray-500 mt-1 text-right">
+                Toque para selecionar tudo
+              </p>
             </div>
           </div>
-          
+
           {erro && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 font-bold flex items-center animate-fade-in"><i className="fas fa-exclamation-triangle mr-2"></i> {erro}</div>
+            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-100 font-bold flex items-center animate-fade-in">
+              <i className="fas fa-exclamation-triangle mr-2"></i> {erro}
+            </div>
           )}
-          
+
           <div className="pt-4 pb-8 mt-auto">
-            <button onClick={validarESalvar} disabled={analisandoIA} className={`w-full text-white py-4 rounded-xl font-bold text-lg shadow-lg transition-all ${analisandoIA ? 'bg-gray-400 cursor-not-allowed' : 'bg-verde-600 hover:bg-verde-700 active:scale-95'}`}>{analisandoIA ? 'Processando...' : 'Salvar Produto'}</button>
+            <button
+              onClick={validarESalvar}
+              disabled={analisandoIA}
+              className={`w-full text-white py-4 rounded-xl font-bold text-lg shadow-lg transition-all ${
+                analisandoIA
+                  ? 'bg-gray-400 cursor-not-allowed'
+                  : 'bg-verde-600 hover:bg-verde-700 active:scale-95'
+              }`}
+            >
+              {analisandoIA ? 'Processando...' : 'Salvar Produto'}
+            </button>
           </div>
         </form>
       </div>
