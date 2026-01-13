@@ -1,6 +1,6 @@
 /**
  * Serviço de integração com API Bluesoft Cosmos.
- * 
+ *
  * Documentação: https://cosmos.bluesoft.com.br/api
  */
 
@@ -9,13 +9,13 @@ import { servicoIA } from './ia/fabrica';
 import { formatarTitulo } from './utilitarios';
 
 // Em desenvolvimento, usa o proxy configurado no vite.config.ts para evitar CORS.
-// Em produção, tenta acesso direto (sujeito a regras de CORS do backend).
+// Em produção, usa API Route serverless (/api/cosmos) que faz proxy.
 const IS_DEV = import.meta.env.DEV;
-const COSMOS_API_URL = IS_DEV ? '/api-cosmos' : 'https://api.cosmos.bluesoft.com.br';
+const COSMOS_API_URL = IS_DEV ? '/api-cosmos' : '/api/cosmos';
 const COSMOS_TOKEN = import.meta.env.VITE_COSMOS_TOKEN;
 
 if (!COSMOS_TOKEN) {
-  console.warn("⚠️ Token COSMOS não configurado (.env)");
+  console.warn('⚠️ Token COSMOS não configurado (.env)');
 }
 
 /**
@@ -50,7 +50,7 @@ export interface ProdutoCosmosResponse {
 
 /**
  * Busca informações de um produto pelo código de barras (GTIN) na API Cosmos.
- * 
+ *
  * :param gtin: Código de barras do produto
  * :returns: Dados do produto formatados para o nosso app ou null se não encontrado
  */
@@ -61,8 +61,8 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
       headers: {
         'User-Agent': 'Cosmos-API-Request',
         'Content-Type': 'application/json',
-        'X-Cosmos-Token': COSMOS_TOKEN
-      }
+        'X-Cosmos-Token': COSMOS_TOKEN,
+      },
     });
 
     if (response.status === 404) {
@@ -76,7 +76,7 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
     }
 
     const dados: ProdutoCosmosResponse = await response.json();
-    
+
     // Mapeamento inicial
     const description = formatarTitulo(dados.description);
     let brand = formatarTitulo(dados.brand?.name || '');
@@ -104,9 +104,8 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
       brand,
       size,
       price: dados.avg_price || 0, // Usa preço médio como sugestão
-      thumbnail: dados.thumbnail || undefined
+      thumbnail: dados.thumbnail || undefined,
     };
-
   } catch (erro: any) {
     // Trata erros de rede/CORS sem quebrar a app
     if (erro instanceof TypeError && erro.message.includes('fetch')) {
