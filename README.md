@@ -2,7 +2,7 @@
 
 # 🛒 Sem Susto
 
-**Controle seus gastos no supermercado em tempo real**
+**Controle seus gastos durante as compras em tempo real**
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -21,7 +21,7 @@
 
 ## 📚 Sobre o Projeto
 
-**Sem Susto** é um aplicativo web mobile-first que resolve um problema comum: a surpresa no caixa do supermercado. Com ele, você escaneia os produtos durante a compra e acompanha o total acumulado em tempo real.
+**Sem Susto** é um aplicativo web mobile-first que resolve um problema comum: não saber quanto você está gastando durante as compras. Com ele, você escaneia os produtos enquanto compra e acompanha o total acumulado em tempo real.
 
 ### 🎯 Problema Resolvido
 
