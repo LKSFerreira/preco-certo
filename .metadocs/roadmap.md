@@ -17,7 +17,9 @@
 
 ---
 
-## Fase 0: Ambiente de Desenvolvimento ✅
+
+## Fase 0.5: Ambiente de Desenvolvimento (Antiga Fase 0) ✅
+
 
 > **Status:** Concluída
 
@@ -71,6 +73,40 @@
 - [x] **0.5.25** Proxy reverso para API Cosmos (correção CORS)
 
 **Critério de sucesso:** Usar o app do início ao fim no `localhost:5173` sem erros.
+
+---
+
+## Fase 0.6: Ajustes de Aplicação ✅
+> **Objetivo:** Preparação do ambiente, correções de pipeline e otimização de consultas de dados.
+
+- [x] **0.6.1** Padronizar DevContainer (migrado scripts `.sh` para Dockerfile nativo)
+- [x] **0.6.2** Implementar fluxo de consulta: Local -> API BR (OpenFoodFacts) -> Cosmos (Fallback)
+- [x] **0.6.3** Configurar ambiente (IDE) para ignorar erros de lint/sintaxe irrelevantes no contexto atual
+- [x] **0.6.4** Criar script de processamento de dump da Open Food Facts (31.498 produtos BR extraídos!)
+
+---
+
+## Fase 0.7: Supabase Free Tier 🗄️ (Atual)
+> **Objetivo:** Configurar banco de dados gratuito na nuvem e importar dados de produtos brasileiros.
+> **Duração:** 1 dia
+
+### Configuração Inicial
+- [ ] **0.7.1** Criar conta no Supabase (https://supabase.com)
+- [ ] **0.7.2** Criar projeto "sem-susto" (região: São Paulo)
+- [ ] **0.7.3** Obter credenciais (URL + Anon Key)
+
+### Modelagem e Importação
+- [ ] **0.7.4** Criar tabela `produtos_off` com coluna JSONB para dados RAW
+- [ ] **0.7.5** Criar script de importação do CSV para o Supabase
+- [ ] **0.7.6** Executar importação dos 31k produtos
+- [ ] **0.7.7** Criar índices para busca por GTIN (código de barras)
+
+### Integração com Aplicação
+- [ ] **0.7.8** Instalar cliente Supabase no projeto (`@supabase/supabase-js`)
+- [ ] **0.7.9** Implementar `buscarProdutoLocal()` que consulta o Supabase
+- [ ] **0.7.10** Atualizar fluxo de busca: Supabase -> Open Food Facts API -> Cosmos
+
+**Critério de sucesso:** Escanear produto e receber dados do banco Supabase em <500ms.
 
 ---
 
