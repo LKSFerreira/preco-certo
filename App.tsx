@@ -20,24 +20,24 @@ export default function App() {
 
   // --- Estados ---
   const [telaAtual, setTelaAtual] = useState<TelaApp>('DASHBOARD');
-  
+
   // Catálogo agora é carregado do repositório
   const [catalogo, setCatalogo] = useState<Record<string, Produto>>({});
   const [carrinho, setCarrinho] = useState<ItemCarrinho[]>([]);
-  
+
   // Flag para indicar se os dados foram carregados
   const [carregado, setCarregado] = useState(false);
-  
+
   // Estado para fluxo de cadastro/adição
   const [codigoLido, setCodigoLido] = useState<string | null>(null);
   const [dadosPrePreenchidos, setDadosPrePreenchidos] = useState<Partial<Produto> | null>(null);
-  
+
   const [mostrarDoacao, setMostrarDoacao] = useState(false);
   const [mostrarConfirmacaoEsvaziar, setMostrarConfirmacaoEsvaziar] = useState(false);
   const [mostrarConfirmacaoFinalizar, setMostrarConfirmacaoFinalizar] = useState(false);
 
   // --- Efeitos (Carregamento inicial) ---
-  
+
   /**
    * Carrega dados do repositório ao iniciar o app.
    * 
@@ -58,7 +58,7 @@ export default function App() {
         // Carrega carrinho
         const itensCarrinho = await repositorioCarrinho.obterItens();
         setCarrinho(itensCarrinho);
-        
+
         setCarregado(true);
       } catch (erro) {
         console.error('Erro ao carregar dados:', erro);
@@ -89,7 +89,7 @@ export default function App() {
       quantity: 1,
       uuid: Date.now().toString()
     };
-    
+
     // Atualiza estado local primeiro (UI responsiva)
     setCarrinho(prev => {
       const index = prev.findIndex(item => item.gtin === produto.gtin);
@@ -115,17 +115,17 @@ export default function App() {
   const salvarProdutoNoCatalogo = useCallback(async (produto: Produto) => {
     // Atualiza estado local
     setCatalogo(prev => ({ ...prev, [produto.gtin]: produto }));
-    
+
     // Persiste no repositório
     try {
       await repositorioProdutos.salvar(produto);
     } catch (erro) {
       console.error('Erro ao salvar produto:', erro);
     }
-    
+
     // Adiciona ao carrinho
     await adicionarAoCarrinho(produto);
-    
+
     setTelaAtual('DASHBOARD');
     setCodigoLido(null);
   }, [repositorioProdutos, adicionarAoCarrinho]);
@@ -139,7 +139,7 @@ export default function App() {
   const aoLerCodigo = useCallback(async (gtin: string) => {
     setCodigoLido(gtin);
     setDadosPrePreenchidos(null);
-    
+
     // 1. Verifica cache local
     if (catalogo[gtin]) {
       adicionarAoCarrinho(catalogo[gtin]);
@@ -147,11 +147,11 @@ export default function App() {
       setCodigoLido(null);
       return;
     }
-    
+
     // 2. Consulta API Cosmos (Fallback)
     // Mostra loading? Por enquanto não para ser fluido
     const produtoCosmos = await buscarProdutoCosmos(gtin);
-    
+
     if (produtoCosmos) {
       setDadosPrePreenchidos(produtoCosmos);
     }
@@ -168,10 +168,10 @@ export default function App() {
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(50);
     }
-    
+
     // Atualiza estado local
     setCarrinho(prev => prev.filter(item => item.gtin !== gtin));
-    
+
     // Persiste no repositório
     try {
       await repositorioCarrinho.removerItem(gtin);
@@ -187,13 +187,13 @@ export default function App() {
    */
   const alterarQuantidade = useCallback(async (gtin: string, delta: number) => {
     let novaQuantidade = 0;
-    
+
     // Atualiza estado local
     setCarrinho(prev => {
       return prev.reduce((acc, item) => {
         if (item.gtin === gtin) {
           novaQuantidade = item.quantity + delta;
-          
+
           if (novaQuantidade > 0) {
             acc.push({ ...item, quantity: novaQuantidade });
           } else {
@@ -274,19 +274,19 @@ export default function App() {
    */
   const executarEsvaziamento = useCallback(async () => {
     setMostrarConfirmacaoEsvaziar(false);
-    
+
     // Feedback tátil
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(50);
     }
-    
+
     // Atualiza estado local
     setCarrinho([]);
 
     // Persiste no repositório
     try {
       await repositorioCarrinho.limpar();
-      
+
       // Abre modal de doação
       setMostrarDoacao(true);
     } catch (erro) {
@@ -310,11 +310,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-      
+
       {/* 1. Barra de Navegação Superior */}
       <header className="bg-white shadow-sm sticky top-0 z-20">
         <div className="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
-          
+
           {/* Logo e Título */}
           <div className="flex items-center gap-2">
             <div className="bg-verde-100 p-2 rounded-full text-verde-600">
@@ -325,10 +325,10 @@ export default function App() {
               <p className="text-[10px] text-gray-500 uppercase tracking-wide">Controle de Gastos</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             {/* Botão de Doação */}
-            <button 
+            <button
               onClick={() => setMostrarDoacao(true)}
               className="bg-red-50 text-red-500 px-3 py-2 rounded-lg text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center gap-1 shadow-sm"
               title="Fazer uma doação"
@@ -339,7 +339,7 @@ export default function App() {
 
             {/* Botão Esvaziar Carrinho */}
             {carrinho.length > 0 && (
-              <button 
+              <button
                 onClick={solicitarEsvaziamento}
                 className="p-2 rounded-lg text-sm font-medium transition-colors bg-red-50 text-red-600 hover:bg-red-100"
                 title="Esvaziar carrinho"
@@ -364,15 +364,15 @@ export default function App() {
           <ul className="space-y-3">
             {carrinho.map((item) => (
               <li key={item.gtin} className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex gap-3 animate-fade-in relative group">
-                
+
                 {/* Imagem */}
                 <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
-                    <img 
-                      src={item.thumbnail || IMAGEM_PADRAO} 
-                      alt={item.description} 
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
+                  <img
+                    src={item.thumbnail || IMAGEM_PADRAO}
+                    alt={item.description}
+                    className="max-w-full max-h-full object-contain"
+                  />
+                </div>
 
                 {/* Conteúdo */}
                 <div className="flex-1 min-w-0 flex flex-col justify-between">
@@ -384,18 +384,17 @@ export default function App() {
                       {item.brand} • {item.size}
                     </p>
                   </div>
-                  
+
                   {/* Controles de Preço e Quantidade */}
                   <div className="flex justify-between items-end mt-1">
                     <div className="flex items-center gap-1 bg-gray-50 rounded p-1 border border-gray-100">
                       {/* Botão Menos / Lixeira */}
-                      <button 
+                      <button
                         onClick={() => alterarQuantidade(item.gtin, -1)}
-                        className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${
-                          item.quantity === 1 
-                            ? 'text-red-500 hover:bg-red-50' 
+                        className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${item.quantity === 1
+                            ? 'text-red-500 hover:bg-red-50'
                             : 'text-verde-600 hover:bg-verde-50'
-                        }`}
+                          }`}
                         title={item.quantity === 1 ? "Remover" : "Diminuir"}
                       >
                         {item.quantity === 1 ? (
@@ -404,19 +403,19 @@ export default function App() {
                           <i className="fas fa-minus text-xs"></i>
                         )}
                       </button>
-                      
+
                       <span className="text-sm font-bold w-6 text-center text-gray-700 select-none">
                         {item.quantity}
                       </span>
-                      
-                      <button 
-                         onClick={() => alterarQuantidade(item.gtin, 1)}
-                         className="w-8 h-8 flex items-center justify-center text-verde-600 hover:bg-verde-50 rounded transition-colors"
+
+                      <button
+                        onClick={() => alterarQuantidade(item.gtin, 1)}
+                        className="w-8 h-8 flex items-center justify-center text-verde-600 hover:bg-verde-50 rounded transition-colors"
                       >
                         <i className="fas fa-plus text-xs"></i>
                       </button>
                     </div>
-                    
+
                     <div className="text-right">
                       <div className="text-xs text-gray-400 font-mono">
                         {item.quantity}x {formatarMoeda(item.price)}
@@ -436,7 +435,7 @@ export default function App() {
       {/* 3. Rodapé Fixo (Totais e Ação Principal) */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <div className="max-w-md mx-auto p-4 flex flex-col gap-3">
-          
+
           <div className="flex justify-between items-end px-1">
             <span className="text-gray-500 font-medium">Total Geral</span>
             <span className="text-3xl font-bold text-verde-600 font-mono">
@@ -445,7 +444,7 @@ export default function App() {
           </div>
 
           <div className="flex gap-3">
-            <button 
+            <button
               onClick={() => setTelaAtual('SCANNER')}
               className="flex-1 bg-verde-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
             >
@@ -454,7 +453,7 @@ export default function App() {
             </button>
 
             {carrinho.length > 0 && (
-              <button 
+              <button
                 onClick={solicitarFinalizacao}
                 className="flex-1 bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
               >
@@ -480,7 +479,7 @@ export default function App() {
 
       {/* Scanner Modal */}
       {telaAtual === 'SCANNER' && (
-        <ScannerBarras 
+        <ScannerBarras
           aoLerCodigo={aoLerCodigo}
           aoCancelar={() => setTelaAtual('DASHBOARD')}
         />
@@ -488,7 +487,7 @@ export default function App() {
 
       {/* Formulário de Produto Modal */}
       {telaAtual === 'CADASTRO' && codigoLido && (
-        <FormularioProduto 
+        <FormularioProduto
           gtinInicial={codigoLido}
           aoSalvar={salvarProdutoNoCatalogo}
           aoCancelar={() => {
