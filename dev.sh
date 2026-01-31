@@ -21,4 +21,4 @@ else
 fi
 
 echo -e "\033[0;36m🚀 Iniciando containers...\033[0m"
-docker compose -f .docker/compose.yaml up --build
+docker compose -f .devcontainer/compose.yaml up --build
