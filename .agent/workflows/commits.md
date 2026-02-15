@@ -32,4 +32,4 @@ O formato deve seguir estritamente o padrão:
 `:emoji_code: tipo: Descrição da mudança`
 
 **Exemplo:**
-`:broom: cleanup: Descrição da mudança`
+`:broom: cleanup: Realizado mudança de X para Y`
