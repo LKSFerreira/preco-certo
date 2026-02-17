@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Produto } from '../types';
-import { REGEX_UNIDADE } from '../constants';
+import { REGEX_UNIDADE, NOMES_INVALIDOS } from '../constants';
 import { comprimirImagem } from '../services/utilitarios';
 import { extrairDadosDoRotulo } from '../services/ia';
 import { ModalRecorte } from './ModalRecorte';
@@ -228,6 +228,14 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
       return;
     }
 
+    if (NOMES_INVALIDOS.has(descricao.toLowerCase().trim())) {
+      setErro('Nome inválido. Por favor, informe o nome real do produto.');
+      setCampoComErro('descricao');
+      refDescricao.current?.focus();
+      refDescricao.current?.select();
+      return;
+    }
+
     if (!marca.trim()) {
       setErro('A marca do produto é obrigatória.');
       setCampoComErro('marca');
@@ -427,6 +435,10 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                       src={imagem}
                       alt="Preview"
                       className="w-full h-full object-contain p-1"
+                      onError={() => {
+                        console.warn('❌ [Form] Imagem falhou ao carregar (404/Erro). Removendo...');
+                        setImagem(undefined); // Força UI de 'Tirar Foto'
+                      }}
                     />
                     <button
                       type="button"
@@ -467,8 +479,8 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                 }}
                 className={`${classeInput} ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${campoComErro === 'descricao' ? 'border-red-500 ring-2 ring-red-400' : ''
                   }`}
-                placeholder="Ex: Leite Integral"
-                disabled={analisandoIA}
+                placeholder="Ex: Coca-Cola 350ml"
+                onFocus={(e) => e.target.select()}
               />
             </div>
             <div className="flex gap-3">
@@ -510,6 +522,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                     } ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${campoComErro === 'tamanho' ? 'border-red-500 ring-2 ring-red-400' : ''
                     } ${camposFaltantes.includes('tamanho') && !tamanho ? 'border-amber-400 ring-1 ring-amber-300' : ''}`}
                   placeholder="Ex: 1L"
+                  onFocus={(e) => e.target.select()}
                   disabled={analisandoIA}
                 />
               </div>

@@ -61,7 +61,9 @@ Responda EXCLUSIVAMENTE um JSON puro, sem markdown, no formato:
 Regras:
 1. descricao: Nome completo e claro do produto.
 2. marca: Marca do fabricante (ex: Coca-Cola, Nestlé).
-3. tamanho: Peso/Volume com unidade (ex: 350ml, 1kg).`,
+3. tamanho: Peso/Volume com unidade (ex: 350ml, 1kg).
+
+IMPORTANTE: Se não encontrar a informação, retorne string vazia "". NÃO invente, NÃO coloque "Não informado", "N/A" ou "Sem nome".`,
                         },
                         {
                             type: 'image_url',
@@ -91,6 +93,8 @@ REGRAS CRÍTICAS:
    - Se houver vírgula, pegue apenas a primeira parte que é a marca real.
    - Se não encontrar marca, use "Genérica".
 3. tamanho: Peso/Volume padronizado (ex: 2L, 500g, 350ml).
+
+IMPORTANTE: Se não encontrar a informação, retorne string vazia "". NÃO invente, NÃO coloque "Não informado", "N/A" ou "Sem nome".
 
 EXEMPLOS:
 - "NESCAU 2.0 CEREAL MATINAL NESTLE 400G" → { "descricao": "Nescau 2.0 Cereal Matinal", "marca": "Nestlé", "tamanho": "400g" }
