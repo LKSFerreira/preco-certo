@@ -213,6 +213,20 @@ export default function App() {
     if (catalogo[codigo_barras]) {
       console.log(`✅ [ORIGEM: CACHE LOCAL] Produto encontrado no catálogo local`);
       console.log(`   📦 Dados:`, catalogo[codigo_barras]);
+
+      // Validação de Preço Zerado (Staging)
+      // Se o produto foi salvo mas não teve preço definido (ex: cancelou o form),
+      // força a abertura do formulário para edição.
+      if (catalogo[codigo_barras].preco_estimado <= 0) {
+        console.log(`⚠️ [PREÇO ZERADO] Redirecionando para edição...`);
+        setDadosPrePreenchidos(catalogo[codigo_barras]);
+        setModoEdicao(true); // Modo edição para atualizar o registro existente
+        setTelaAtual('CADASTRO');
+        setCodigoLido(codigo_barras);
+        setEtapaBusca(null);
+        return;
+      }
+
       setEtapaBusca(null);
       await adicionarAoCarrinho(codigo_barras);
       setTelaAtual('DASHBOARD');
