@@ -53,6 +53,11 @@ export interface ProdutoCosmosResponse {
  */
 export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null> {
   try {
+    if (import.meta.env.VITE_USAR_API_COSMOS === 'false') {
+      console.warn('🚫 [Cosmos] Uso da API Cosmos DESATIVADO pelo desenvolvedor.');
+      return null;
+    }
+
     // Sempre via proxy — token fica no servidor
     const url = `${COSMOS_API_URL}/${gtin}`;
 
