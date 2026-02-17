@@ -23,7 +23,7 @@ export const TutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => {
     return (
         <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center p-6">
             {/* Fundo replicado do ModalTutorial: Degradê esticado e Blur intenso */}
-            <div className="absolute inset-0 bg-gradient-to-b from-verde-500 via-verde-500 via-[55%] to-verde-900 backdrop-blur-md -z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-blue-500 via-blue-500 via-[65%] backdrop-blur-md -z-10"></div>
 
             {/* Botão Pular (canto superior direito) */}
             <button

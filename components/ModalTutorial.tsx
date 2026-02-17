@@ -38,8 +38,7 @@ export const ModalTutorial: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col">
-      {/* Camada de degradê ajustada: verde vibrante esticado até a base, escurecendo no fim */}
-      <div className="absolute inset-0 bg-gradient-to-b from-verde-500 via-verde-500 via-[65%] to-verde-900 backdrop-blur-md"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-500 via-blue-500 via-[65%] backdrop-blur-md"></div>
 
       {/* Conteúdo do tutorial */}
       <div className="relative flex-1 flex flex-col z-10">
