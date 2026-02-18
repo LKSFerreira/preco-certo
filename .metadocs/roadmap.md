@@ -143,6 +143,7 @@
 - [x] **0.8.8** Melhorar feedback visual durante busca em cascata (loading states com animação de carrinho)
 - [x] **0.8.9** Extrair componente reutilizável `LoadingCarrinho.tsx`
 - [x] **0.8.10** Criar função de reset completo do localStorage (limpa tutorial, carrinho, catálogo, DicaFoto)
+- [x] **0.8.11** Refatoração Offline First: Priorizar busca no Banco (Remoto) antes de API Externa.
 
 **Critério de sucesso:** Escanear produto desconhecido e ver cascata de busca funcionar.
 
