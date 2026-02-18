@@ -27,11 +27,13 @@
 
 import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { Repositorios } from '../repositorios/tipos-repositorio';
-import { 
-  RepositorioProdutosLocalStorage, 
+import {
+  RepositorioProdutosLocalStorage,
   RepositorioCarrinhoLocalStorage,
   RepositorioHistoricoLocalStorage
 } from '../repositorios/local-storage';
+import { RepositorioProdutosHibrido } from '../repositorios/hibrido';
+import { RepositorioProdutosHttp } from '../repositorios/http';
 
 /**
  * Contexto que armazena a instância dos repositórios.
@@ -66,21 +68,28 @@ interface PropsProvedorRepositorios {
  *       <App />
  *     </ProvedorRepositorios>
  */
-export function ProvedorRepositorios({ 
-  children, 
-  repositoriosCustomizados 
+export function ProvedorRepositorios({
+  children,
+  repositoriosCustomizados
 }: PropsProvedorRepositorios) {
-  
+
   // useMemo garante que as instâncias são criadas apenas uma vez
   const repositorios = useMemo<Repositorios>(() => {
     // Se foram passados repositórios customizados (ex: para testes), usa eles
     if (repositoriosCustomizados) {
       return repositoriosCustomizados;
     }
-    
-    // Caso contrário, usa a implementação padrão com localStorage
+
+
+
+    // ...
+
+    // Caso contrário, usa a implementação padrão com localStorage + API (Híbrido)
+    const local = new RepositorioProdutosLocalStorage();
+    const remoto = new RepositorioProdutosHttp();
+
     return {
-      produtos: new RepositorioProdutosLocalStorage(),
+      produtos: new RepositorioProdutosHibrido(local, remoto),
       carrinho: new RepositorioCarrinhoLocalStorage(),
       historico: new RepositorioHistoricoLocalStorage(),
     };
@@ -115,13 +124,13 @@ export function ProvedorRepositorios({
  */
 export function useRepositorios(): Repositorios {
   const contexto = useContext(ContextoRepositorios);
-  
+
   if (!contexto) {
     throw new Error(
       'useRepositorios deve ser usado dentro de um ProvedorRepositorios. ' +
       'Verifique se o componente está envolvido pelo provider no index.tsx.'
     );
   }
-  
+
   return contexto;
 }
