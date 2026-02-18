@@ -32,7 +32,7 @@ import {
   RepositorioCarrinhoLocalStorage,
   RepositorioHistoricoLocalStorage
 } from '../repositorios/local-storage';
-import { RepositorioProdutosHibrido } from '../repositorios/hibrido';
+import { RepositorioProdutosOfflineFirst } from '../repositorios/offline-first';
 import { RepositorioProdutosHttp } from '../repositorios/http';
 
 /**
@@ -89,7 +89,7 @@ export function ProvedorRepositorios({
     const remoto = new RepositorioProdutosHttp();
 
     return {
-      produtos: new RepositorioProdutosHibrido(local, remoto),
+      produtos: new RepositorioProdutosOfflineFirst(local, remoto),
       carrinho: new RepositorioCarrinhoLocalStorage(),
       historico: new RepositorioHistoricoLocalStorage(),
     };

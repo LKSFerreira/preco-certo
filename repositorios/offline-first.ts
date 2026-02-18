@@ -2,13 +2,13 @@ import { RepositorioProdutos } from './tipos-repositorio';
 import { Produto } from '../types';
 
 /**
- * Repositório Híbrido: Combina LocalStorage (Offline) + API (Online/Audit).
+ * Repositório Offline First: Prioriza LocalStorage (Rápido) + Sincroniza API (Fonte da Verdade).
  * 
  * Estratégia:
  * - Leitura: Tenta Local -> Se falhar, tenta API -> Se achar na API, salva Local.
  * - Escrita: Salva Local (Síncrono/Rápido) + Salva API (Assíncrono/Audit).
  */
-export class RepositorioProdutosHibrido implements RepositorioProdutos {
+export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
     constructor(
         private local: RepositorioProdutos,
         private remoto: RepositorioProdutos
@@ -31,7 +31,7 @@ export class RepositorioProdutosHibrido implements RepositorioProdutos {
             }
         } catch (erro) {
             // Falha silenciosa na API não deve quebrar a busca (pode estar offline)
-            console.warn('[Hibrido] Falha ao buscar remoto:', erro);
+            console.warn('[OfflineFirst] Falha ao buscar remoto:', erro);
         }
 
         return null;
@@ -49,8 +49,9 @@ export class RepositorioProdutosHibrido implements RepositorioProdutos {
         // 2. Sincroniza com API (Tenta persistir e auditar)
         try {
             await this.remoto.salvar(produto);
+            console.log(`☁️ [OfflineFirst] Sincronizado com API Remota: ${produto.codigo_barras}`);
         } catch (erro) {
-            console.error('[Hibrido] Erro na sincronização remota:', erro);
+            console.error('[OfflineFirst] Erro na sincronização remota:', erro);
             // TODO: Adicionar em fila de retry (SyncQueue) futura
         }
     }
@@ -60,7 +61,7 @@ export class RepositorioProdutosHibrido implements RepositorioProdutos {
         try {
             await this.remoto.remover(gtin);
         } catch (erro) {
-            console.warn('[Hibrido] Falha ao remover remoto:', erro);
+            console.warn('[OfflineFirst] Falha ao remover remoto:', erro);
         }
     }
 }
