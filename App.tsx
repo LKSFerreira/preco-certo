@@ -211,7 +211,7 @@ export default function App() {
     // 1. Verifica cache local (catálogo localStorage)
     setEtapaBusca('💾 Verificando catálogo local...');
     if (catalogo[codigo_barras]) {
-      console.log(`✅ [ORIGEM: CACHE LOCAL] Produto encontrado no catálogo local`);
+      console.log(`✅ [ORIGEM: LOCAL STORAGE] Produto encontrado no catálogo local`);
       console.log(`   📦 Dados:`, catalogo[codigo_barras]);
 
       // Validação de Preço Zerado (Staging)
@@ -235,7 +235,24 @@ export default function App() {
     }
     console.log(`❌ [CACHE LOCAL] Não encontrado`);
 
-    // 2. TODO: Buscar no Banco de Dados PostgreSQL (endpoint ainda não existe)
+    // 2. Busca no Banco de Dados (Offline First / Sincronizado)
+    setEtapaBusca('☁️ Verificando banco de dados...');
+    const produtoBanco = await repositorioProdutos.buscarPorGTIN(codigo_barras);
+
+    if (produtoBanco) {
+      console.log(`✅ [ORIGEM: BANCO DE DADOS] Produto encontrado!`);
+      console.log(`   📦 Dados:`, produtoBanco);
+      setEtapaBusca(null);
+
+      // Garante que a UI receba o produto para renderizar o carrinho
+      setCatalogo(prev => ({ ...prev, [produtoBanco.codigo_barras]: produtoBanco }));
+
+      await adicionarAoCarrinho(codigo_barras); // Já salva no local se não tiver
+      setTelaAtual('DASHBOARD');
+      setCodigoLido(null);
+      return;
+    }
+    console.log(`❌ [BANCO DE DADOS] Não encontrado`);
 
     // 3. Consulta OpenFoodFacts (Prioridade API)
     setEtapaBusca('🌍 Buscando produtos...');
@@ -249,10 +266,10 @@ export default function App() {
       console.log(`✅ [ORIGEM: OPENFOODFACTS] Produto encontrado!`);
       console.log(`   📦 Dados:`, produtoEncontrado);
 
-      // Salva imediatamente no catálogo com preço 0
+      // NÃO SALVAR AUTOMATICAMENTE!
+      // Apenas preenche o formulário para o usuário confirmar.
       produtoEncontrado.preco_estimado = 0;
-      await salvarProdutoNoCatalogo(produtoEncontrado);
-      console.log(`💾 [CACHE] Produto salvo no catálogo local (com preço R$ 0,00)`);
+      console.log(`📝 [REDIRECIONAR] Abrindo formulário para validação manual`);
       setEtapaBusca(null);
 
     } else {
@@ -269,10 +286,10 @@ export default function App() {
         console.log(`✅ [ORIGEM: COSMOS] Produto encontrado!`);
         console.log(`   📦 Dados:`, produtoEncontrado);
 
-        // Salva imediatamente no catálogo com preço 0
+        // NÃO SALVAR AUTOMATICAMENTE!
+        // Apenas preenche o formulário para o usuário confirmar.
         produtoEncontrado.preco_estimado = 0;
-        await salvarProdutoNoCatalogo(produtoEncontrado);
-        console.log(`💾 [CACHE] Produto salvo no catálogo local (com preço R$ 0,00)`);
+        console.log(`📝 [REDIRECIONAR] Abrindo formulário para validação manual`);
         setEtapaBusca(null);
 
       } else {
