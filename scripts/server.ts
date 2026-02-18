@@ -16,14 +16,48 @@ import consultarTokenHandler from '../api/tokens/consultar';
 import produtosHandler from '../api/produtos/[codigo]';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware para parse do JSON
 app.use(express.json({ limit: '10mb' }));
 
+// Middleware de CORS Manual (Dinâmico para Local + Rede)
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+
+    // Definição de origens permitidas (Regex)
+    const allowedOrigins = [
+        /^http:\/\/localhost:\d+$/, // localhost em qualquer porta (dev)
+        /^http:\/\/127\.0\.0\.1:\d+$/, // loopback
+        /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:\d+$/, // Rede local (192.168.x.x)
+        /^http:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}:\d+$/, // Docker/Rede Privada (172.16-31.x.x)
+        /^http:\/\/10\.\d{1,3}\.\d{1,3}\.\d{1,3}:\d+$/, // Rede interna (10.x.x.x)
+        /^https:\/\/www\.semsusto\.app$/ // Produção (apenas referência, quem barra é o Vercel)
+    ];
+
+    if (origin) {
+        const isAllowed = allowedOrigins.some(pattern => pattern.test(origin));
+
+        if (isAllowed) {
+            res.setHeader('Access-Control-Allow-Origin', origin);
+            res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS, PATCH, DELETE, POST, PUT');
+            res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-API-Secret');
+            res.setHeader('Access-Control-Allow-Credentials', 'true');
+        }
+    }
+
+    // Trata preflight request (OPTIONS) imediatamente
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
+    next();
+});
+
 // Middleware de Log
 app.use((req, res, next) => {
-    console.log(`[API Local] ${req.method} ${req.url}`);
+    console.log(`[API Local] ${req.method} ${req.url} | Origin: ${req.headers.origin || 'N/A'}`);
     next();
 });
 
