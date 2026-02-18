@@ -12,6 +12,8 @@ import gerarTokenHandler from '../api/tokens/gerar';
 import ativarTokenHandler from '../api/tokens/ativar';
 // @ts-ignore
 import consultarTokenHandler from '../api/tokens/consultar';
+// @ts-ignore
+import produtosHandler from '../api/produtos/[codigo]';
 
 const app = express();
 const PORT = 3000;
@@ -56,10 +58,19 @@ app.post('/api/tokens/gerar', adapter(gerarTokenHandler));
 app.post('/api/tokens/ativar', adapter(ativarTokenHandler));
 app.get('/api/tokens/consultar', adapter(consultarTokenHandler));
 
+// Produtos (CRUD Seguro)
+app.all('/api/produtos/:codigo', (req, res) => {
+    // Garante que o parametro da URL chegue na query (padrão Vercel)
+    req.query.codigo = req.params.codigo;
+    return adapter(produtosHandler)(req, res);
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', ambiente: 'local-server' });
 });
+
+console.log('Produtos Handler:', produtosHandler);
 
 // Inicia Servidor
 app.listen(PORT, '0.0.0.0', () => {
@@ -73,5 +84,6 @@ app.listen(PORT, '0.0.0.0', () => {
    - POST /api/tokens/gerar
    - POST /api/tokens/ativar
    - GET  /api/tokens/consultar
+   - ALL  /api/produtos/:codigo
 `);
 });
