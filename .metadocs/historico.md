@@ -97,6 +97,18 @@ Ao escanear um código `789...`:
     *   **Flood Attack:** Proteção de Rate Limit (429) validada com sucesso em simulações de carga.
 *   **Decisão de CORS:** Decidido aplicar `Access-Control-Allow-Origin` rigoroso via `vercel.json` para eliminar acesso externo não oficial à API.
 
+### 18/02: Segurança de API (CORS) Blindada 🛡️
+*   **Produção (`vercel.json`):** Configuração estrita permitindo apenas `https://www.semsusto.app`.
+*   **Local (`server.ts`):** Middleware dinâmico implementado para aceitar IPs da rede local (192.168.x.x, 10.x.x.x) permitindo testes em dispositivos reais via Docker.
+*   **Infraestrutura:** Servidor local agora suporta `PORT` via variável de ambiente, facilitando testes automatizados.
+*   **Validação:** Script `scripts/verify_cors.js` criado para CI/CD de segurança.
+
+### 18/02: Refatoração Offline First e Correção de Fluxo 🔄
+*   **Arquitetura:** `RepositorioProdutosHibrido` renomeado para `RepositorioProdutosOfflineFirst`. Estratégia de priorizar cache local e sincronizar com remoto (database) agora está explícita.
+*   **Fluxo de Busca:** `App.tsx` corrigido para consultar o Banco de Dados (Remoto) antes de APIs externas (OFF/Cosmos).
+*   **Integridade de Dados:** Removido salvamento automático de dados crus de APIs externas. Sistema redireciona para formulário manual, prevenindo erros de validação ("Dados inválidos").
+*   **UX:** Corrigido bug visual onde produtos vindos do banco não apareciam no carrinho por falta de atualização de estado React.
+
 ---
 
 ## 6. Padrões de Desenvolvimento (Para o Agente)

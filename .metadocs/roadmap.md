@@ -248,7 +248,7 @@
 - [x] **2.4** Implementar `RepositorioProdutosPostgres` (via RepoHibrido e API Serverless)
 - [ ] **2.5** Implementar `RepositorioCarrinhoPostgres`
 - [x] **2.6** Criar script de migração de dados (`scripts/init_db.py`)
-- [x] **2.7** Switch automático baseado em ambiente (RepoHibrido)
+- [x] **2.7** Switch automático baseado em ambiente (RepoOfflineFirst)
 
 ### Validação
 
@@ -278,11 +278,11 @@
 - [ ] **3.5** Associar produtos e carrinho ao `user_id`
 
 ### Segurança Avançada de API (CORS) 🚧
-- [ ] **3.6** Implementação de políticas de CORS em `vercel.json`
-    - [ ] Criar/Configurar arquivo de roteamento da Vercel.
-    - [ ] Restringir `Access-Control-Allow-Origin` apenas para domínios oficiais e dev local.
-    - [ ] Blindar métodos e cabeçalhos (`Methods`, `Headers`).
-    - [ ] Validar bloqueio bloqueando solicitações de origens externas simuladas.
+- [x] **3.6** Implementação de políticas de CORS em `vercel.json`
+    - [x] Criar/Configurar arquivo de roteamento da Vercel.
+    - [x] Restringir `Access-Control-Allow-Origin` apenas para domínios oficiais e dev local.
+    - [x] Blindar métodos e cabeçalhos (`Methods`, `Headers`).
+    - [x] Validar bloqueio bloqueando solicitações de origens externas simuladas.
 
 **Critério de sucesso:** Dois usuários diferentes têm carrinhos isolados.
 
