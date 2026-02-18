@@ -322,5 +322,7 @@
 
 - [ ] Configurar ESLint + Prettier
 - [ ] Adicionar testes com Vitest
+- [ ] **SyncQueue:** Implementar fila de retry para salvar dados quando offline (`repositorios/offline-first.ts`)
+- [ ] **Limpeza:** Remover códigos mortos e delays de debug em `App.tsx`
 - [ ] Remover arquivos desnecessários
 - [ ] Otimizar bundle size
