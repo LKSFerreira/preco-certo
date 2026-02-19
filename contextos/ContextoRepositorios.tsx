@@ -26,7 +26,7 @@
  */
 
 import React, { createContext, useContext, useMemo, ReactNode } from 'react';
-import { Repositorios } from '../repositorios/tipos-repositorio';
+import { Repositorios, RepositorioProdutos } from '../repositorios/tipos-repositorio';
 import {
   RepositorioProdutosLocalStorage,
   RepositorioCarrinhoLocalStorage,
@@ -80,16 +80,35 @@ export function ProvedorRepositorios({
       return repositoriosCustomizados;
     }
 
+    // Feature Flags — padrão: true (se a variável não existir, funciona normalmente)
+    // Só desativa quando explicitamente "false"
+    const usarLocalStorage = import.meta.env.VITE_USAR_LOCALSTORAGE !== 'false';
+    const usarBancoPostgres = import.meta.env.VITE_USAR_BANCO_POSTGRES !== 'false';
 
+    // Repositório de produtos: monta composição baseada nas flags
+    let produtos: RepositorioProdutos;
 
-    // ...
-
-    // Caso contrário, usa a implementação padrão com localStorage + API (Híbrido)
-    const local = new RepositorioProdutosLocalStorage();
-    const remoto = new RepositorioProdutosHttp();
+    if (usarLocalStorage && usarBancoPostgres) {
+      // Comportamento padrão: OfflineFirst (cache local + sincronização remota)
+      const local = new RepositorioProdutosLocalStorage();
+      const remoto = new RepositorioProdutosHttp();
+      produtos = new RepositorioProdutosOfflineFirst(local, remoto);
+    } else if (usarLocalStorage && !usarBancoPostgres) {
+      // Apenas localStorage — sem sincronização remota (modo totalmente offline)
+      console.warn('🚫 [Repositório] Banco PostgreSQL DESATIVADO. Usando apenas localStorage.');
+      produtos = new RepositorioProdutosLocalStorage();
+    } else if (!usarLocalStorage && usarBancoPostgres) {
+      // Apenas PostgreSQL — sem cache local (cada busca vai na API)
+      console.warn('🚫 [Repositório] LocalStorage DESATIVADO. Usando apenas PostgreSQL.');
+      produtos = new RepositorioProdutosHttp();
+    } else {
+      // Ambos desativados — fallback para localStorage (garante que o app funciona)
+      console.error('⚠️ [Repositório] Ambos os storages desativados! Usando localStorage como fallback.');
+      produtos = new RepositorioProdutosLocalStorage();
+    }
 
     return {
-      produtos: new RepositorioProdutosOfflineFirst(local, remoto),
+      produtos,
       carrinho: new RepositorioCarrinhoLocalStorage(),
       historico: new RepositorioHistoricoLocalStorage(),
     };
