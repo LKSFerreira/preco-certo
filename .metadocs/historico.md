@@ -116,6 +116,13 @@ Ao escanear um código `789...`:
 *   **Feature Flags (Storage):** Adicionadas `VITE_USAR_LOCALSTORAGE` e `VITE_USAR_BANCO_POSTGRES` seguindo o mesmo padrão das flags de APIs externas. Composição condicional dos repositórios em `ContextoRepositorios.tsx`.
 *   **Logs de OCR:** Dados extraídos pela IA agora são exibidos no console seguindo o mesmo padrão das APIs (`✅ [ORIGEM: IA_OCR]`).
 
+### 19/02: Migração de Armazenamento → IndexedDB 📦
+*   **Incidente:** Estouro do `localStorage` em produção (~7 itens com foto Base64 = crash). Documentado em `postmortem_estouro_localstorage.md`.
+*   **Solução:** Migração do catálogo de produtos para `IndexedDB` (store único com keyPath `codigo_barras`). Imagens Base64 são convertidas para `Blob` (binário) na escrita, e para `objectURL` na leitura — app não precisa saber que usa IndexedDB.
+*   **Arquitetura:** Carrinho e flags permanecem no `localStorage` (~5KB). Catálogo e imagens vão para IndexedDB (GBs). Schema do PostgreSQL não foi alterado.
+*   **Repositório:** Criado `RepositorioProdutosIndexedDB` (`repositorios/indexed-db.ts`) substituindo `RepositorioProdutosLocalStorage` em `ContextoRepositorios.tsx`.
+*   **Débitos Técnicos Registrados:** Token premium em texto puro no localStorage (risco de XSS); fila de retry para sync offline.
+
 ---
 
 ## 6. Padrões de Desenvolvimento (Para o Agente)
