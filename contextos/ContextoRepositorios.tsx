@@ -28,10 +28,10 @@
 import React, { createContext, useContext, useMemo, ReactNode } from 'react';
 import { Repositorios, RepositorioProdutos } from '../repositorios/tipos-repositorio';
 import {
-  RepositorioProdutosLocalStorage,
   RepositorioCarrinhoLocalStorage,
   RepositorioHistoricoLocalStorage
 } from '../repositorios/local-storage';
+import { RepositorioProdutosIndexedDB } from '../repositorios/indexed-db';
 import { RepositorioProdutosOfflineFirst } from '../repositorios/offline-first';
 import { RepositorioProdutosHttp } from '../repositorios/http';
 
@@ -89,22 +89,22 @@ export function ProvedorRepositorios({
     let produtos: RepositorioProdutos;
 
     if (usarLocalStorage && usarBancoPostgres) {
-      // Comportamento padrão: OfflineFirst (cache local + sincronização remota)
-      const local = new RepositorioProdutosLocalStorage();
+      // Comportamento padrão: OfflineFirst (cache local IndexedDB + sincronização remota)
+      const local = new RepositorioProdutosIndexedDB();
       const remoto = new RepositorioProdutosHttp();
       produtos = new RepositorioProdutosOfflineFirst(local, remoto);
     } else if (usarLocalStorage && !usarBancoPostgres) {
-      // Apenas localStorage — sem sincronização remota (modo totalmente offline)
-      console.warn('🚫 [Repositório] Banco PostgreSQL DESATIVADO. Usando apenas localStorage.');
-      produtos = new RepositorioProdutosLocalStorage();
+      // Apenas IndexedDB — sem sincronização remota (modo totalmente offline)
+      console.warn('🚫 [Repositório] Banco PostgreSQL DESATIVADO. Usando apenas IndexedDB.');
+      produtos = new RepositorioProdutosIndexedDB();
     } else if (!usarLocalStorage && usarBancoPostgres) {
       // Apenas PostgreSQL — sem cache local (cada busca vai na API)
-      console.warn('🚫 [Repositório] LocalStorage DESATIVADO. Usando apenas PostgreSQL.');
+      console.warn('🚫 [Repositório] Cache local DESATIVADO. Usando apenas PostgreSQL.');
       produtos = new RepositorioProdutosHttp();
     } else {
-      // Ambos desativados — fallback para localStorage (garante que o app funciona)
-      console.error('⚠️ [Repositório] Ambos os storages desativados! Usando localStorage como fallback.');
-      produtos = new RepositorioProdutosLocalStorage();
+      // Ambos desativados — fallback para IndexedDB (garante que o app funciona)
+      console.error('⚠️ [Repositório] Ambos os storages desativados! Usando IndexedDB como fallback.');
+      produtos = new RepositorioProdutosIndexedDB();
     }
 
     return {
