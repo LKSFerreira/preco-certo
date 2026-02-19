@@ -119,8 +119,9 @@
 > [!IMPORTANT]
 > **Arquitetura de Armazenamento:**
 > - **Banco de Dados (PostgreSQL/Supabase):** Produtos (catálogo compartilhado)
-> - **localStorage:** Catálogo local (cache) + Carrinho (apenas referências: codigo_barras + quantidade)
-> - **Imagens:** URLs externas quando disponíveis, Base64 comprimido (400px, 70% qualidade) para fotos manuais
+> - **IndexedDB:** Catálogo local (cache) com imagens como Blob (binário)
+> - **localStorage:** Carrinho (apenas referências: codigo_barras + quantidade) + flags de UI
+> - **Imagens:** URLs externas quando disponíveis, Blob binário para fotos manuais
 
 ---
 
@@ -226,7 +227,7 @@
 > **Objetivo:** Implementação segura do banco de produção, seguindo o guia `supabase_learning.md`.
 > **Foco:** Segurança (RLS), Custos (Free Tier) e Performance.
 
-- [ ] **2.5.1** Criar documentação `supabase_learning.md` (Checklist de Segurança/Custos)
+- [x] **2.5.1** Criar documentação `supabase_learning.md` (Checklist de Segurança/Custos)
 - [ ] **2.5.2** Configurar Projeto Supabase (Região SP, Spend Cap Ativo)
 - [ ] **2.5.3** Configurar Migrations e Seeds (Réplica do Schema Local)
 - [ ] **2.5.4** Implementar `RepositorioProdutosSupabase` (SDK Oficial)
@@ -285,7 +286,7 @@
 > **Objetivo:** Experiência completa de app
 > **Duração:** 2 semanas
 
-- [ ] **4.1** Scanner real com `html5-qrcode` (Adiantado para MVP)
+- [x] **4.1** Scanner real com `html5-qrcode` (Adiantado para Fase 0.5.6)
 - [ ] **4.2** Histórico de compras
 - [ ] **4.3** PWA (instalável, offline básico)
 - [ ] **4.4** Pesquisa de produtos
