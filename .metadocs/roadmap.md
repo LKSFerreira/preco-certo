@@ -145,6 +145,7 @@
 - [x] **0.8.10** Criar função de reset completo do localStorage (limpa tutorial, carrinho, catálogo, DicaFoto)
 - [x] **0.8.11** Refatoração Offline First: Priorizar busca no Banco (Remoto) antes de API Externa.
 
+
 **Critério de sucesso:** Escanear produto desconhecido e ver cascata de busca funcionar.
 
 
@@ -308,7 +309,7 @@
 
 ---
 
-## Débitos Técnicos 🔴
+## Fase 5: Débitos Técnicos 🔴
 
 ### 🟡 Qualidade de Código
 - [ ] **Lint:** Configurar ESLint + Prettier (Padronização de código)
@@ -320,3 +321,10 @@
 ### 🟢 Limpeza
 - [ ] **Cleanup:** Remover códigos mortos (delays de debug em `App.tsx`) e arquivos não utilizados
 - [ ] Otimizar bundle size
+
+### 🟡 Casos de uso
+- [ ] **5.1** Criar Seed de 5 Itens Genéricos (GENERICO-01 a 05) para casos de falha/indisponibilidade:
+    - **Câmera Quebrada/Indisponível:** Usuário não consegue tirar foto.
+    - **Sem Rótulo:** Produto sem informações legíveis.
+    - **A Granel/Feira:** Produtos pesados na hora sem código de barras.
+    - **Agilidade:** Usuário quer apenas somar o preço sem cadastrar detalhes.
