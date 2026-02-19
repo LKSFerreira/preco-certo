@@ -236,10 +236,10 @@
 
 ---
 
-### Migração dos Repositórios (Legado/Refatorado)
+### Migração dos Repositórios (Continuação da Fase 2)
 
 - [x] **2.4** Implementar `RepositorioProdutosPostgres` (via RepoHibrido e API Serverless)
-- [ ] **2.5** Implementar `RepositorioCarrinhoPostgres`
+- [ ] **2.5** Implementar `RepositorioCarrinhoPostgres` (quando houver autenticação — hoje o carrinho é local-only)
 - [x] **2.6** Criar script de migração de dados (`scripts/init_db.py`)
 - [x] **2.7** Switch automático baseado em ambiente (RepoOfflineFirst)
 
@@ -287,8 +287,8 @@
 > **Duração:** 2 semanas
 
 - [x] **4.1** Scanner real com `html5-qrcode` (Adiantado para Fase 0.5.6)
-- [ ] **4.2** Histórico de compras
-- [ ] **4.3** PWA (instalável, offline básico)
+- [ ] **4.2** Histórico de compras (tela dedicada com compras anteriores — feature Premium)
+- [ ] **4.3** PWA completo (prompt "Adicionar à tela inicial" + cache offline via Service Worker)
 - [ ] **4.4** Pesquisa de produtos
 - [ ] **4.5** Editar/Excluir produtos do catálogo
 
@@ -319,7 +319,7 @@
 ### 🔴 Segurança
 - [ ] **Token em texto puro:** O token premium é salvo como string pura no `localStorage`, vulnerável a roubo via XSS, extensões maliciosas ou acesso físico ao dispositivo. Necessário salvar em formato hash ou usar mecanismo seguro (HttpOnly cookie, Web Crypto API, ou ofuscação). Ref: [monetizacao.md](.metadocs/monetizacao.md)
 
-### � Armazenamento (Migração localStorage → IndexedDB)
+### 🟢 Armazenamento (Migração localStorage → IndexedDB)
 - [x] **Catálogo no IndexedDB:** Migrar o catálogo de produtos do `localStorage` (5MB) para `IndexedDB` (GBs). Imagens salvas como `Blob` (binário) em store único. Ref: [postmortem_estouro_localstorage.md](.metadocs/postmortem_estouro_localstorage.md)
 
 ### 🔴 Estabilidade (Offline First)
