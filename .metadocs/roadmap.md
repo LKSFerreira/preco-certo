@@ -315,6 +315,12 @@
 - [ ] **Lint:** Configurar ESLint + Prettier (Padronização de código)
 - [ ] **Testes:** Adicionar testes automatizados com Vitest
 
+### 🔴 Segurança
+- [ ] **Token em texto puro:** O token premium é salvo como string pura no `localStorage`, vulnerável a roubo via XSS, extensões maliciosas ou acesso físico ao dispositivo. Necessário salvar em formato hash ou usar mecanismo seguro (HttpOnly cookie, Web Crypto API, ou ofuscação). Ref: [monetizacao.md](.metadocs/monetizacao.md)
+
+### 🔴 Armazenamento (Migração localStorage → IndexedDB)
+- [ ] **Catálogo no IndexedDB:** Migrar o catálogo de produtos do `localStorage` (5MB) para `IndexedDB` (GBs). Imagens devem ser salvas como `Blob` (binário) em store separado. Ref: [postmortem_estouro_localstorage.md](.metadocs/postmortem_estouro_localstorage.md)
+
 ### 🔴 Estabilidade (Offline First)
 - [ ] **SyncQueue:** Implementar fila de retry para salvar dados quando offline (`repositorios/offline-first.ts`)
 
