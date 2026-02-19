@@ -109,6 +109,13 @@ Ao escanear um código `789...`:
 *   **Integridade de Dados:** Removido salvamento automático de dados crus de APIs externas. Sistema redireciona para formulário manual, prevenindo erros de validação ("Dados inválidos").
 *   **UX:** Corrigido bug visual onde produtos vindos do banco não apareciam no carrinho por falta de atualização de estado React.
 
+### 19/02: Validação Dinâmica, Fluxo OCR-First e Feature Flags 🎯
+*   **Validação Dinâmica (REGEX):** `REGEX_UNIDADE` agora é gerada automaticamente a partir do `UNIT_MAP` (fonte única de verdade). Adicionadas variações pt-BR: `peça`, `pça`, `pças`, `pçs`, `pcs`, `pecas`.
+*   **Fluxo OCR-First:** Formulário de produto abre com campos desabilitados (Fase Foto). Usuário é incentivado a tirar foto do rótulo antes de digitar. Após OCR (sucesso ou falha), campos são liberados.
+*   **Botão Premium (Preencher Manualmente):** Implementado com cadeado 🔒, pronto para desbloquear quando sistema premium estiver ativo. Não regride a UX atual.
+*   **Feature Flags (Storage):** Adicionadas `VITE_USAR_LOCALSTORAGE` e `VITE_USAR_BANCO_POSTGRES` seguindo o mesmo padrão das flags de APIs externas. Composição condicional dos repositórios em `ContextoRepositorios.tsx`.
+*   **Logs de OCR:** Dados extraídos pela IA agora são exibidos no console seguindo o mesmo padrão das APIs (`✅ [ORIGEM: IA_OCR]`).
+
 ---
 
 ## 6. Padrões de Desenvolvimento (Para o Agente)
