@@ -45,6 +45,22 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
   // Flag para controlar inicialização única
   const [inicializado, setInicializado] = useState(false);
 
+  // Fluxo OCR-First: campos bloqueados até o usuário tirar foto
+  // 'foto' = aguardando foto (campos texto desabilitados)
+  // 'dados' = foto tirada, campos liberados para edição
+  const faseInicial = (): 'foto' | 'dados' => {
+    // Se estamos editando um produto que já tem imagem, pula direto para dados
+    if (produtoExistente?.imagem) return 'dados';
+    // Se a API retornou imagem, pula direto para dados
+    if (dadosPrePreenchidos?.imagem) return 'dados';
+    // Caso contrário, exige foto primeiro
+    return 'foto';
+  };
+  const [faseFormulario, setFaseFormulario] = useState<'foto' | 'dados'>(faseInicial);
+
+  // Campos de texto ficam bloqueados na fase 'foto' ou durante análise IA
+  const camposTextoBloqueados = faseFormulario === 'foto' || analisandoIA;
+
   // Estado para exibir TutorialFoto contextual
   const [mostraTutorialFoto, setMostraTutorialFoto] = useState(false);
   const [inputPendente, setInputPendente] = useState<HTMLInputElement | null>(null);
@@ -160,15 +176,21 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
     const precisaOcr = !descricao || !marca;
 
     if (!precisaOcr) {
+      // Foto adicionada, dados completos — libera campos e vibra confirmação
+      setFaseFormulario('dados');
       if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
       return;
     }
 
+    // Tenta preencher via OCR antes de liberar campos para o usuário
     setAnalisandoIA(true);
     setFocoInicialFeito(false); // Permite refocar após IA preencher
     try {
       const dadosExtraidos = await extrairDadosDoRotulo(fotoRecortadaBase64);
       if (dadosExtraidos) {
+        console.log('✅ [ORIGEM: IA_OCR] Produto lido via IA!');
+        console.log('📦 Dados:', dadosExtraidos);
+
         if (dadosExtraidos.descricao) setDescricao(dadosExtraidos.descricao);
         if (dadosExtraidos.marca) setMarca(dadosExtraidos.marca);
         if (dadosExtraidos.tamanho) setTamanho(dadosExtraidos.tamanho);
@@ -179,6 +201,8 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
       setErro(`Não foi possível ler o rótulo automaticamente, mas a foto foi salva.`);
     } finally {
       setAnalisandoIA(false);
+      // Sempre libera os campos após tentativa de OCR (sucesso ou falha)
+      setFaseFormulario('dados');
     }
   };
 
@@ -251,7 +275,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
     }
 
     if (!REGEX_UNIDADE.test(tamanho)) {
-      setErro('Tamanho inválido (Ex: 1L, 500g).');
+      setErro('Tamanho inválido. Ex: 1L, 500g, 3un, 1,5kg');
       setCampoComErro('tamanho');
       refTamanho.current?.focus();
       return;
@@ -467,7 +491,37 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
             </span>
           </div>
 
-          <div className="flex flex-col gap-3 flex-1">
+          {/* Banner OCR-First: solicita foto antes de digitação manual */}
+          {faseFormulario === 'foto' && !analisandoIA && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 animate-fade-in">
+              <div className="flex items-start gap-2">
+                <i className="fas fa-camera text-blue-500 mt-0.5"></i>
+                <div className="flex-1">
+                  <p className="text-blue-800 text-sm font-medium">
+                    Tire uma foto do rótulo para preencher automaticamente
+                  </p>
+                  <p className="text-blue-600 text-xs mt-0.5">
+                    Os campos serão preenchidos com IA após a foto.
+                  </p>
+                </div>
+              </div>
+              {/* Botão premium-only — bloqueado até sistema premium estar ativo */}
+              <button
+                type="button"
+                onClick={() => {
+                  // TODO: Quando premium estiver implementado, verificar token ativo aqui
+                  // Por enquanto, sempre mostra mensagem de funcionalidade premium
+                  setErro('🔒 Preenchimento manual sem foto disponível no plano Premium.');
+                }}
+                className="mt-2 w-full text-xs text-gray-400 flex items-center justify-center gap-1 py-1.5 rounded border border-gray-200 bg-gray-50 cursor-not-allowed transition-colors hover:bg-gray-100"
+              >
+                <i className="fas fa-lock text-[10px]"></i>
+                Preencher manualmente
+              </button>
+            </div>
+          )}
+
+          <div className={`flex flex-col gap-3 flex-1 transition-opacity duration-300 ${camposTextoBloqueados ? 'opacity-50' : 'opacity-100'}`}>
             <div>
               <label className={classeLabel}>Produto</label>
               <input
@@ -481,6 +535,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                   }`}
                 placeholder="Ex: Coca-Cola 350ml"
                 onFocus={(e) => e.target.select()}
+                disabled={camposTextoBloqueados}
               />
             </div>
             <div className="flex gap-3">
@@ -501,7 +556,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                   className={`${classeInput} ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${campoComErro === 'marca' ? 'border-red-500 ring-2 ring-red-400' : ''
                     } ${camposFaltantes.includes('marca') && !marca ? 'border-amber-400 ring-1 ring-amber-300' : ''}`}
                   placeholder="Ex: Longa Vida"
-                  disabled={analisandoIA}
+                  disabled={camposTextoBloqueados}
                 />
               </div>
               <div className="flex-[2]">
@@ -521,9 +576,9 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                   className={`${classeInput} ${tamanho && !REGEX_UNIDADE.test(tamanho) ? 'border-red-400 text-red-100' : ''
                     } ${analisandoIA ? 'animate-pulse bg-gray-600' : ''} ${campoComErro === 'tamanho' ? 'border-red-500 ring-2 ring-red-400' : ''
                     } ${camposFaltantes.includes('tamanho') && !tamanho ? 'border-amber-400 ring-1 ring-amber-300' : ''}`}
-                  placeholder="Ex: 1L"
+                  placeholder="Ex: 1L, 500g, 3un"
                   onFocus={(e) => e.target.select()}
-                  disabled={analisandoIA}
+                  disabled={camposTextoBloqueados}
                 />
               </div>
             </div>
