@@ -163,9 +163,12 @@ export const comprimirImagemBase64 = async (
   });
 };
 
-const UNIT_MAP: Record<string, string> = {
+// Mapa de normalização de unidades — FONTE ÚNICA DE VERDADE
+// A REGEX_UNIDADE em constants.ts é derivada automaticamente das chaves deste mapa.
+// Ao adicionar uma nova unidade aqui, a validação do formulário a aceita automaticamente.
+export const UNIT_MAP: Record<string, string> = {
   // --- VOLUME ---
-  // Litros
+  // Litros (L maiúsculo por padrão SI)
   'l': 'L', 'lt': 'L', 'lts': 'L', 'litro': 'L', 'litros': 'L',
   'L': 'L', 'LT': 'L', 'LTS': 'L',
   // Mililitros
@@ -183,21 +186,26 @@ const UNIT_MAP: Record<string, string> = {
   'mg': 'mg', 'mgs': 'mg', 'miligrama': 'mg', 'miligramas': 'mg',
 
   // --- UNIDADES / CONTAGEM ---
-  // Unidade
+  // Unidade (pt-BR + en)
   'u': 'un', 'un': 'un', 'und': 'un', 'uni': 'un', 'unid': 'un',
-  'unidade': 'un', 'unidades': 'un', 'unis': 'un', 'pç': 'un', 'pca': 'un', 'peca': 'un',
+  'unidade': 'un', 'unidades': 'un', 'unis': 'un',
   'U': 'un', 'UN': 'un',
+  // Peças — variações pt-BR (público-alvo principal)
+  'pç': 'un', 'pça': 'un', 'pças': 'un', 'pçs': 'un',
+  'pca': 'un', 'peca': 'un', 'peça': 'un', 'peças': 'un', 'pecas': 'un',
+  // Peças — variações en (APIs externas como Cosmos retornam "PCS")
+  'pcs': 'un', 'pc': 'un', 'piece': 'un', 'pieces': 'un',
   // Dúzia
   'dz': 'dz', 'duzia': 'dz', 'dúzia': 'dz',
 
-  // --- EMBALAGENS (Normalizar para tipos padrão ajuda na categorização) ---
+  // --- EMBALAGENS ---
   // Caixa
   'cx': 'cx', 'cxa': 'cx', 'caixa': 'cx', 'caixas': 'cx', 'box': 'cx',
   // Pacote
-  'pct': 'pct', 'pcte': 'pct', 'pacote': 'pct', 'pacotes': 'pct', 'pc': 'pct', 'pack': 'pct',
+  'pct': 'pct', 'pcte': 'pct', 'pacote': 'pct', 'pacotes': 'pct', 'pack': 'pct',
   // Fardo
   'fd': 'fd', 'fdo': 'fd', 'fardo': 'fd',
-  // Lata (opcional, as vezes útil normalizar para UN ou manter LATA)
+  // Lata
   'lata': 'lata', 'latas': 'lata',
   // Garrafa
   'gf': 'gf', 'gfa': 'gf', 'garrafa': 'gf', 'garrafas': 'gf',

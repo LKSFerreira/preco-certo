@@ -1,6 +1,17 @@
-// Regex para validar unidades de medida (Ex: 1L, 500ml, 2kg, 1,5L)
-// Aceita vírgula (pt-BR) ou ponto como separador decimal
-export const REGEX_UNIDADE = /^\d+([.,]\d+)?\s?(L|ml|cm|mm|m|mg|g|kg|cm²)$/i;
+// Regex de validação de unidades — GERADA AUTOMATICAMENTE a partir do UNIT_MAP
+// Ao adicionar uma nova unidade ao mapa em utilitarios.ts, ela é aceita aqui automaticamente.
+import { UNIT_MAP } from './services/utilitarios';
+
+// Ordena chaves por comprimento decrescente para evitar match parcial
+// Exemplo: "quilograma" antes de "kg" antes de "k", "ml" antes de "m"
+const unidadesAceitas = Object.keys(UNIT_MAP)
+  .sort((a, b) => b.length - a.length)
+  .map(u => u.replace(/[.]/g, '\\.'))
+  .join('|');
+
+export const REGEX_UNIDADE = new RegExp(
+  `^\\d+([.,]\\d+)?\\s?(${unidadesAceitas})$`, 'i'
+);
 
 // Chave para persistência no LocalStorage
 export const CHAVE_STORAGE_CARRINHO = 'sem_susto_carrinho_v1';
