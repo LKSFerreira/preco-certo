@@ -188,32 +188,7 @@
 
 ---
 
-## Fase 0.9: Configuração do Supabase 🗄️
-> **Objetivo:** Banco de dados na nuvem configurado e populado
-> **Duração:** 1 dia
 
-- [ ] **0.9.1** Criar conta/projeto no Supabase (região: São Paulo)
-- [ ] **0.9.2** Criar tabela conforme schema definido na Fase 0.7
-- [ ] **0.9.3** Criar script de importação do CSV
-- [ ] **0.9.4** Executar importação dos 31k produtos
-- [ ] **0.9.5** Validar índices e performance de busca
-
-**Critério de sucesso:** Query por GTIN retornando em <200ms.
-
----
-
-## Fase 0.10: Integração Supabase + Aplicação 🔌
-> **Objetivo:** Conectar frontend ao banco de dados
-> **Duração:** 1 dia
-
-- [ ] **0.10.1** Instalar `@supabase/supabase-js`
-- [ ] **0.10.2** Criar `RepositorioProdutosSupabase`
-- [ ] **0.10.3** Integrar repositório no fluxo de busca (posição 2 da cascata)
-- [ ] **0.10.4** Implementar salvamento de novos produtos no Supabase
-
-**Critério de sucesso:** Produto cadastrado aparece para outros usuários.
-
----
 
 ## Fase 1: Deploy Funcional na Vercel ✅
 
@@ -244,7 +219,22 @@
 - [ ] **2.2** PostgreSQL produção (Supabase Database ou Neon.tech)
 - [ ] **2.3** Variáveis de ambiente separadas (`DATABASE_URL_DEV`, `DATABASE_URL_PROD`)
 
-### Migração dos Repositórios
+---
+
+## Fase 2.5: Migração para Produção (Supabase) ⚡ 
+> **Objetivo:** Implementação segura do banco de produção, seguindo o guia `supabase_learning.md`.
+> **Foco:** Segurança (RLS), Custos (Free Tier) e Performance.
+
+- [ ] **2.5.1** Criar documentação `supabase_learning.md` (Checklist de Segurança/Custos)
+- [ ] **2.5.2** Configurar Projeto Supabase (Região SP, Spend Cap Ativo)
+- [ ] **2.5.3** Configurar Migrations e Seeds (Réplica do Schema Local)
+- [ ] **2.5.4** Implementar `RepositorioProdutosSupabase` (SDK Oficial)
+- [ ] **2.5.5** Configurar RLS (Row Level Security) para proteção de dados
+- [ ] **2.5.6** Switch de Repositório (Local -> Supabase) via Variável de Ambiente
+
+---
+
+### Migração dos Repositórios (Legado/Refatorado)
 
 - [x] **2.4** Implementar `RepositorioProdutosPostgres` (via RepoHibrido e API Serverless)
 - [ ] **2.5** Implementar `RepositorioCarrinhoPostgres`
@@ -320,9 +310,13 @@
 
 ## Débitos Técnicos 🔴
 
-- [ ] Configurar ESLint + Prettier
-- [ ] Adicionar testes com Vitest
+### 🟡 Qualidade de Código
+- [ ] **Lint:** Configurar ESLint + Prettier (Padronização de código)
+- [ ] **Testes:** Adicionar testes automatizados com Vitest
+
+### 🔴 Estabilidade (Offline First)
 - [ ] **SyncQueue:** Implementar fila de retry para salvar dados quando offline (`repositorios/offline-first.ts`)
-- [ ] **Limpeza:** Remover códigos mortos e delays de debug em `App.tsx`
-- [ ] Remover arquivos desnecessários
+
+### 🟢 Limpeza
+- [ ] **Cleanup:** Remover códigos mortos (delays de debug em `App.tsx`) e arquivos não utilizados
 - [ ] Otimizar bundle size
