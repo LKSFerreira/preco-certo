@@ -41,7 +41,8 @@ export function TelaAtivarToken({ tokenObrigatorioUrl, aoVoltar, aoIrParaDashboa
 
         try {
             // Fingerprint Mockado (Avançado no futuro: pegar Canvas ou lib fpjs)
-            const mockFingerprint = typeof navigator !== 'undefined' ? `${navigator.userAgent}-${navigator.language}` : `dispositivo-${Date.now()}`;
+            const rawFingerprint = typeof navigator !== 'undefined' ? `${navigator.userAgent}-${navigator.language}` : `dispositivo-${Date.now()}`;
+            const mockFingerprint = rawFingerprint.substring(0, 255);
 
             const resposta = await fetch('/api/tokens/ativar', {
                 method: 'POST',
@@ -162,7 +163,7 @@ export function TelaAtivarToken({ tokenObrigatorioUrl, aoVoltar, aoIrParaDashboa
                 {status !== 'SUCESSO' && (
                     <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
                         <p className="text-[11px] text-gray-400 max-w-[200px]">
-                            Lembre-se: O token é pessoal e garante o limite de IA.
+                            Lembre-se: O token é pessoal e intransferível, com limite em 2 dispositivos.
                         </p>
                         <button onClick={aoVoltar} className="text-xs font-bold text-gray-500 hover:text-gray-800 transition-colors">Voltar</button>
                     </div>

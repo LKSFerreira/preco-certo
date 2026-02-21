@@ -46,8 +46,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ erro: 'Formato de token inválido' });
     }
 
-    if (!fingerprint || typeof fingerprint !== 'string' || fingerprint.length > 64) {
-        return res.status(400).json({ erro: 'Campo "fingerprint" inválido (máx 64 caracteres)' });
+    if (!fingerprint || typeof fingerprint !== 'string' || fingerprint.length > 255) {
+        return res.status(400).json({ erro: 'Campo "fingerprint" inválido (máx 255 caracteres)' });
     }
 
     const tokenHash = calcularHash(token);
