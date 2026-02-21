@@ -29,7 +29,7 @@ function criarReqMock(opcoes: {
         body: opcoes.body || {},
         query: opcoes.query || {},
         headers: {
-            'x-forwarded-for': '127.0.0.1',
+            'x-forwarded-for': `127.0.0.${Math.floor(Math.random() * 255)}`,
             'user-agent': 'teste-local',
             ...opcoes.headers,
         },
@@ -89,7 +89,7 @@ async function executarTestes() {
         const req = criarReqMock({
             method: 'POST',
             body: { plano: 'lanche' },
-            headers: { 'x-api-secret': 'segredo_teste_local' },
+            headers: { 'x-api-secret': process.env.API_SECRET },
         });
         const res = criarResMock();
         await gerarHandler(req, res);
@@ -111,7 +111,7 @@ async function executarTestes() {
         const req = criarReqMock({
             method: 'POST',
             body: { plano: 'premium_vip_gold' },
-            headers: { 'x-api-secret': 'segredo_teste_local' },
+            headers: { 'x-api-secret': process.env.API_SECRET },
         });
         const res = criarResMock();
         await gerarHandler(req, res);

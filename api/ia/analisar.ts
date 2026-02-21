@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { validarAcessoPremium } from '../_lib/auth';
 
 /**
  * Proxy serverless para a API Groq (Meta Llama).
@@ -31,6 +32,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!['imagem', 'texto'].includes(tipo)) {
         return res.status(400).json({ erro: 'Tipo deve ser "imagem" ou "texto"' });
     }
+
+    // Validação Premium (Protegendo a API)
+    const tokenHash = req.headers['x-premium-token'] as string;
+
+    if (tokenHash) {
+        const isPremium = await validarAcessoPremium(tokenHash);
+        if (!isPremium) {
+            return res.status(403).json({ erro: 'Token Premium inválido ou expirado.' });
+        }
+    }
+    // Obs: Usuários Free (tokenHash undefined) passam direto pois o bloqueio de cota de 10 chamadas 
+    // está atualmente implementado de forma Statefull no cliente/localstorage. 
+    // Em produção estrita, o ideal é o Tracking por IP aqui mesmo no Backend.
 
     // Modelos Groq (Free Tier)
     const MODELO_VISION = 'meta-llama/llama-4-scout-17b-16e-instruct';

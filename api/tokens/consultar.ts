@@ -18,18 +18,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(405).json({ erro: 'Método não permitido' });
     }
 
-    // Extrai token da query string
-    const token = req.query.token as string;
+    // Extrai o Token Hash diretamente do Header injetado pelo Frontend
+    let tokenHash = req.headers['x-premium-token'] as string;
 
-    if (!token) {
-        return res.status(400).json({ erro: 'Parâmetro "token" é obrigatório' });
+    // Fallback para ferramentas de debug ou chamadas via query (Legado)
+    if (!tokenHash && req.query.token) {
+        const tokenRaw = req.query.token as string;
+        if (!formatoTokenEhValido(tokenRaw)) {
+            return res.status(400).json({ erro: 'Formato de token inválido' });
+        }
+        tokenHash = calcularHash(tokenRaw);
     }
 
-    if (!formatoTokenEhValido(token)) {
-        return res.status(400).json({ erro: 'Formato de token inválido' });
+    if (!tokenHash) {
+        return res.status(400).json({ erro: 'Header x-premium-token não fornecido' });
     }
-
-    const tokenHash = calcularHash(token);
 
     try {
         // Busca token no banco

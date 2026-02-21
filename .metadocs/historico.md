@@ -121,7 +121,13 @@ Ao escanear um código `789...`:
 *   **Solução:** Migração do catálogo de produtos para `IndexedDB` (store único com keyPath `codigo_barras`). Imagens Base64 são convertidas para `Blob` (binário) na escrita, e para `objectURL` na leitura — app não precisa saber que usa IndexedDB.
 *   **Arquitetura:** Carrinho e flags permanecem no `localStorage` (~5KB). Catálogo e imagens vão para IndexedDB (GBs). Schema do PostgreSQL não foi alterado.
 *   **Repositório:** Criado `RepositorioProdutosIndexedDB` (`repositorios/indexed-db.ts`) substituindo `RepositorioProdutosLocalStorage` em `ContextoRepositorios.tsx`.
-*   **Débitos Técnicos Registrados:** Token premium em texto puro no localStorage (risco de XSS); fila de retry para sync offline.
+*   **Débitos Técnicos Registrados:** fila de retry para sync offline. (Token premium corrigido).
+
+### 21/02: [Segurança Front-end](./walkthrough/seguranca_front-end.md) (Client-Side Hashing) 🛡️
+*   **Problema:** Token premium era armazenado em texto puro, sujeito a vazamento e interceptação/cópia.
+*   **Solução:** Implementado ofuscação com `SHA-256` via Web Crypto nativa (`crypto.subtle`) no Front-end após a validação. O `localStorage` tem apenas `sem_susto_premium_hash`.
+*   **Arquitetura Strict:** O novo `RepositorioPremium` intercepta as requisições (Groq API, Consultas) e despacha usando headers `X-Premium-Token`. 
+*   **Design Serverless:** Lógicas de autorização extraídas do _Proxy Groq_ (`analisar.ts`) e encapsuladas na abstração `api/_lib/auth.ts`, respeitando _Single Responsibility Principle_.
 
 ---
 

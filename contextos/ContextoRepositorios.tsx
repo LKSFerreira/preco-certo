@@ -34,6 +34,7 @@ import {
 import { RepositorioProdutosIndexedDB } from '../repositorios/indexed-db';
 import { RepositorioProdutosOfflineFirst } from '../repositorios/offline-first';
 import { RepositorioProdutosPostgres } from '../repositorios/postgres';
+import { RepositorioPremiumLocalStorage } from '../repositorios/premium';
 
 /**
  * Contexto que armazena a instância dos repositórios.
@@ -111,6 +112,7 @@ export function ProvedorRepositorios({
       produtos,
       carrinho: new RepositorioCarrinhoLocalStorage(),
       historico: new RepositorioHistoricoLocalStorage(),
+      premium: new RepositorioPremiumLocalStorage(),
     };
   }, [repositoriosCustomizados]);
 

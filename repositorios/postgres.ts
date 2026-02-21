@@ -41,42 +41,44 @@ export class RepositorioProdutosPostgres implements RepositorioProdutos {
                 console.error('[Database Postgres] Erro ao buscar:', erro);
                 return null; // Fallback seguro
             }
+            throw erro;
         }
-
-    async listarTodos(): Promise < Produto[] > {
-            // Não implementado via API por questões de performance/paginação
-            console.warn('[Database Postgres] ⚠️ listarTodos não é suportado via API completa.');
-            return [];
-        }
-
-    async salvar(produto: Produto): Promise < void> {
-            try {
-                const response = await fetch(`/api/produtos/${produto.codigo_barras}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        descricao: produto.descricao,
-                        marca: produto.marca,
-                        tamanho: produto.tamanho,
-                        preco_estimado: produto.preco_estimado,
-                        imagem: produto.imagem
-                    }),
-                });
-
-                if(!response.ok) {
-            const erro = await response.json();
-            throw new Error(erro.erro || 'Erro ao salvar na API');
-        }
-    } catch(erro: any) {
-        console.error('[Database Postgres] ❌ Erro ao salvar:', erro);
-        throw erro;
     }
-}
 
-    async remover(gtin: string): Promise < void> {
-    console.warn('[Database Postgres] ⚠️ remover não implementado.');
-    return Promise.resolve();
-}
+    async listarTodos(): Promise<Produto[]> {
+        // Não implementado via API por questões de performance/paginação
+        console.warn('[Database Postgres] ⚠️ listarTodos não é suportado via API completa.');
+        return [];
+    }
+
+    async salvar(produto: Produto): Promise<void> {
+        try {
+            const response = await fetch(`/api/produtos/${produto.codigo_barras}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    descricao: produto.descricao,
+                    marca: produto.marca,
+                    tamanho: produto.tamanho,
+                    preco_estimado: produto.preco_estimado,
+                    imagem: produto.imagem
+                }),
+            });
+
+            if (!response.ok) {
+                const erro = await response.json();
+                throw new Error(erro.erro || 'Erro ao salvar na API');
+            }
+        } catch (erro: any) {
+            console.error('[Database Postgres] ❌ Erro ao salvar:', erro);
+            throw erro;
+        }
+    }
+
+    async remover(gtin: string): Promise<void> {
+        console.warn('[Database Postgres] ⚠️ remover não implementado.');
+        return Promise.resolve();
+    }
 }

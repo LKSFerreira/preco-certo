@@ -1,6 +1,7 @@
 import { ServicoLeituraRotulo, DadosProdutoExtraidos } from "./tipos";
 import { logger } from "../logger";
 import { formatarTitulo } from "../utilitarios";
+import { RepositorioPremiumLocalStorage } from "../../repositorios/premium";
 
 /**
  * Serviço de IA via proxy serverless.
@@ -21,9 +22,15 @@ export class ServicoIAGroq implements ServicoLeituraRotulo {
     try {
       logger.info("📤 Enviando imagem para proxy IA...");
 
+      const premium = new RepositorioPremiumLocalStorage();
+      const tokenHash = premium.obterTokenHash();
+
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (tokenHash) headers['X-Premium-Token'] = tokenHash;
+
       const resposta = await fetch('/api/ia/analisar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           tipo: 'imagem',
           conteudo: imagemBase64,
@@ -54,9 +61,15 @@ export class ServicoIAGroq implements ServicoLeituraRotulo {
     try {
       logger.info("📝 Padronizando dados via proxy IA...");
 
+      const premium = new RepositorioPremiumLocalStorage();
+      const tokenHash = premium.obterTokenHash();
+
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (tokenHash) headers['X-Premium-Token'] = tokenHash;
+
       const resposta = await fetch('/api/ia/analisar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           tipo: 'texto',
           conteudo: textoEntrada,

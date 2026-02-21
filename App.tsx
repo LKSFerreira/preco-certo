@@ -13,6 +13,7 @@ import { ModalTutorial, useTutorialPrimeiroAcesso } from './components/ModalTuto
 import { useRepositorios } from './contextos/ContextoRepositorios';
 import { buscarProdutoCosmos } from './services/cosmos';
 import { buscarProdutoOFF } from './services/openfoodfacts';
+import { TelaAtivarToken } from './components/TelaAtivarToken';
 
 export default function App() {
   // --- Acesso aos repositórios via contexto ---
@@ -48,7 +49,27 @@ export default function App() {
   // Estado para feedback visual durante busca em cascata
   const [etapaBusca, setEtapaBusca] = useState<string | null>(null);
 
+  // Estados Premium
+  const [mostrarAtivarToken, setMostrarAtivarToken] = useState(false);
+  const [deepLinkToken, setDeepLinkToken] = useState<string | null>(null);
+
   // --- Efeitos (Carregamento inicial) ---
+
+  /**
+   * Verifica se há um Token de Ativação Premium na URL (Deep Link)
+   */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tokenUrl = params.get('token');
+
+    if (tokenUrl) {
+      setDeepLinkToken(tokenUrl);
+      setMostrarAtivarToken(true);
+
+      // Limpa a URL visualmente para não ficar suja caso ele recarregue
+      window.history.replaceState({}, document.title, '/');
+    }
+  }, []);
 
   /**
    * Carrega dados do repositório ao iniciar o app.
@@ -684,6 +705,22 @@ export default function App() {
           corBotaoConfirmar="vermelho"
           aoConfirmar={executarEsvaziamento}
           aoCancelar={() => setMostrarConfirmacaoEsvaziar(false)}
+        />
+      )}
+
+      {/* Tela de Ativação Premium */}
+      {mostrarAtivarToken && (
+        <TelaAtivarToken
+          tokenObrigatorioUrl={deepLinkToken}
+          aoVoltar={() => {
+            setMostrarAtivarToken(false);
+            setDeepLinkToken(null);
+          }}
+          aoIrParaDashboard={() => {
+            setMostrarAtivarToken(false);
+            setDeepLinkToken(null);
+            setTelaAtual('DASHBOARD');
+          }}
         />
       )}
 

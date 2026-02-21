@@ -7,6 +7,7 @@
  */
 
 import { Produto, ItemCarrinho, ItemCarrinhoExpandido, Compra } from '../types';
+import { IRepositorioPremium } from './premium';
 
 /**
  * Contrato para operações de persistência de produtos.
@@ -120,4 +121,5 @@ export interface Repositorios {
   produtos: RepositorioProdutos;
   carrinho: RepositorioCarrinho;
   historico: RepositorioHistorico;
+  premium: IRepositorioPremium;
 }
