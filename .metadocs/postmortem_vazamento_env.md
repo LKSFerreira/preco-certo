@@ -31,7 +31,7 @@ Com essa alteração, o Vite ignora essas variáveis durante o build, e elas fic
 Ao remover o prefixo, os containers Docker pararam de enxergar as variáveis, pois a configuração anterior dependia de algum mecanismo de injeção automática ou cache. Isso quebrou os testes de integração locais.
 
 **Correção:**
-Ajustamos o arquivo `.devcontainer/compose.yaml` para carregar explicitamente o arquivo `.env` da raiz do projeto:
+Ajustamos o arquivo `.docker/compose.yaml` para carregar explicitamente o arquivo `.env` da raiz do projeto:
 
 ```yaml
 services:

@@ -13,7 +13,7 @@ services:
   database:
     build:
       context: ../
-      dockerfile: .devcontainer/Dockerfile.postgres
+      dockerfile: .docker/Dockerfile.postgres
     ports:
       - '5432:5432'
     volumes:
@@ -30,7 +30,7 @@ services:
   processor:
     build:
       context: ../
-      dockerfile: .devcontainer/Dockerfile.python
+      dockerfile: .docker/Dockerfile.python
     volumes:
       - ../:/app
     working_dir: /app
@@ -43,14 +43,14 @@ services:
   # ---------------------------------------------------------------------------
   # APP - Node.js com Vite (Build via Dockerfile)
   # ---------------------------------------------------------------------------
-
   app:
     build:
       context: ../
-      dockerfile: .devcontainer/Dockerfile.node
+      dockerfile: .docker/Dockerfile.node
       target: dev
     ports:
-      - '5173:5173'
+      - '5173:5173' # Frontend / Vite
+      - '3000:3000' # Backend / API Local (Express)
     volumes:
       - ../:/app
       - /app/node_modules

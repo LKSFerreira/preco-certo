@@ -19,7 +19,7 @@ Sempre que solicitado para configurar o ambiente Docker, atue como Especialista 
 
 - Identifique a stack através dos arquivos de manifesto (`package.json`, `requirements.txt`, `go.mod`, etc.).
 - Analise o arquivo `readme_templates.md`.
-- Verifique os templates disponíveis em `.agent/templates/.devcontainer/`:
+- Verifique os templates disponíveis em `.agent/templates/.docker/`:
 
 | Linguagem                 | Template              |
 | ------------------------- | --------------------- |
@@ -38,9 +38,9 @@ Sempre que solicitado para configurar o ambiente Docker, atue como Especialista 
 
 Execute as instruções abaixo para estruturar o ambiente:
 
-1. **Diretório de Configuração**: Crie o diretório `.devcontainer/` na raiz do projeto (`mkdir -p .devcontainer`).
-2. **Docker Compose e Dockerfile**: Copie o arquivo `compose.yaml` e o `Dockerfile.*` do template correspondente para a pasta `.devcontainer/`.
-   - **Ajuste de Path**: Se o `compose.yaml` ou o `Dockerfile` referenciarem o código limitando ao diretório atual (`./`), altere para `../` para refletir que agora estão dentro de uma subpasta (`.devcontainer/`) e devem apontar para a raiz.
+1. **Diretório de Configuração**: Crie o diretório `.docker/` na raiz do projeto (`mkdir -p .docker`).
+2. **Docker Compose e Dockerfile**: Copie o arquivo `compose.yaml` e o `Dockerfile.*` do template correspondente para a pasta `.docker/`.
+   - **Ajuste de Path**: Se o `compose.yaml` ou o `Dockerfile` referenciarem o código limitando ao diretório atual (`./`), altere para `../` para refletir que agora estão dentro de uma subpasta (`.docker/`) e devem apontar para a raiz.
 3. **Variáveis de Ambiente**:
    - Crie o arquivo `.env.development` na **raiz do projeto** (você pode se basear no `.env.example` do template, se houver).
    - **Personalização**: Substitua placeholders (como `nome_do_projeto` ou `meu_banco`) pelo nome real do diretório/projeto atual.
@@ -62,7 +62,7 @@ if [ -n "$IP" ]; then
 else
     echo -e "\033[0;33m⚠️ IP Local não detectado.\033[0m"
 fi
-docker compose -f .devcontainer/compose.yaml up --build
+docker compose -f .docker/compose.yaml up --build
 ```
 
 ---
@@ -71,7 +71,7 @@ docker compose -f .devcontainer/compose.yaml up --build
 
 ```text
 projeto/
-├── .devcontainer/
+├── .docker/
 │   ├── compose.yaml          # Docker Compose
 │   └── Dockerfile.{stack}    # Ex: .python - .node - .postgres
 ├── .env.development          # Variáveis de ambiente
@@ -107,7 +107,7 @@ rm -rf .agent/templates/
 
 Confirme as configurações validando os itens abaixo:
 
-- [ ] `.devcontainer/compose.yaml` e `Dockerfile.{stack}` configurados corretamente.
+- [ ] `.docker/compose.yaml` e `Dockerfile.{stack}` configurados corretamente.
 - [ ] `.env.development` criado na raiz com as credenciais preenchidas.
 - [ ] `dev.sh` criado com a detecção de IP.
 - [ ] Gitignore atualizado.
@@ -119,9 +119,9 @@ bash dev.sh
 ```
 
 **Outros Comandos Úteis**
-Execute a partir da raiz (ou acesse a pasta `.devcontainer/`):
+Execute a partir da raiz (ou acesse a pasta `.docker/`):
 | Comando                                                | Descrição                           |
 | ------------------------------------------------------ | ----------------------------------- |
-| `docker compose -f .devcontainer/compose.yaml down`    | Para os containers                  |
-| `docker compose -f .devcontainer/compose.yaml down -v` | Para e remove volumes (limpa banco) |
-| `docker compose -f .devcontainer/compose.yaml logs -f` | Mostra logs da aplicação e serviços |
+| `docker compose -f .docker/compose.yaml down`    | Para os containers                  |
+| `docker compose -f .docker/compose.yaml down -v` | Para e remove volumes (limpa banco) |
+| `docker compose -f .docker/compose.yaml logs -f` | Mostra logs da aplicação e serviços |

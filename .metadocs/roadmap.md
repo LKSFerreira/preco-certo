@@ -217,7 +217,7 @@
 
 ### Configuração de Ambiente
 
-- [x] **2.1** PostgreSQL local via Docker Compose (já existe no `.devcontainer`)
+- [x] **2.1** PostgreSQL local via Docker Compose (já existe no `.docker`)
 - [ ] **2.2** PostgreSQL produção (Supabase Database ou Neon.tech)
 - [ ] **2.3** Variáveis de ambiente separadas (`DATABASE_URL_DEV`, `DATABASE_URL_PROD`)
 

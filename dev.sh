@@ -21,7 +21,7 @@ fi
 # 1. Sobe os containers em background para não poluir o início
 echo -e "\033[0;90m[1/3] 🔨 Iniciando containers (Argumentos: $@)...\033[0m"
 # Repassa todos os argumentos do script para o docker compose (ex: --build)
-docker compose -f .devcontainer/compose.yaml up -d "$@"
+docker compose -f .docker/compose.yaml up -d "$@"
 
 # 2. Limpa e mostra status de inicialização
 clear
@@ -30,4 +30,4 @@ echo -e "\033[0;90mOs logs e links de acesso aparecerão abaixo...\033[0m"
 echo ""
 
 # 3. Segue os logs (fica travado aqui até o Ctrl+C)
-docker compose -f .devcontainer/compose.yaml logs -f
+docker compose -f .docker/compose.yaml logs -f
