@@ -124,7 +124,7 @@ SEM PREAMBULO. APENAS JSON:
 
         if (!resposta.ok) {
             const erroBody = await resposta.text();
-            console.error('[Proxy IA] Groq retornou erro:', resposta.status, erroBody);
+            console.error('🚨 [Proxy IA] Groq retornou erro:', resposta.status, erroBody);
             return res.status(resposta.status).json({ erro: 'Erro na API de IA' });
         }
 
@@ -147,7 +147,7 @@ SEM PREAMBULO. APENAS JSON:
             return res.status(200).json({ texto_bruto: textoResposta });
         }
     } catch (erro: any) {
-        console.error('[Proxy IA] Erro:', erro.message);
+        console.error('🚨 [Proxy IA] Erro:', erro.message);
         return res.status(500).json({ erro: 'Erro interno no proxy de IA' });
     }
 }

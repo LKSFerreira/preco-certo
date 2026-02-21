@@ -58,7 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             duracao_dias: duracaoDias,
         });
     } catch (erro: any) {
-        console.error('[Tokens/Gerar] Erro:', erro.message);
+        console.error('🚨 [Tokens/Gerar] Erro:', erro.message);
         return res.status(500).json({ erro: 'Erro interno ao gerar token' });
     }
 }

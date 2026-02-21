@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 client.release();
             }
         } catch (erro) {
-            console.error(erro);
+            console.error('🚨 [API Produtos]', erro);
             return res.status(500).json({ erro: 'Erro interno ao buscar produto' });
         }
     }
@@ -120,7 +120,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         } catch (erro) {
             await client.query('ROLLBACK');
-            console.error('ERRO DETALHADO:', erro);
+            console.error('🚨 [API Produtos] ERRO DETALHADO:', erro);
             return res.status(500).json({ erro: 'Erro ao salvar produto' });
         } finally {
             client.release();

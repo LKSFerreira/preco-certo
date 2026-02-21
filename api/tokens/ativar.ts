@@ -187,7 +187,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             expira_em: tokenDados.expira_em,
         });
     } catch (erro: any) {
-        console.error('[Tokens/Ativar] Erro:', erro.message);
+        console.error('🚨 [Tokens/Ativar] Erro:', erro.message);
         return res.status(500).json({ erro: 'Erro interno' });
     }
 }

@@ -53,7 +53,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         return res.status(200).json(data);
     } catch (error: any) {
-        console.error('[Proxy Cosmos] Erro:', error.message);
+        console.error('🚨 [Proxy Cosmos] Erro:', error.message);
         return res.status(500).json({ error: 'Falha ao consultar API Cosmos' });
     }
 }
