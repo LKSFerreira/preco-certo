@@ -33,7 +33,7 @@ import {
 } from '../repositorios/local-storage';
 import { RepositorioProdutosIndexedDB } from '../repositorios/indexed-db';
 import { RepositorioProdutosOfflineFirst } from '../repositorios/offline-first';
-import { RepositorioProdutosHttp } from '../repositorios/http';
+import { RepositorioProdutosPostgres } from '../repositorios/postgres';
 
 /**
  * Contexto que armazena a instância dos repositórios.
@@ -91,7 +91,7 @@ export function ProvedorRepositorios({
     if (usarLocalStorage && usarBancoPostgres) {
       // Comportamento padrão: OfflineFirst (cache local IndexedDB + sincronização remota)
       const local = new RepositorioProdutosIndexedDB();
-      const remoto = new RepositorioProdutosHttp();
+      const remoto = new RepositorioProdutosPostgres();
       produtos = new RepositorioProdutosOfflineFirst(local, remoto);
     } else if (usarLocalStorage && !usarBancoPostgres) {
       // Apenas IndexedDB — sem sincronização remota (modo totalmente offline)
@@ -100,7 +100,7 @@ export function ProvedorRepositorios({
     } else if (!usarLocalStorage && usarBancoPostgres) {
       // Apenas PostgreSQL — sem cache local (cada busca vai na API)
       console.warn('🚫 [Repositório] Cache local DESATIVADO. Usando apenas PostgreSQL.');
-      produtos = new RepositorioProdutosHttp();
+      produtos = new RepositorioProdutosPostgres();
     } else {
       // Ambos desativados — fallback para IndexedDB (garante que o app funciona)
       console.error('⚠️ [Repositório] Ambos os storages desativados! Usando IndexedDB como fallback.');

@@ -21,7 +21,7 @@ export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
             return produtoLocal;
         }
 
-        // 2. API Remota (Fonte da Verdade)
+        // 2. Banco Remoto (Postgres - Fonte da Verdade)
         try {
             const produtoRemoto = await this.remoto.buscarPorGTIN(gtin);
             if (produtoRemoto) {
@@ -30,8 +30,8 @@ export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
                 return produtoRemoto;
             }
         } catch (erro) {
-            // Falha silenciosa na API não deve quebrar a busca (pode estar offline)
-            console.warn('[OfflineFirst] Falha ao buscar remoto:', erro);
+            // Falha silenciosa no Postgres não deve quebrar a busca (pode estar offline)
+            console.warn('[OfflineFirst] Falha ao buscar no Postgres Remoto:', erro);
         }
 
         return null;
@@ -49,9 +49,9 @@ export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
         // 2. Sincroniza com API (Tenta persistir e auditar)
         try {
             await this.remoto.salvar(produto);
-            console.log(`☁️ [OfflineFirst] Sincronizado com API Remota: ${produto.codigo_barras}`);
+            console.log(`☁️ [OfflineFirst] Sincronizado com Postgres Remoto: ${produto.codigo_barras}`);
         } catch (erro) {
-            console.error('[OfflineFirst] Erro na sincronização remota:', erro);
+            console.error('[OfflineFirst] Erro na sincronização com Postgres Remoto:', erro);
             // TODO: Adicionar em fila de retry (SyncQueue) futura
         }
     }
@@ -61,7 +61,7 @@ export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
         try {
             await this.remoto.remover(gtin);
         } catch (erro) {
-            console.warn('[OfflineFirst] Falha ao remover remoto:', erro);
+            console.warn('[OfflineFirst] Falha ao remover no Postgres Remoto:', erro);
         }
     }
 }

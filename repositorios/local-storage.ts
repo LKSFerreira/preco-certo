@@ -32,7 +32,7 @@ export class RepositorioProdutosLocalStorage implements RepositorioProdutos {
       const dados = localStorage.getItem(CHAVE_STORAGE_CATALOGO);
       return dados ? JSON.parse(dados) : {};
     } catch (erro) {
-      console.error('Erro ao carregar catálogo do localStorage:', erro);
+      console.error('🚨 [LocalStorage] Erro ao carregar catálogo:', erro);
       return {};
     }
   }
@@ -44,7 +44,7 @@ export class RepositorioProdutosLocalStorage implements RepositorioProdutos {
     try {
       localStorage.setItem(CHAVE_STORAGE_CATALOGO, JSON.stringify(catalogo));
     } catch (erro) {
-      console.error('Erro ao salvar catálogo no localStorage:', erro);
+      console.error('🚨 [LocalStorage] Erro ao salvar catálogo:', erro);
       throw new Error('Falha ao salvar produto. Verifique o espaço de armazenamento.');
     }
   }
@@ -88,7 +88,7 @@ export class RepositorioCarrinhoLocalStorage implements RepositorioCarrinho {
       const dados = localStorage.getItem(CHAVE_STORAGE_CARRINHO);
       return dados ? JSON.parse(dados) : [];
     } catch (erro) {
-      console.error('Erro ao carregar carrinho do localStorage:', erro);
+      console.error('🚨 [LocalStorage] Erro ao carregar carrinho:', erro);
       return [];
     }
   }
@@ -100,7 +100,7 @@ export class RepositorioCarrinhoLocalStorage implements RepositorioCarrinho {
     try {
       localStorage.setItem(CHAVE_STORAGE_CARRINHO, JSON.stringify(itens));
     } catch (erro) {
-      console.error('Erro ao salvar carrinho no localStorage:', erro);
+      console.error('🚨 [LocalStorage] Erro ao salvar carrinho:', erro);
       throw new Error('Falha ao salvar carrinho. Verifique o espaço de armazenamento.');
     }
   }
@@ -164,7 +164,7 @@ export class RepositorioHistoricoLocalStorage implements RepositorioHistorico {
       const dados = localStorage.getItem(CHAVE_STORAGE_HISTORICO);
       return dados ? JSON.parse(dados) : [];
     } catch (erro) {
-      console.error('Erro ao carregar histórico:', erro);
+      console.error('🚨 [LocalStorage] Erro ao carregar histórico:', erro);
       return [];
     }
   }
@@ -173,7 +173,7 @@ export class RepositorioHistoricoLocalStorage implements RepositorioHistorico {
     try {
       localStorage.setItem(CHAVE_STORAGE_HISTORICO, JSON.stringify(compras));
     } catch (erro) {
-      console.error('Erro ao salvar histórico:', erro);
+      console.error('🚨 [LocalStorage] Erro ao salvar histórico:', erro);
       throw new Error('Falha ao salvar histórico. Armazenamento cheio?');
     }
   }
