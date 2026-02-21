@@ -330,8 +330,8 @@
 - [ ] Otimizar bundle size
 
 ### 🟡 Casos de uso
-- [ ] **5.1** Criar Seed de 5 Itens Genéricos (GENERICO-01 a 05) para casos de falha/indisponibilidade:
-    - **Câmera Quebrada/Indisponível:** Usuário não consegue tirar foto.
-    - **Sem Rótulo:** Produto sem informações legíveis.
-    - **A Granel/Feira:** Produtos pesados na hora sem código de barras.
-    - **Agilidade:** Usuário quer apenas somar o preço sem cadastrar detalhes.
+- [x] **5.1** Criar Seed de 5 Itens Genéricos (GENERICO-01 a 05) para casos de falha/indisponibilidade:
+    - [x] **Câmera Quebrada/Indisponível:** Usuário não consegue tirar foto.
+    - [x] **Sem Rótulo:** Produto sem informações legíveis.
+    - [x] **A Granel/Feira:** Produtos pesados na hora sem código de barras.
+    - [x] **Agilidade:** Usuário quer apenas somar o preço sem cadastrar detalhes.
