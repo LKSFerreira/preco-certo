@@ -7,6 +7,9 @@ WORKDIR /app
 RUN apk add --no-cache libpq postgresql-libs && \
     apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
 
+# Instala o gerenciador uv
+RUN pip install uv --no-cache-dir
+
 # Copia e instala dependências via pyproject.toml
 COPY pyproject.toml .
 RUN pip install --no-cache-dir --upgrade pip && \
