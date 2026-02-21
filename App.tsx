@@ -472,13 +472,13 @@ export default function App() {
         <div className="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
 
           {/* Logo e Título */}
-          <div className="flex items-center gap-2">
-            <div className="bg-verde-100 p-2 rounded-full text-verde-600">
-              <i className="fas fa-shopping-cart"></i>
+          <div className="flex items-center gap-3">
+            <div className="bg-verde-50 text-verde-600 p-2 rounded-xl border border-verde-100 shadow-sm flex items-center justify-center transition-colors">
+              <i className="fas fa-shopping-cart fa-flip-horizontal text-2xl"></i>
             </div>
-            <div>
-              <h1 className="font-bold text-gray-800 leading-tight">Sem Susto</h1>
-              <p className="text-[10px] text-gray-500 uppercase tracking-wide">Controle de Gastos</p>
+            <div className="flex flex-col justify-center">
+              <h1 className="font-bold text-gray-800 leading-tight text-lg">Sem Susto</h1>
+              <p className="text-[9px] text-gray-500 uppercase tracking-widest -mt-0.5">Controle de Gastos</p>
             </div>
           </div>
 

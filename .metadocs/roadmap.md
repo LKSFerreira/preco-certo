@@ -322,7 +322,7 @@
 - [ ] **Testes:** Adicionar testes automatizados com Vitest
 
 ### 🔴 Segurança
-- [x] **Token em texto puro:** RESOLVIDO (21/02). Agora utiliza `SHA-256` no client-side para armazenamento e transmissão via headers. Ref: [ux_premium_feedback.md](.metadocs/walkthrough/ux_premium_feedback.md)
+- [x] **Token em texto puro:** RESOLVIDO (21/02). Agora utiliza `SHA-256` no client-side para armazenamento e transmissão via headers. Ref: [ux_premium_feedback.md](.metadocs/walkthrough/ux_premium_feedback.md) e [monetizacao.md](.metadocs/monetizacao.md)
 
 ### 🟢 Armazenamento (Migração localStorage → IndexedDB)
 - [x] **Catálogo no IndexedDB:** Migrar o catálogo de produtos do `localStorage` (5MB) para `IndexedDB` (GBs). Imagens salvas como `Blob` (binário) em store único. Ref: [postmortem_estouro_localstorage.md](.metadocs/postmortem_estouro_localstorage.md)
