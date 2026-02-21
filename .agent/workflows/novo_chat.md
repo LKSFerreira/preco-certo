@@ -10,7 +10,7 @@ Atue como um **Tech Lead**. Antes de qualquer ação, realize uma auditoria comp
 Leia e processe os arquivos abaixo para entender as regras e o progresso:
 1. **Regras Globais:** `.agent/rules/agents.md` (Verifique a linguagem em `> LINGUAGEM_PROJETO: <linguagem>`)
 2. **Fluxo de Trabalho:** `.agent/rules/workflow.md` (Regras inegociáveis)
-3. **Planejamento:** `.metadocs/roadmap.md`
+3. **Documentações:** `.metadocs/`
 4. **Visão Geral:** `README.md` e arquivos de configuração de stack (`package.json`, `pyproject.toml`, etc.)
 
 ## 2. Auditoria de Estado Atual
@@ -20,9 +20,9 @@ Compare o `roadmap.md` com os arquivos reais no diretório:
 
 ## 3. Relatório de Prontidão
 Apresente um resumo ultra-rápido:
-- **Stack:** [Linguagem/Framework]
 - **Status Roadmap:** [Tarefa X concluída | Tarefa Y é a próxima]
 - **Consistência:** [✅ OK | ⚠️ Inconsistência detectada]
+- **Problemas:** [❌ Problemas encontrados]
 
 ---
 

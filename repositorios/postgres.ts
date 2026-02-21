@@ -45,7 +45,8 @@ export class RepositorioProdutosPostgres implements RepositorioProdutos {
 
     async listarTodos(): Promise < Produto[] > {
             // Não implementado via API por questões de performance/paginação
-            console.warn('[Database Postgres] listarTodos não é suportado via API completa.');
+            console.warn('[Database Postgres] ⚠️ listarTodos não é suportado via API completa.');
+            return [];
         }
 
     async salvar(produto: Produto): Promise < void> {
@@ -68,12 +69,14 @@ export class RepositorioProdutosPostgres implements RepositorioProdutos {
             const erro = await response.json();
             throw new Error(erro.erro || 'Erro ao salvar na API');
         }
-        console.error('[Database Postgres] Erro ao salvar:', erro);
+    } catch(erro: any) {
+        console.error('[Database Postgres] ❌ Erro ao salvar:', erro);
+        throw erro;
     }
 }
 
     async remover(gtin: string): Promise < void> {
-    console.warn('[Database Postgres] remover não implementado.');
+    console.warn('[Database Postgres] ⚠️ remover não implementado.');
     return Promise.resolve();
 }
 }
