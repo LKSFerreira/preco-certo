@@ -59,11 +59,14 @@ export default function App() {
    * Verifica se há um Token de Ativação Premium na URL (Deep Link)
    */
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const tokenUrl = params.get('token');
+    // Busca na Rota (Deep Link limpo) Ex: /ativar/SEM-SUSTO-123
+    const path = window.location.pathname;
+    const matchRoute = path.match(/^\/ativar\/(SEM-SUSTO-[A-Z0-9]+)$/i);
+
+    const tokenUrl = matchRoute ? matchRoute[1] : null;
 
     if (tokenUrl) {
-      setDeepLinkToken(tokenUrl);
+      setDeepLinkToken(tokenUrl.toUpperCase());
       setMostrarAtivarToken(true);
 
       // Limpa a URL visualmente para não ficar suja caso ele recarregue

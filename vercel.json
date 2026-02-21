@@ -22,6 +22,10 @@
     {
       "source": "/api/tokens/consultar",
       "destination": "/api/tokens/consultar"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [

@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import pool from '../_lib/banco';
-import { calcularHash, formatoTokenEhValido } from '../_lib/tokens';
 
 /**
  * Endpoint para consultar o status de um token premium.
@@ -19,16 +18,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Extrai o Token Hash diretamente do Header injetado pelo Frontend
-    let tokenHash = req.headers['x-premium-token'] as string;
-
-    // Fallback para ferramentas de debug ou chamadas via query (Legado)
-    if (!tokenHash && req.query.token) {
-        const tokenRaw = req.query.token as string;
-        if (!formatoTokenEhValido(tokenRaw)) {
-            return res.status(400).json({ erro: 'Formato de token inválido' });
-        }
-        tokenHash = calcularHash(tokenRaw);
-    }
+    const tokenHash = req.headers['x-premium-token'] as string;
 
     if (!tokenHash) {
         return res.status(400).json({ erro: 'Header x-premium-token não fornecido' });
