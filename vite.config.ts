@@ -10,7 +10,26 @@ const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), basicSsl()],
+  plugins: [
+    react(),
+    basicSsl(),
+    // --- Plugin Customizado para mostrar o IP da Rede Wi-Fi ---
+    {
+      name: 'log-wifi-ip',
+      configureServer(server) {
+        server.httpServer?.once('listening', () => {
+          const hostIp = process.env.HOST_IP;
+          if (hostIp) {
+            // Um pequeno delay para imprimir logo abaixo das mensagens padrões do Vite
+            setTimeout(() => {
+              // Como você usa o basicSsl, forçamos o https na exibição
+              console.log(`  ➜  Wi-Fi (Mobile): \x1b[1;36mhttps://${hostIp}:5173/\x1b[0m`);
+            }, 100);
+          }
+        });
+      }
+    }
+  ],
   server: {
     // HTTPS gerado pelo plugin basicSsl
     https: undefined,
