@@ -1,37 +1,46 @@
-# =============================================================================
-# Dockerfile - Sem Susto (App Node.js)
-# =============================================================================
-# Build: docker build -t sem-susto-app .devcontainer/
-# Run:   docker compose -f .devcontainer/compose.yaml up
-# =============================================================================
+# ==========================================
+# ESTÁGIO 1: BASE E DEPENDÊNCIAS (CACHE)
+# ==========================================
+FROM node:20-alpine AS base
 
-FROM node:20-alpine
-
-# Metadados
-LABEL maintainer="Sem Susto Project"
+LABEL maintainer="Ambiente node"
 LABEL description="Ambiente de desenvolvimento Node.js para o app Sem Susto"
 
-# Variáveis de ambiente para desenvolvimento
-ENV NODE_ENV=development
-ENV WATCHPACK_POLLING=true
-
-# Diretório de trabalho
 WORKDIR /app
 
-# Copia package.json primeiro (para cache de camadas)
-# Em desenvolvimento, usamos volume, mas isso ajuda no build inicial
-COPY package*.json ./
-
-# Atualiza o npm para a versão mais recente (equivalente a: pip install --upgrade pip)
+# Atualiza o npm para a versão mais recente
 RUN npm install -g npm@latest --silent
 
-# Instala dependências do projeto (silencioso para não poluir logs)
+# Copia os arquivos de lock e manifesto PRIMEIRO
+COPY package*.json ./
+
+# Instala as dependências aqui no build! O Docker vai fazer cache dessa camada.
+# Usamos apenas o install puro; sem poluir o log.
 RUN npm install --silent
 
-# Expõe porta do Vite
+# ==========================================
+# ESTÁGIO 2: DESENVOLVIMENTO (DevContainer)
+# ==========================================
+FROM base AS dev
+
 EXPOSE 5173
 
-# Comando padrão: atualiza dependências e inicia o servidor
-# O 'npm install' roda TODA VEZ que o container iniciar (não só no build)
-# Isso garante que mudanças no package.json sejam aplicadas
-CMD ["sh", "-c", "npm install --silent && npm run dev -- --host 0.0.0.0"]
+# Como a instalação já foi feita no Estágio 1, o container liga instantaneamente!
+# O código real será injetado via Bind Mount do compose.yaml
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+# ==========================================
+# ESTÁGIO 3: PRODUÇÃO (Deploy)
+# ==========================================
+FROM base AS prod
+
+# Aqui o Bind Mount não existe, então copiamos o código para dentro da imagem
+COPY . .
+
+# Faz o build de produção do Vite (gera a pasta /dist)
+RUN npm run build
+
+# Para servir um app Vite em produção, usamos um servidor estático simples
+RUN npm install -g serve --silent
+EXPOSE 3000
+CMD ["serve", "-s", "dist", "-l", "3000"]

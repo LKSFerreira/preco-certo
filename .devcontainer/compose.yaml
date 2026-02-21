@@ -48,6 +48,7 @@ services:
     build:
       context: ../
       dockerfile: .devcontainer/Dockerfile.node
+      target: dev
     ports:
       - '5173:5173'
     volumes:

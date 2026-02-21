@@ -1,15 +1,24 @@
-# =============================================================================
-# Dockerfile - Sem Susto (Database PostgreSQL)
-# =============================================================================
-# Build: docker compose -f .devcontainer/compose.yaml build database
-# Run:   docker compose -f .devcontainer/compose.yaml up
-# =============================================================================
+# ==========================================
+# ESTÁGIO 1: BASE (CACHE)
+# ==========================================
+FROM postgres:16-alpine AS base
 
-FROM postgres:16-alpine
+LABEL maintainer="Ambiente postgress"
+LABEL description="Ambiente de desenvolvimento para PostgreSQL"
 
-# Metadados
-LABEL maintainer="Sem Susto Project"
-LABEL description="Ambiente de desenvolvimento PostgreSQL para o app Sem Susto"
+# Adicione customizações aqui se necessário
 
-# Porta padrão do PostgreSQL
+# ==========================================
+# ESTÁGIO 2: DESENVOLVIMENTO (DevContainer)
+# ==========================================
+FROM base AS dev
+
+# O entrypoint padrão do postgres já lida com a inicialização corretamente
+EXPOSE 5432
+
+# ==========================================
+# ESTÁGIO 3: PRODUÇÃO (Deploy)
+# ==========================================
+FROM base AS prod
+
 EXPOSE 5432
