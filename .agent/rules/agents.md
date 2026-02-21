@@ -23,7 +23,7 @@ Todo o código e comunicação devem seguir estritamente as regras abaixo:
 
 ## 4. Regras Específicas da Linguagem
 
-> LINGUAGEM_PROJETO: <linguagem>
+> LINGUAGEM_PROJETO: javascript
 
 As regras de ambiente, execução, dependências e documentação são específicas para cada linguagem. Você deve:
 
