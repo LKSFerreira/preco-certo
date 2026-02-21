@@ -7,18 +7,27 @@
 # =============================================================================
 
 # Procura o IP da rede local (192.168.* ou 10.*) usando ipconfig (Windows)
-# Procura o IP da rede local (192.168.* ou 10.*) usando ipconfig (Windows)
 # Usamos grep -oE para pegar apenas o número do IP, ignorando labels (como "Endereço IPv4") e encodings
 IP=$(ipconfig | grep -oE "\b(192\.168\.[0-9]{1,3}\.[0-9]{1,3}|10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\b" | head -n 1 | tr -d '\r ')
 
 if [ -n "$IP" ]; then
     export HOST_IP=$IP
-    echo ""
-    echo -e "\033[0;32m✅ IP Detectado: $IP\033[0m"
+    COLOR_IP="\033[0;32m$IP\033[0m"
 else
-    echo ""
-    echo -e "\033[0;33m⚠️  Não foi possível detectar o IP da rede local automaticamente.\033[0m"
+    export HOST_IP=""
+    COLOR_IP="\033[0;31mNão detectado\033[0m"
 fi
 
-echo -e "\033[0;36m🚀 Iniciando containers...\033[0m"
-docker compose -f .devcontainer/compose.yaml up --build
+# 1. Sobe os containers em background para não poluir o início
+echo -e "\033[0;90m[1/3] 🔨 Iniciando containers (Argumentos: $@)...\033[0m"
+# Repassa todos os argumentos do script para o docker compose (ex: --build)
+docker compose -f .devcontainer/compose.yaml up -d "$@"
+
+# 2. Limpa e mostra status de inicialização
+clear
+echo -e "\033[1;35m🚀 SEM SUSTO - INICIANDO AMBIENTE\033[0m"
+echo -e "\033[0;90mOs logs e links de acesso aparecerão abaixo...\033[0m"
+echo ""
+
+# 3. Segue os logs (fica travado aqui até o Ctrl+C)
+docker compose -f .devcontainer/compose.yaml logs -f

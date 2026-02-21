@@ -1,5 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
+import os from 'os';
 
 // Importa os handlers da API
 // @ts-ignore
@@ -104,20 +105,67 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', ambiente: 'local-server' });
 });
 
-console.log('Produtos Handler:', produtosHandler);
-
 // Inicia Servidor
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`
-🚀 Servidor API Local rodando!
-   URL: http://localhost:${PORT}
-   
-   Endpoints mapeados:
-   - POST /api/ia/analisar
-   - GET  /api/cosmos/gtin/:codigo
-   - POST /api/tokens/gerar
-   - POST /api/tokens/ativar
-   - GET  /api/tokens/consultar
-   - ALL  /api/produtos/:codigo
-`);
+    const hostIp = process.env.HOST_IP || 'Não detectado';
+
+    // Banner Estético (ANSI)
+    setTimeout(() => {
+        const hostUrl = `http://localhost:${PORT}`;
+        const mobileUrl = `http://${hostIp}:${PORT}`;
+
+        // Descobre IP nativo da rede Docker interna
+        let internalIp = '';
+        const interfaces = os.networkInterfaces();
+        for (const name of Object.keys(interfaces)) {
+            const iface = interfaces[name]?.find((i) => i.family === 'IPv4' && !i.internal);
+            if (iface) {
+                internalIp = iface.address;
+                break;
+            }
+        }
+        const networkUrl = `http://${internalIp}:${PORT} (Internal)`;
+        const statusMsg = 'Pronto para receber conexões!';
+
+        // Largura interna exata da caixa (quantidade de '═')
+        const INNER_WIDTH = 64;
+
+        // Função para calcular o espaçamento exato ignorando as cores ANSI
+        const formatRow = (icon, label, text, colorCode) => {
+            // Fixa um tamanho para a coluna da esquerda (ícone + label) ex: 16 caracteres
+            const prefix = `  ${icon} ${label}:`.padEnd(16, ' ');
+            // O texto da URL preenche exatamente o espaço que falta para bater na parede (64 - 16 = 48)
+            const content = text.padEnd(INNER_WIDTH - 16, ' ');
+
+            // Retorna a linha montada já com as bordas em Ciano e o texto colorido
+            return `        \x1b[1;36m║\x1b[0m${colorCode}${prefix}\x1b[0m${content}\x1b[1;36m║\x1b[0m`;
+        };
+
+        // Geração das bordas retas (repete o caractere 64 vezes)
+        const borderTop = `        \x1b[1;36m╔${'═'.repeat(INNER_WIDTH)}╗\x1b[0m`;
+        const borderMiddle = `        \x1b[1;36m╠${'═'.repeat(INNER_WIDTH)}╣\x1b[0m`;
+        const borderBottom = `        \x1b[1;36m╚${'═'.repeat(INNER_WIDTH)}╝\x1b[0m`;
+
+        // Preenche o título até encostar na parede direita
+        const titleText = `  🚀 SEM SUSTO - API LOCAL / BACKEND`.padEnd(INNER_WIDTH, ' ');
+
+        // Impressão no console sem misturar recuos de código
+        console.log(`\n${borderTop}`);
+        console.log(`        \x1b[1;36m║\x1b[0m\x1b[1;35m${titleText}\x1b[0m\x1b[1;36m║\x1b[0m`);
+        console.log(borderMiddle);
+        console.log(formatRow('💻', 'Host', hostUrl, '\x1b[1;32m'));
+        console.log(formatRow('📱', 'Mobile', mobileUrl, '\x1b[1;33m'));
+        console.log(formatRow('🌐', 'Network', networkUrl, '\x1b[1;34m'));
+        console.log(borderMiddle);
+        console.log(formatRow('🟢', 'Status', statusMsg, '\x1b[1;37m'));
+        console.log(`${borderBottom}\n`);
+
+        console.log('        Endpoints mapeados via adapter:');
+        console.log('        - POST /api/ia/analisar');
+        console.log('        - GET  /api/cosmos/gtin/:codigo');
+        console.log('        - POST /api/tokens/gerar');
+        console.log('        - POST /api/tokens/ativar');
+        console.log('        - GET  /api/tokens/consultar');
+        console.log('        - ALL  /api/produtos/:codigo\n');
+    }, 500);
 });
