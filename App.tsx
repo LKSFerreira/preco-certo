@@ -78,7 +78,7 @@ export default function App() {
 
         setCarregado(true);
       } catch (erro) {
-        console.error('Erro ao carregar dados:', erro);
+        console.error('🚨 Erro ao carregar dados:', erro);
         setCarregado(true);
       }
     };
@@ -151,7 +151,7 @@ export default function App() {
         await repositorioCarrinho.adicionarItem(codigo_barras, 1);
       }
     } catch (erro) {
-      console.error('Erro ao sincronizar carrinho:', erro);
+      console.error('🚨 Erro ao sincronizar carrinho:', erro);
     }
   }, [carrinho, repositorioCarrinho]);
 
@@ -168,7 +168,7 @@ export default function App() {
       await repositorioProdutos.salvar(produto);
       console.log(`💾 [CATÁLOGO] Produto salvo: ${produto.codigo_barras}`);
     } catch (erro) {
-      console.error('Erro ao salvar produto:', erro);
+      console.error('🚨 Erro ao salvar produto:', erro);
     }
   }, [repositorioProdutos]);
 
@@ -235,12 +235,12 @@ export default function App() {
     }
     console.log(`❌ [CACHE LOCAL] Não encontrado`);
 
-    // 2. Busca no Banco de Dados (Offline First / Sincronizado)
-    setEtapaBusca('☁️ Verificando banco de dados...');
+    // 2. Busca no Banco de Dados (Postgres Remoto / Offline First)
+    setEtapaBusca('☁️ Verificando banco Postgres...');
     const produtoBanco = await repositorioProdutos.buscarPorGTIN(codigo_barras);
 
     if (produtoBanco) {
-      console.log(`✅ [ORIGEM: BANCO DE DADOS] Produto encontrado!`);
+      console.log(`✅ [ORIGEM: POSTGRES REMOTO] Produto encontrado!`);
       console.log(`   📦 Dados:`, produtoBanco);
       setEtapaBusca(null);
 
@@ -252,7 +252,7 @@ export default function App() {
       setCodigoLido(null);
       return;
     }
-    console.log(`❌ [BANCO DE DADOS] Não encontrado`);
+    console.log(`❌ [POSTGRES REMOTO] Não encontrado`);
 
     // 3. Consulta OpenFoodFacts (Prioridade API)
     setEtapaBusca('🌍 Buscando produtos...');
@@ -320,7 +320,7 @@ export default function App() {
     try {
       await repositorioCarrinho.removerItem(codigo_barras);
     } catch (erro) {
-      console.error('Erro ao remover item:', erro);
+      console.error('🚨 Erro ao remover item:', erro);
     }
   }, [repositorioCarrinho]);
 
@@ -356,7 +356,7 @@ export default function App() {
         await repositorioCarrinho.removerItem(codigo_barras);
       }
     } catch (erro) {
-      console.error('Erro ao alterar quantidade:', erro);
+      console.error('🚨 Erro ao alterar quantidade:', erro);
     }
   }, [repositorioCarrinho]);
 
@@ -393,7 +393,7 @@ export default function App() {
       setCarrinho([]);
       setMostrarDoacao(true);
     } catch (erro) {
-      console.error('Erro ao finalizar compra:', erro);
+      console.error('🚨 Erro ao finalizar compra:', erro);
     }
   }, [carrinhoExpandido, calcularTotal, repositorioHistorico, repositorioCarrinho]);
 
@@ -420,7 +420,7 @@ export default function App() {
       await repositorioCarrinho.limpar();
       setMostrarDoacao(true);
     } catch (erro) {
-      console.error('Erro ao limpar carrinho:', erro);
+      console.error('🚨 Erro ao limpar carrinho:', erro);
     }
   }, [repositorioCarrinho]);
 
