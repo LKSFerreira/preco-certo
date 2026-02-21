@@ -129,6 +129,12 @@ Ao escanear um código `789...`:
 *   **Arquitetura Strict:** O novo `RepositorioPremium` intercepta as requisições (Groq API, Consultas) e despacha usando headers `X-Premium-Token`. 
 *   **Design Serverless:** Lógicas de autorização extraídas do _Proxy Groq_ (`analisar.ts`) e encapsuladas na abstração `api/_lib/auth.ts`, respeitando _Single Responsibility Principle_.
 
+### 21/02: [Refino de UX Premium](./walkthrough/ux_premium_feedback.md) (Quantum Core & Input Mask) 💎
+*   **UX Quântica:** Implementado componente `QuantumCore` com animações 3D CSS (`preserve-3d`) e filtros SVG Rainbow para feedback visual de estados (Idle, Loading, Sucesso, Erro).
+*   **Anti-Fragilidade de Input:** Criada máscara de input híbrida que bloqueia a exclusão do prefixo `SEM-SUSTO-` e formata a chave randômica automaticamente.
+*   **Higiene de Navegação:** Implementado fallback de rota global (`404`) que limpa incondicionalmente a barra de endereços suja, mantendo a experiência PWA limpa.
+*   **Acessibilidade:** Adicionado botão de colar inteligente com limpeza de clipboard e foco automático via `focus-within`.
+
 ---
 
 ## 6. Padrões de Desenvolvimento (Para o Agente)
