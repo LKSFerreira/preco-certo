@@ -61,12 +61,18 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
     // Sempre via proxy — token fica no servidor
     const url = `${COSMOS_API_URL}/${gtin}`;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 segundos
+
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     if (response.status === 404) {
       // Produto não encontrado na base
@@ -109,7 +115,9 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
     return produto;
   } catch (erro: any) {
     // Trata erros de rede/CORS sem quebrar a app
-    if (erro instanceof TypeError && erro.message.includes('fetch')) {
+    if (erro.name === 'AbortError') {
+      console.warn('[Cosmos] ⏱️ Timeout de 7s atingido. API Cosmos demorou muito para responder.');
+    } else if (erro instanceof TypeError && erro.message.includes('fetch')) {
       console.warn('[Cosmos] Falha de conexão ou CORS (Verifique Proxy):', erro.message);
     } else {
       console.error('[Cosmos] Erro na requisição:', erro);

@@ -80,11 +80,11 @@ export const ScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar 
 
         // Em PC desktop ou sem permissão, isso é esperado. Não é um erro fatal.
         if (msg.includes('NotFound') || msg.includes('Permission') || msg.includes('PermissionDeniedError')) {
-          console.warn('Scanner indisponível (Câmera não encontrada ou permissão negada):', msg);
+          console.warn('⚠️ Scanner indisponível (Câmera não encontrada ou permissão negada):', msg);
           if (msg.includes('NotFound')) setMensagemErro('Câmera não encontrada. Digite o código manualmente abaixo.');
           else setMensagemErro('Acesso à câmera negado. Digite o código manualmente abaixo.');
         } else {
-          console.error('Erro fatal scanner:', msg);
+          console.error('🚨 Erro fatal scanner:', msg);
           setMensagemErro('Erro ao acessar câmera. Digite o código manualmente abaixo.');
         }
 

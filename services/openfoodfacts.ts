@@ -14,12 +14,18 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
             return null;
         }
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 segundos
+
         const response = await fetch(`${OFF_API_URL}/${gtin}.json`, {
             method: 'GET',
             headers: {
                 'User-Agent': 'SemSusto/1.0', // User-Agent é obrigatório/recomendado pela OFF
             },
+            signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (response.status === 404) {
             return null;
@@ -81,8 +87,12 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
 
         return produto;
 
-    } catch (erro) {
-        console.error('[OFF] Erro na requisição:', erro);
+    } catch (erro: any) {
+        if (erro.name === 'AbortError') {
+            console.warn('[OFF] ⏱️ Timeout de 7s atingido. API OpenFoodFacts demorou muito para responder.');
+        } else {
+            console.error('[OFF] Erro na requisição:', erro);
+        }
         return null;
     }
 }

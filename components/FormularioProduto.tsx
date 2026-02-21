@@ -197,7 +197,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
         if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([50, 50, 50]);
       }
     } catch (err: any) {
-      console.error('Erro no processamento IA:', err);
+      console.error('🚨 Erro no processamento IA:', err);
       setErro(`Não foi possível ler o rótulo automaticamente, mas a foto foi salva.`);
     } finally {
       setAnalisandoIA(false);
