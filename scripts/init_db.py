@@ -27,7 +27,7 @@ from urllib.parse import urlparse
 # =============================================================================
 # Altere para True se quiser DROPAR todas as tabelas e recomeçar do zero.
 # ⚠️ CUIDADO: Isso apaga TODOS os dados do banco!
-RESETAR_BANCO = False
+RESETAR_BANCO = True
 AMBIENTE = os.getenv("PG_ENV")
 
 # =============================================================================
@@ -304,6 +304,10 @@ def import_data(conn):
     
     cur = conn.cursor()
     try:
+        # Injeta variáveis de sessão na transação atual (evita erro na auditoria_logs)
+        cur.execute("SET LOCAL app.current_user_token = '00000000-0000-0000-0000-000000000000';")
+        cur.execute("SET LOCAL app.client_ip = 'localhost';")
+        
         execute_values(cur, insert_query, values, page_size=1000)
         conn.commit()
         print(f"✅ Importados {len(values)} produtos com sucesso!")
