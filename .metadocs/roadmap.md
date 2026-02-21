@@ -170,18 +170,18 @@
 - [x] **0.8.5.8** Implementar rate limiting — `api/_lib/rate_limiter.ts` (5 tentativas/hora por IP, bloqueio após 10 tokens inexistentes)
 - [x] **0.8.5.9** Criar script CLI `scripts/gerar_token.py` para tokens trial manuais + `GET /api/tokens/consultar`
 
-### Frontend (Premium - Core & Segurança)
-- [ ] **0.8.5.10** Implementar armazenamento seguro (`localStorage`) utilizando ofuscação com SHA-256 no Frontend.
-- [ ] **0.8.5.11** Atualizar o envio do Headerv `X-Premium-Token` nas chamadas para a Vercel Serverless Functions para transmitir apenas o Hash gerado localmente.
-- [ ] **0.8.5.12** Refatorar APIs do Backend (Groq Proxy e etc) para validar consumo Premium através do `token_hash`.
+### Frontend (Premium - Core & Segurança) ✅
+- [x] **0.8.5.10** Implementar armazenamento seguro (`localStorage`) utilizando ofuscação com SHA-256 no Frontend.
+- [x] **0.8.5.11** Atualizar o envio do Headerv `X-Premium-Token` nas chamadas para a Vercel Serverless Functions para transmitir apenas o Hash gerado localmente.
+- [x] **0.8.5.12** Refatorar APIs do Backend (Groq Proxy e etc) para validar consumo Premium através do `token_hash`.
 
-### Frontend (Premium - UI)
+### Frontend (Premium - UI) ✅
 - [ ] **0.8.5.13** Criar tela de planos de contribuição (Café R$4,90 / Lanche R$6,90 / Apoiador R$12,90)
 - [ ] **0.8.5.14** Criar modal pós-pagamento (exibir token, ativar, salvar via WhatsApp, enviar para alguém)
 - [x] **0.8.5.15** Criar rota `/ativar/:token` para ativação via deep link
-- [ ] **0.8.5.16** Implementar funcionalidades gratuito vs premium (limites de IA e carrinho)
-- [ ] **0.8.5.17** Criar modal de status do token (plano, dias restantes, expiração) com dados do localStorage
-- [ ] **0.8.5.18** Implementar cache de status do token no localStorage (evitar requisições desnecessárias ao `/api/tokens/consultar`)
+- [x] **0.8.5.16** Implementar funcionalidades gratuito vs premium (limites de IA e carrinho)
+- [x] **0.8.5.17** Criar modal de status do token (plano, dias restantes, expiração) com dados do localStorage
+- [x] **0.8.5.18** Implementar cache de status do token no localStorage (evitar requisições desnecessárias ao `/api/tokens/consultar`)
 
 ### Integração com Pagamento (MVP — última etapa)
 - [ ] **0.8.5.19** Integrar API Mercado Pago para geração de PIX
@@ -322,7 +322,7 @@
 - [ ] **Testes:** Adicionar testes automatizados com Vitest
 
 ### 🔴 Segurança
-- [ ] **Token em texto puro:** O token premium é salvo como string pura no `localStorage`, vulnerável a roubo via XSS, extensões maliciosas ou acesso físico ao dispositivo. Necessário salvar em formato hash ou usar mecanismo seguro (HttpOnly cookie, Web Crypto API, ou ofuscação). Ref: [monetizacao.md](.metadocs/monetizacao.md)
+- [x] **Token em texto puro:** RESOLVIDO (21/02). Agora utiliza `SHA-256` no client-side para armazenamento e transmissão via headers. Ref: [ux_premium_feedback.md](.metadocs/walkthrough/ux_premium_feedback.md)
 
 ### 🟢 Armazenamento (Migração localStorage → IndexedDB)
 - [x] **Catálogo no IndexedDB:** Migrar o catálogo de produtos do `localStorage` (5MB) para `IndexedDB` (GBs). Imagens salvas como `Blob` (binário) em store único. Ref: [postmortem_estouro_localstorage.md](.metadocs/postmortem_estouro_localstorage.md)
