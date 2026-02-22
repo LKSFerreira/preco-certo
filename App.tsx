@@ -2,18 +2,19 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Produto, ItemCarrinho, ItemCarrinhoExpandido, TelaApp } from './types';
 import { IMAGEM_PADRAO } from './constants';
 import { formatarMoeda } from './services/utilitarios';
-import { ScannerBarras } from './components/ScannerBarras';
-import { LoadingCarrinho } from './components/LoadingCarrinho';
-import { FormularioProduto } from './components/FormularioProduto';
+import { ModalScannerBarras } from './components/ModalScannerBarras';
+import { ModalLoadingCarrinho } from './components/ModalLoadingCarrinho';
+import { ModalFormularioProduto } from './components/ModalFormularioProduto';
 import { DebugConsole } from './components/DebugConsole';
 import { ModalDoacao } from './components/ModalDoacao';
 import { ModalContato } from './components/ModalContato';
 import { ModalConfirmacao } from './components/ModalConfirmacao';
-import { ModalTutorial, useTutorialPrimeiroAcesso } from './components/ModalTutorial';
+import { ModalTutorialUso } from './components/ModalTutorialUso';
+import { useTutorialPrimeiroAcesso } from './hooks/useTutorialUso';
 import { useRepositorios } from './contextos/ContextoRepositorios';
 import { buscarProdutoCosmos } from './services/cosmos';
 import { buscarProdutoOFF } from './services/openfoodfacts';
-import { TelaAtivarToken } from './components/TelaAtivarToken';
+import { ModalAtivarToken } from './components/ModalAtivarToken';
 import { acordarAPIsSilenciosamente } from './services/warmup';
 
 export default function App() {
@@ -672,14 +673,14 @@ export default function App() {
           <ModalContato aoFechar={() => setMostrarContato(false)} />
         )}
         {/* Tela de Loading Reutilizável */}
-        <LoadingCarrinho
+        <ModalLoadingCarrinho
           visivel={etapaBusca !== null}
           titulo={etapaBusca || "Carregando..."}
         />
 
         {/* Scanner Modal */}
         {telaAtual === 'SCANNER' && (
-          <ScannerBarras
+          <ModalScannerBarras
             aoLerCodigo={aoLerCodigo}
             aoCancelar={() => setTelaAtual('DASHBOARD')}
           />
@@ -687,7 +688,7 @@ export default function App() {
 
         {/* Formulário de Produto Modal */}
         {telaAtual === 'CADASTRO' && codigoLido && (
-          <FormularioProduto
+          <ModalFormularioProduto
             gtinInicial={codigoLido}
             aoSalvar={aoSalvarProduto}
             aoCancelar={() => {
@@ -716,7 +717,7 @@ export default function App() {
 
         {/* Tela de Ativação Premium */}
         {mostrarAtivarToken && (
-          <TelaAtivarToken
+          <ModalAtivarToken
             tokenObrigatorioUrl={deepLinkToken}
             aoVoltar={() => {
               setMostrarAtivarToken(false);
@@ -745,7 +746,7 @@ export default function App() {
 
         {/* Tutorial de Primeiro Acesso */}
         {mostrarTutorial && (
-          <ModalTutorial aoFechar={fecharTutorial} />
+          <ModalTutorialUso aoFechar={fecharTutorial} />
         )}
 
       </div>

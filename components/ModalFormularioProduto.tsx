@@ -4,7 +4,8 @@ import { REGEX_UNIDADE, NOMES_INVALIDOS } from '../constants';
 import { comprimirImagem } from '../services/utilitarios';
 import { extrairDadosDoRotulo } from '../services/ia';
 import { ModalRecorte } from './ModalRecorte';
-import { TutorialFoto, useTutorialFotoPrimeiroUso } from './TutorialFoto';
+import { ModalTutorialFoto } from './ModalTutorialFoto';
+import { useTutorialFotoPrimeiroUso } from '../hooks/useTutorialFoto';
 
 interface PropsFormulario {
   gtinInicial: string;
@@ -14,7 +15,7 @@ interface PropsFormulario {
   dadosPrePreenchidos?: Partial<Produto> | null;
 }
 
-export const FormularioProduto: React.FC<PropsFormulario> = ({
+export const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   gtinInicial,
   aoSalvar,
   aoCancelar,
@@ -331,7 +332,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
         )}
         {/* Dica contextual de foto - primeira vez que usa câmera */}
         {mostraTutorialFoto && (
-          <TutorialFoto
+          <ModalTutorialFoto
             aoFechar={() => {
               setMostraTutorialFoto(false);
               // Dispara o click pendente após fechar o tutorial

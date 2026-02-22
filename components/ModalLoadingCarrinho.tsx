@@ -6,7 +6,7 @@ interface LoadingCarrinhoProps {
   subtitulo?: string;
 }
 
-export const LoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
+export const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
   visivel,
   titulo = "Buscando produtos...",
   subtitulo = "Estamos enchendo seu carrinho!"

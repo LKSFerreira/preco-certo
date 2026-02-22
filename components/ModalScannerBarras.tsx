@@ -6,7 +6,7 @@ interface PropsScanner {
   aoCancelar: () => void;
 }
 
-export const ScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar }) => {
+export const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar }) => {
   const [codigoManual, setCodigoManual] = useState('');
   const [statusCamera, setStatusCamera] = useState<'iniciando' | 'ativa' | 'erro'>('iniciando');
   const [mensagemErro, setMensagemErro] = useState<string | null>(null);

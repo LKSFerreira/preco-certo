@@ -164,3 +164,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Solução:** Implementado sistema de "Warm-up" silencioso disparado antecipadamente pelo botão "Ler Código".
 *   **Controle:** Adicionada variável de ambiente `VITE_COLD_START_API` para ligar/desligar o recurso.
 *   **Higiene:** Uso de requisições `HEAD` e throttle de 10 minutos para otimização de banda e recursos.
+### 22/02: [Refatoração de Componentes (Modais & Hooks)](./walkthrough/walkthrough_refatoracao_modais.md) 🏗️
+*   **Padronização de UI**: Migração massiva de componentes de página/tela para o padrão de Modais (`ModalFormularioProduto`, `ModalScannerBarras`, etc).
+*   **Modularização de Lógica**: Extração de regras de tutorial de primeiro acesso para Hooks reutilizáveis (`useTutorialUso`, `useTutorialFoto`).
+*   **Higiene de Importação**: Refatoração do `App.tsx` para uma estrutura mais limpa e declarativa, facilitando a manutenção de fluxos de sobreposição.
+*   **Limpeza**: Remoção de componentes legados e redundantes, consolidando a identidade visual e técnica do projeto.

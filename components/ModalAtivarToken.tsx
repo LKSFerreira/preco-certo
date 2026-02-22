@@ -181,7 +181,7 @@ interface PropsAtivacaoToken {
     aoIrParaDashboard: () => void;
 }
 
-export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, aoVoltar, aoIrParaDashboard }) => {
+export const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, aoVoltar, aoIrParaDashboard }) => {
     const { premium } = useRepositorios();
     const [token, setToken] = useState(tokenObrigatorioUrl || 'SEM-SUSTO-');
     const [status, setStatus] = useState<'IDLE' | 'CARREGANDO' | 'SUCESSO' | 'ERRO'>('IDLE');
