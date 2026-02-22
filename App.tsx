@@ -237,19 +237,16 @@ export default function App() {
 
     console.log(`\n🔍 [BUSCA] Iniciando busca para GTIN: ${codigo_barras}`);
 
-    // 1. Verifica cache local (catálogo localStorage)
-    setEtapaBusca('💾 Verificando catálogo local...');
+    // 1. Verifica cache rápido (estado React em memória)
+    setEtapaBusca('Verificando memória...');
     if (catalogo[codigo_barras]) {
-      console.log(`✅ [ORIGEM: LOCAL STORAGE] Produto encontrado no catálogo local`);
-      console.log(`   📦 Dados:`, catalogo[codigo_barras]);
+      console.log(`✅ [ORIGEM: MEMÓRIA] Produto encontrado no cache do estado`);
 
       // Validação de Preço Zerado (Staging)
-      // Se o produto foi salvo mas não teve preço definido (ex: cancelou o form),
-      // força a abertura do formulário para edição.
       if (catalogo[codigo_barras].preco_estimado <= 0) {
         console.log(`⚠️ [PREÇO ZERADO] Redirecionando para edição...`);
         setDadosPrePreenchidos(catalogo[codigo_barras]);
-        setModoEdicao(true); // Modo edição para atualizar o registro existente
+        setModoEdicao(true);
         setTelaAtual('CADASTRO');
         setCodigoLido(codigo_barras);
         setEtapaBusca(null);
@@ -262,26 +259,25 @@ export default function App() {
       setCodigoLido(null);
       return;
     }
-    console.log(`❌ [CACHE LOCAL] Não encontrado`);
 
-    // 2. Busca no Banco de Dados (Postgres Remoto / Offline First)
-    setEtapaBusca('☁️ Verificando banco Postgres...');
-    const produtoBanco = await repositorioProdutos.buscarPorGTIN(codigo_barras);
+    // 2. Busca em Cascata via Repositório (IndexedDB -> Postgres)
+    // Passamos o callback setEtapaBusca para que o repositório informe o progresso
+    const produtoEncontradoNoStorage = await repositorioProdutos.buscarPorGTIN(codigo_barras, (status) => {
+      setEtapaBusca(status);
+    });
 
-    if (produtoBanco) {
-      console.log(`✅ [ORIGEM: POSTGRES REMOTO] Produto encontrado!`);
-      console.log(`   📦 Dados:`, produtoBanco);
+    if (produtoEncontradoNoStorage) {
+      console.log(`✅ [ORIGEM: STORAGE] Produto encontrado no repositório`);
       setEtapaBusca(null);
 
-      // Garante que a UI receba o produto para renderizar o carrinho
-      setCatalogo(prev => ({ ...prev, [produtoBanco.codigo_barras]: produtoBanco }));
+      // Sincroniza catálogo em memória
+      setCatalogo(prev => ({ ...prev, [produtoEncontradoNoStorage.codigo_barras]: produtoEncontradoNoStorage }));
 
-      await adicionarAoCarrinho(codigo_barras); // Já salva no local se não tiver
+      await adicionarAoCarrinho(codigo_barras);
       setTelaAtual('DASHBOARD');
       setCodigoLido(null);
       return;
     }
-    console.log(`❌ [POSTGRES REMOTO] Não encontrado`);
 
     // 3. Consulta OpenFoodFacts (Prioridade API)
     setEtapaBusca('🌍 Buscando produtos...');

@@ -14,8 +14,9 @@ export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
         private remoto: RepositorioProdutos
     ) { }
 
-    async buscarPorGTIN(gtin: string): Promise<Produto | null> {
-        // 1. Cache Local (Rápido)
+    async buscarPorGTIN(gtin: string, aoMudarStatus?: (status: string) => void): Promise<Produto | null> {
+        // 1. Cache Local (IndexedDB)
+        aoMudarStatus?.('Buscando no banco local (IndexedDB)...');
         const produtoLocal = await this.local.buscarPorGTIN(gtin);
         if (produtoLocal) {
             return produtoLocal;
@@ -23,6 +24,7 @@ export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
 
         // 2. Banco Remoto (Postgres - Fonte da Verdade)
         try {
+            aoMudarStatus?.('Buscando no banco remoto (Postgres)...');
             const produtoRemoto = await this.remoto.buscarPorGTIN(gtin);
             if (produtoRemoto) {
                 // Hidratação do Cache Local

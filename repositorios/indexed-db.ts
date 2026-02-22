@@ -174,7 +174,7 @@ export class RepositorioProdutosIndexedDB implements RepositorioProdutos {
 
     // ─── Métodos da Interface RepositorioProdutos ─────────────────────────────
 
-    async buscarPorGTIN(gtin: string): Promise<Produto | null> {
+    async buscarPorGTIN(gtin: string, _aoMudarStatus?: (status: string) => void): Promise<Produto | null> {
         const banco = await this.abrirBanco();
 
         return new Promise((resolve, reject) => {

@@ -174,3 +174,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Semântica Técnica:** Implementada hierarquia `H1/H2` e metatag `apple-touch-icon` para pontuação mobile e acessibilidade.
 *   **HMR (Fast Refresh):** Correção definitiva do erro de invalidação do Vite através do isolamento total de Hooks e constantes de componentes `.tsx`.
 *   **Documentação:** Consolidação do relatório de auditoria e técnica no post-mortem de performance.
+
+### 22/02: [Refatoração da Cascata de Busca (Callbacks)](./walkthrough/cascata_busca_callbacks.md) 🔄
+*   **Encapsulamento Arquitetural:** Implementado sistema de callbacks de status na interface de repositórios, eliminando o acoplamento entre a UI e os detalhes técnicos de storage (IndexedDB vs Postgres).
+*   **Transparência de Busca:** A UI agora informa precisamente em qual camada a busca está (Memória -> Local -> Remoto -> API), melhorando o feedback durante o carregamento.
+*   **Resiliência Offline:** Otimização do fluxo para garantir que o cache em memória (estado) e o cache persistente (IndexedDB) sejam priorizados, reduzindo a latência e o consumo de rede.

@@ -7,7 +7,7 @@ import { Produto } from '../types';
  */
 export class RepositorioProdutosPostgres implements RepositorioProdutos {
 
-    async buscarPorGTIN(gtin: string): Promise<Produto | null> {
+    async buscarPorGTIN(gtin: string, _aoMudarStatus?: (status: string) => void): Promise<Produto | null> {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 segundos

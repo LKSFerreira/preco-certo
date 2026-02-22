@@ -20,9 +20,10 @@ export interface RepositorioProdutos {
    * Busca um produto pelo GTIN.
    * 
    * :param gtin: Código de barras do produto (ex: "7891000100103")
+   * :param aoMudarStatus: Callback para notificar progresso (opcional)
    * :returns: Produto encontrado ou null se não existir
    */
-  buscarPorGTIN(gtin: string): Promise<Produto | null>;
+  buscarPorGTIN(gtin: string, aoMudarStatus?: (status: string) => void): Promise<Produto | null>;
 
   /**
    * Lista todos os produtos cadastrados.
