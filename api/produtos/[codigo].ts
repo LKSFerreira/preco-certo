@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z as zod } from 'zod';
 import { createHash } from 'crypto';
-import pool from '../_lib/banco';
+import pool from '../_lib/banco.js';
 
 // Schema de Validação (Blindagem contra lixo)
 const schemaProduto = zod.object({

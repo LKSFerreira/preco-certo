@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import pool from '../_lib/banco';
-import { gerarCodigoToken, calcularHash, obterDuracaoPorPlano, planoEhValido } from '../_lib/tokens';
+import pool from '../_lib/banco.js';
+import { gerarCodigoToken, calcularHash, obterDuracaoPorPlano, planoEhValido } from '../_lib/tokens.js';
 
 /**
  * Endpoint para gerar um novo token premium após confirmação de pagamento.

@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import pool from './banco';
+import pool from './banco.js';
 
 /**
  * Rate Limiter baseado na tabela `tentativas_ativacao`.

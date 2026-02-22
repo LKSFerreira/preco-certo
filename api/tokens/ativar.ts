@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import pool from '../_lib/banco';
-import { calcularHash, formatoTokenEhValido } from '../_lib/tokens';
-import { hashear, verificarRateLimit, registrarTentativa } from '../_lib/rate_limiter';
+import pool from '../_lib/banco.js';
+import { calcularHash, formatoTokenEhValido } from '../_lib/tokens.js';
+import { hashear, verificarRateLimit, registrarTentativa } from '../_lib/rate_limiter.js';
 
 /**
  * Endpoint para ativar um token premium em um dispositivo.

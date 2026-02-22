@@ -1,4 +1,4 @@
-import pool from './banco.ts';
+import pool from './banco.js';
 
 /**
  * Valida se um Hash de Token possui status Premium ativo no banco de dados.
