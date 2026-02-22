@@ -15,7 +15,7 @@ interface PropsFormulario {
   dadosPrePreenchidos?: Partial<Produto> | null;
 }
 
-export const ModalFormularioProduto: React.FC<PropsFormulario> = ({
+const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   gtinInicial,
   aoSalvar,
   aoCancelar,
@@ -309,7 +309,7 @@ export const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 
   return (
     <div className="absolute inset-0 bg-white z-50 flex flex-col h-full overflow-hidden animate-fade-in">
-      <div className="bg-verde-600 text-white p-4 shadow-md flex items-center gap-3 shrink-0">
+      <div className="bg-verde-700 text-white p-4 shadow-md flex items-center gap-3 shrink-0">
         <button
           type="button"
           onClick={aoCancelar}
@@ -620,7 +620,7 @@ export const ModalFormularioProduto: React.FC<PropsFormulario> = ({
               disabled={analisandoIA}
               className={`w-full text-white py-4 rounded-xl font-bold text-lg shadow-lg transition-all ${analisandoIA
                 ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-verde-600 hover:bg-verde-700 active:scale-95'
+                : 'bg-verde-700 hover:bg-verde-700 active:scale-95'
                 }`}
             >
               {analisandoIA ? 'Processando...' : 'Salvar Produto'}
@@ -631,3 +631,5 @@ export const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     </div>
   );
 };
+
+export default ModalFormularioProduto;

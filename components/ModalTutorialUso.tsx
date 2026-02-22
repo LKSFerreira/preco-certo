@@ -22,7 +22,7 @@ interface PropsModalTutorial {
  * Tutorial visual de primeiro acesso (Tela Única).
  * Foco em ensinar o utilizador a aproximar a câmara e mostrar a soma automática.
  */
-export const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
+const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [totalAcumulado, setTotalAcumulado] = useState(0);
   const [direcaoDescarte, setDirecaoDescarte] = useState(1);
@@ -199,18 +199,4 @@ export const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => 
   );
 };
 
-/**
- * Componente principal (Preview)
- */
-export default function AppPrincipal() {
-  const { mostrar, fechar } = useTutorialPrimeiroAcesso();
-  return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold mb-4">Preview do App</h2>
-        <button onClick={() => { localStorage.removeItem(CHAVE_TUTORIAL_VISTO); window.location.reload(); }} className="bg-blue-600 text-white px-4 py-2 rounded">Reiniciar Tutorial</button>
-      </div>
-      {mostrar && <ModalTutorialUso aoFechar={fechar} />}
-    </div>
-  );
-}
+export default ModalTutorialUso;

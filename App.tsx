@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy } from 'react';
 import { Produto, ItemCarrinho, ItemCarrinhoExpandido, TelaApp } from './types';
 import { IMAGEM_PADRAO } from './constants';
 import { formatarMoeda } from './services/utilitarios';
-import { ModalScannerBarras } from './components/ModalScannerBarras';
-import { ModalLoadingCarrinho } from './components/ModalLoadingCarrinho';
-import { ModalFormularioProduto } from './components/ModalFormularioProduto';
-import { DebugConsole } from './components/DebugConsole';
-import { ModalDoacao } from './components/ModalDoacao';
-import { ModalContato } from './components/ModalContato';
-import { ModalConfirmacao } from './components/ModalConfirmacao';
-import { ModalTutorialUso } from './components/ModalTutorialUso';
+const ScannerCodigo = lazy(() => import('./components/ModalScannerBarras'));
+import ModalLoadingCarrinho from './components/ModalLoadingCarrinho';
+const ModalFormularioProduto = lazy(() => import('./components/ModalFormularioProduto'));
+import DebugConsole from './components/DebugConsole';
+const ModalDoacao = lazy(() => import('./components/ModalDoacao'));
+const ModalContato = lazy(() => import('./components/ModalContato'));
+const ModalConfirmacao = lazy(() => import('./components/ModalConfirmacao'));
+const ModalTutorialUso = lazy(() => import('./components/ModalTutorialUso'));
+const ModalAtivarToken = lazy(() => import('./components/ModalAtivarToken'));
 import { useTutorialPrimeiroAcesso } from './hooks/useTutorialUso';
 import { useRepositorios } from './contextos/ContextoRepositorios';
 import { buscarProdutoCosmos } from './services/cosmos';
 import { buscarProdutoOFF } from './services/openfoodfacts';
-import { ModalAtivarToken } from './components/ModalAtivarToken';
 import { acordarAPIsSilenciosamente } from './services/warmup';
 
 export default function App() {
@@ -455,7 +455,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <i className="fas fa-spinner fa-spin text-4xl text-verde-600 mb-4"></i>
+          <i className="fas fa-spinner fa-spin text-4xl text-verde-700 mb-4"></i>
           <p className="text-gray-600">Carregando...</p>
         </div>
       </div>
@@ -472,7 +472,7 @@ export default function App() {
 
             {/* Logo e Título */}
             <div className="flex items-center gap-3">
-              <div className="bg-verde-50 text-verde-600 p-2 rounded-xl border border-verde-100 shadow-sm flex items-center justify-center transition-colors">
+              <div className="bg-verde-50 text-verde-700 p-2 rounded-xl border border-verde-100 shadow-sm flex items-center justify-center transition-colors">
                 <i className="fas fa-shopping-cart fa-flip-horizontal text-2xl"></i>
               </div>
               <div className="flex flex-col justify-center">
@@ -530,10 +530,11 @@ export default function App() {
         {/* 2. Área Principal (Lista de Compras) */}
         <main className="flex-1 w-full p-4 pb-32">
           {carrinhoExpandido.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-              <i className="fas fa-shopping-basket text-6xl mb-4 text-gray-200"></i>
-              <h2 className="text-lg font-medium">Seu carrinho está vazio</h2>
-              <p className="text-sm">Escaneie um produto para começar!</p>
+            // Trocado de text-gray-400 para text-gray-500 para dar contraste no fundo branco
+            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+              <i className="fas fa-shopping-basket text-6xl mb-4 text-gray-300"></i>
+              <h2 className="text-lg font-medium text-gray-600">Seu carrinho está vazio</h2>
+              <p className="text-sm text-gray-600">Escaneie um produto para começar!</p>
             </div>
           ) : (
             <ul className="space-y-3">
@@ -575,7 +576,7 @@ export default function App() {
                           }}
                           className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${item.quantidade === 1
                             ? 'text-red-500 hover:bg-red-50'
-                            : 'text-verde-600 hover:bg-verde-50'
+                            : 'text-verde-700 hover:bg-verde-50'
                             }`}
                           title={item.quantidade === 1 ? "Remover" : "Diminuir"}
                         >
@@ -595,7 +596,7 @@ export default function App() {
                             e.stopPropagation();
                             alterarQuantidade(item.codigo_barras, 1);
                           }}
-                          className="w-8 h-8 flex items-center justify-center text-verde-600 hover:bg-verde-50 rounded transition-colors"
+                          className="w-8 h-8 flex items-center justify-center text-verde-700 hover:bg-verde-50 rounded transition-colors"
                         >
                           <i className="fas fa-plus text-xs"></i>
                         </button>
@@ -623,7 +624,7 @@ export default function App() {
 
             <div className="flex justify-between items-end px-1">
               <span className="text-gray-500 font-medium">Total Geral</span>
-              <span className="text-3xl font-bold text-verde-600 font-mono">
+              <span className="text-3xl font-bold text-verde-700 font-mono">
                 {formatarMoeda(calcularTotal)}
               </span>
             </div>
@@ -635,7 +636,7 @@ export default function App() {
                   acordarAPIsSilenciosamente();
                   setTelaAtual('SCANNER');
                 }}
-                className="flex-1 bg-verde-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
+                className="flex-1 bg-verde-700 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
               >
                 <i className="fas fa-barcode text-xl"></i>
                 <span>Ler Código</span>
@@ -658,92 +659,93 @@ export default function App() {
         {import.meta.env.DEV && <DebugConsole />}
 
         {/* --- Modais e Telas Sobrepostas --- */}
+        <Suspense fallback={<ModalLoadingCarrinho visivel={true} titulo="Carregando..." />}>
+          {/* Modal de Doação */}
+          {mostrarDoacao && (
+            <ModalDoacao aoFechar={() => setMostrarDoacao(false)} />
+          )}
 
-        {/* Modal de Doação */}
-        {mostrarDoacao && (
-          <ModalDoacao aoFechar={() => setMostrarDoacao(false)} />
-        )}
-
-        {/* Modal de Contato WhatsApp */}
-        {mostrarContato && (
-          <ModalContato aoFechar={() => setMostrarContato(false)} />
-        )}
-        {/* Tela de Loading Reutilizável */}
-        <ModalLoadingCarrinho
-          visivel={etapaBusca !== null}
-          titulo={etapaBusca || "Carregando..."}
-        />
-
-        {/* Scanner Modal */}
-        {telaAtual === 'SCANNER' && (
-          <ModalScannerBarras
-            aoLerCodigo={aoLerCodigo}
-            aoCancelar={() => setTelaAtual('DASHBOARD')}
+          {/* Modal de Contato WhatsApp */}
+          {mostrarContato && (
+            <ModalContato aoFechar={() => setMostrarContato(false)} />
+          )}
+          {/* Tela de Loading Reutilizável */}
+          <ModalLoadingCarrinho
+            visivel={etapaBusca !== null}
+            titulo={etapaBusca || "Carregando..."}
           />
-        )}
 
-        {/* Formulário de Produto Modal */}
-        {telaAtual === 'CADASTRO' && codigoLido && (
-          <ModalFormularioProduto
-            gtinInicial={codigoLido}
-            aoSalvar={aoSalvarProduto}
-            aoCancelar={() => {
-              setTelaAtual('DASHBOARD');
-              setCodigoLido(null);
-              setDadosPrePreenchidos(null);
-              setModoEdicao(false);
-            }}
-            produtoExistente={catalogo[codigoLido] || null}
-            dadosPrePreenchidos={dadosPrePreenchidos}
-          />
-        )}
+          {/* Scanner Modal */}
+          {telaAtual === 'SCANNER' && (
+            <ScannerCodigo
+              aoLerCodigo={aoLerCodigo}
+              aoCancelar={() => setTelaAtual('DASHBOARD')}
+            />
+          )}
 
-        {/* Modal de Confirmação - Esvaziar Carrinho */}
-        {mostrarConfirmacaoEsvaziar && (
-          <ModalConfirmacao
-            titulo="Esvaziar Carrinho"
-            mensagem="Tem certeza que deseja remover todos os itens do carrinho?"
-            textoBotaoConfirmar="Esvaziar"
-            textoBotaoCancelar="Cancelar"
-            corBotaoConfirmar="vermelho"
-            aoConfirmar={executarEsvaziamento}
-            aoCancelar={() => setMostrarConfirmacaoEsvaziar(false)}
-          />
-        )}
+          {/* Formulário de Produto Modal */}
+          {telaAtual === 'CADASTRO' && codigoLido && (
+            <ModalFormularioProduto
+              gtinInicial={codigoLido}
+              aoSalvar={aoSalvarProduto}
+              aoCancelar={() => {
+                setTelaAtual('DASHBOARD');
+                setCodigoLido(null);
+                setDadosPrePreenchidos(null);
+                setModoEdicao(false);
+              }}
+              produtoExistente={catalogo[codigoLido] || null}
+              dadosPrePreenchidos={dadosPrePreenchidos}
+            />
+          )}
 
-        {/* Tela de Ativação Premium */}
-        {mostrarAtivarToken && (
-          <ModalAtivarToken
-            tokenObrigatorioUrl={deepLinkToken}
-            aoVoltar={() => {
-              setMostrarAtivarToken(false);
-              setDeepLinkToken(null);
-            }}
-            aoIrParaDashboard={() => {
-              setMostrarAtivarToken(false);
-              setDeepLinkToken(null);
-              setTelaAtual('DASHBOARD');
-            }}
-          />
-        )}
+          {/* Modal de Confirmação - Esvaziar Carrinho */}
+          {mostrarConfirmacaoEsvaziar && (
+            <ModalConfirmacao
+              titulo="Esvaziar Carrinho"
+              mensagem="Tem certeza que deseja remover todos os itens do carrinho?"
+              textoBotaoConfirmar="Esvaziar"
+              textoBotaoCancelar="Cancelar"
+              corBotaoConfirmar="vermelho"
+              aoConfirmar={executarEsvaziamento}
+              aoCancelar={() => setMostrarConfirmacaoEsvaziar(false)}
+            />
+          )}
 
-        {/* Modal de Confirmação - Finalizar Compra */}
-        {mostrarConfirmacaoFinalizar && (
-          <ModalConfirmacao
-            titulo="Finalizar Compra"
-            mensagem={`Confirma a compra de ${carrinho.length} ${carrinho.length === 1 ? 'item' : 'itens'} no valor de ${formatarMoeda(calcularTotal)}?`}
-            textoBotaoConfirmar="Finalizar"
-            textoBotaoCancelar="Voltar"
-            corBotaoConfirmar="verde"
-            aoConfirmar={executarFinalizacao}
-            aoCancelar={() => setMostrarConfirmacaoFinalizar(false)}
-          />
-        )}
+          {/* Tela de Ativação Premium */}
+          {mostrarAtivarToken && (
+            <ModalAtivarToken
+              tokenObrigatorioUrl={deepLinkToken}
+              aoVoltar={() => {
+                setMostrarAtivarToken(false);
+                setDeepLinkToken(null);
+              }}
+              aoIrParaDashboard={() => {
+                setMostrarAtivarToken(false);
+                setDeepLinkToken(null);
+                setTelaAtual('DASHBOARD');
+              }}
+            />
+          )}
 
-        {/* Tutorial de Primeiro Acesso */}
-        {mostrarTutorial && (
-          <ModalTutorialUso aoFechar={fecharTutorial} />
-        )}
+          {/* Modal de Confirmação - Finalizar Compra */}
+          {mostrarConfirmacaoFinalizar && (
+            <ModalConfirmacao
+              titulo="Finalizar Compra"
+              mensagem={`Confirma a compra de ${carrinho.length} ${carrinho.length === 1 ? 'item' : 'itens'} no valor de ${formatarMoeda(calcularTotal)}?`}
+              textoBotaoConfirmar="Finalizar"
+              textoBotaoCancelar="Voltar"
+              corBotaoConfirmar="verde"
+              aoConfirmar={executarFinalizacao}
+              aoCancelar={() => setMostrarConfirmacaoFinalizar(false)}
+            />
+          )}
+
+          {/* Tutorial de Primeiro Acesso */}
+          {mostrarTutorial && (
+            <ModalTutorialUso aoFechar={fecharTutorial} />
+          )}
+        </Suspense>
 
       </div>
     </div>

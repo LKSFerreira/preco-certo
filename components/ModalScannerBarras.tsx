@@ -6,7 +6,7 @@ interface PropsScanner {
   aoCancelar: () => void;
 }
 
-export const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar }) => {
+const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar }) => {
   const [codigoManual, setCodigoManual] = useState('');
   const [statusCamera, setStatusCamera] = useState<'iniciando' | 'ativa' | 'erro'>('iniciando');
   const [mensagemErro, setMensagemErro] = useState<string | null>(null);
@@ -198,7 +198,7 @@ export const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCanc
             />
             <button
               type="submit"
-              className="bg-verde-600 text-white px-6 rounded font-bold hover:bg-verde-700 transition-colors shadow-sm"
+              className="bg-verde-700 text-white px-6 rounded font-bold hover:bg-verde-700 transition-colors shadow-sm"
             >
               OK
             </button>
@@ -208,3 +208,5 @@ export const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCanc
     </div>
   );
 };
+
+export default ModalScannerBarras;

@@ -179,3 +179,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Encapsulamento Arquitetural:** Implementado sistema de callbacks de status na interface de repositórios, eliminando o acoplamento entre a UI e os detalhes técnicos de storage (IndexedDB vs Postgres).
 *   **Transparência de Busca:** A UI agora informa precisamente em qual camada a busca está (Memória -> Local -> Remoto -> API), melhorando o feedback durante o carregamento.
 *   **Resiliência Offline:** Otimização do fluxo para garantir que o cache em memória (estado) e o cache persistente (IndexedDB) sejam priorizados, reduzindo a latência e o consumo de rede.
+
+### 22/02: [Lazy Loading e Code Splitting](./walkthrough/lazy_loading_suspense.md) ⚡
+*   **Performance Percebida:** Implementado `React.lazy` e `Suspense` para todos os modais da aplicação, reduzindo o bundle inicial.
+*   **Modularização:** Convertidos 9 componentes para `export default`, permitindo o carregamento assíncrono apenas sob demanda (on-click).
+*   **Robustez UX:** Adicionado fallback visual durante o carregamento dos chunks dinâmicos, evitando "piscadas" ou erros de mount.

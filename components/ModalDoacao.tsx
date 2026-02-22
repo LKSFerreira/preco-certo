@@ -6,7 +6,7 @@ interface PropsModalDoacao {
   aoFechar: () => void;
 }
 
-export const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
+const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
   const [copiado, setCopiado] = useState<string | null>(null);
 
   const copiarTexto = (texto: string, tipo: string) => {
@@ -24,7 +24,7 @@ export const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden relative">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-verde-600 to-verde-500 p-4 text-white text-center relative">
+        <div className="bg-gradient-to-r from-verde-700 to-verde-500 p-4 text-white text-center relative">
           <button
             onClick={aoFechar}
             className="absolute top-3 right-3 text-white/80 hover:text-white p-2"
@@ -78,7 +78,7 @@ export const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
                 <button
                   onClick={() => copiarTexto(dadosPix.copia_e_cola_pix, 'copia')}
                   className={`px-3 py-2 rounded text-xs font-bold transition-all w-24 flex items-center justify-center gap-1
-                    ${copiado === 'copia' ? 'bg-green-100 text-green-700' : 'bg-verde-600 text-white hover:bg-verde-700'}
+                    ${copiado === 'copia' ? 'bg-green-100 text-green-700' : 'bg-verde-700 text-white hover:bg-verde-700'}
                   `}
                 >
                   {copiado === 'copia' ? <><i className="fas fa-check"></i> Copiado</> : <><i className="fas fa-copy"></i> Copiar</>}
@@ -98,7 +98,7 @@ export const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
                 <button
                   onClick={() => copiarTexto(dadosPix.chave_aleatoria_pix, 'chave')}
                   className={`px-3 py-2 rounded text-xs font-bold transition-all w-24 flex items-center justify-center gap-1
-                    ${copiado === 'chave' ? 'bg-green-100 text-green-700' : 'bg-verde-600 text-white hover:bg-verde-700'}
+                    ${copiado === 'chave' ? 'bg-green-100 text-green-700' : 'bg-verde-700 text-white hover:bg-verde-700'}
                   `}
                 >
                   {copiado === 'chave' ? <><i className="fas fa-check"></i> Copiado</> : <><i className="fas fa-copy"></i> Copiar</>}
@@ -149,3 +149,5 @@ export const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
     </div>
   );
 };
+
+export default ModalDoacao;

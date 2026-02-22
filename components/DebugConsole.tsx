@@ -1,12 +1,12 @@
 import React from 'react';
 import { useLogger, logger } from '../services/logger';
 
-export const DebugConsole: React.FC = () => {
+const DebugConsole: React.FC = () => {
   const { logs, isVisible, toggleVisibility, clearLogs } = useLogger();
 
   if (!isVisible) {
     return (
-      <button 
+      <button
         onClick={toggleVisibility}
         className="fixed bottom-4 left-4 z-[9999] bg-gray-800 text-white p-2 rounded-full shadow-lg opacity-50 hover:opacity-100 transition-opacity"
         title="Abrir Console de Debug"
@@ -40,18 +40,17 @@ export const DebugConsole: React.FC = () => {
         {logs.length === 0 && (
           <div className="text-gray-500 text-center mt-10 italic">Nenhum log registrado.</div>
         )}
-        
+
         {logs.map(log => (
           <div key={log.id} className="border-l-2 pl-2 py-1" style={{
             borderColor: log.level === 'error' ? '#ef4444' : log.level === 'warn' ? '#eab308' : log.level === 'success' ? '#22c55e' : '#3b82f6'
           }}>
             <div className="flex gap-2 text-gray-400 text-[10px] mb-0.5">
               <span>{log.timestamp.toLocaleTimeString()}</span>
-              <span className={`uppercase font-bold ${
-                log.level === 'error' ? 'text-red-500' : 
-                log.level === 'warn' ? 'text-yellow-500' : 
-                log.level === 'success' ? 'text-green-500' : 'text-blue-500'
-              }`}>{log.level}</span>
+              <span className={`uppercase font-bold ${log.level === 'error' ? 'text-red-500' :
+                log.level === 'warn' ? 'text-yellow-500' :
+                  log.level === 'success' ? 'text-green-500' : 'text-blue-500'
+                }`}>{log.level}</span>
             </div>
             <div className="text-gray-200 break-words">{log.message}</div>
             {log.details && (
@@ -65,3 +64,5 @@ export const DebugConsole: React.FC = () => {
     </div>
   );
 };
+
+export default DebugConsole;

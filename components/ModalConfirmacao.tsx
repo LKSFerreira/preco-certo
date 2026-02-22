@@ -29,7 +29,7 @@ interface PropsModalConfirmacao {
  *       aoCancelar={() => setMostrarModal(false)}
  *     />
  */
-export const ModalConfirmacao: React.FC<PropsModalConfirmacao> = ({
+const ModalConfirmacao: React.FC<PropsModalConfirmacao> = ({
   titulo,
   mensagem,
   textoBotaoConfirmar = 'Confirmar',
@@ -41,7 +41,7 @@ export const ModalConfirmacao: React.FC<PropsModalConfirmacao> = ({
   // Mapeamento de cores para classes Tailwind
   const coresBotao = {
     vermelho: 'bg-red-500 hover:bg-red-600 active:bg-red-700',
-    verde: 'bg-verde-600 hover:bg-verde-700 active:bg-verde-800',
+    verde: 'bg-verde-700 hover:bg-verde-700 active:bg-verde-800',
     azul: 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'
   };
 
@@ -87,3 +87,5 @@ export const ModalConfirmacao: React.FC<PropsModalConfirmacao> = ({
     </div>
   );
 };
+
+export default ModalConfirmacao;

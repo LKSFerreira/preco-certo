@@ -51,5 +51,18 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './')
     }
+  },
+  // --- ADICIONADO: Configuração de Code Splitting para Performance Máxima ---
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separa o React do resto do app
+          'vendor-react': ['react', 'react-dom'],
+          // Separa a IA do Google para carregar só quando for chamada
+          'vendor-ai': ['@google/genai']
+        }
+      }
+    }
   }
 });

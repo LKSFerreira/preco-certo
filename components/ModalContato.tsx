@@ -22,7 +22,7 @@ interface PropsModalContato {
  *
  *     <ModalContato aoFechar={() => setMostrar(false)} />
  */
-export const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
+const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
     const [nome, setNome] = useState('');
     const [mensagem, setMensagem] = useState('');
 
@@ -129,3 +129,5 @@ export const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
         </div>
     );
 };
+
+export default ModalContato;

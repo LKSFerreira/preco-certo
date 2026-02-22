@@ -6,7 +6,7 @@ interface LoadingCarrinhoProps {
   subtitulo?: string;
 }
 
-export const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
+const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
   visivel,
   titulo = "Buscando produtos...",
   subtitulo = "Estamos enchendo seu carrinho!"
@@ -14,7 +14,7 @@ export const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
   if (!visivel) return null;
 
   return (
-    <div className="absolute inset-0 z-[90] bg-gradient-to-b from-verde-600/95 to-verde-800/95 backdrop-blur-sm flex items-center justify-center overflow-hidden">
+    <div className="absolute inset-0 z-[90] bg-gradient-to-b from-verde-700/95 to-verde-800/95 backdrop-blur-sm flex items-center justify-center overflow-hidden">
       <div className="flex flex-col items-center gap-6 animate-fade-in z-10">
         {/* Carrinho de compras com produtos caindo dentro */}
         {/* 
@@ -80,7 +80,7 @@ export const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
           <div className="absolute top-[53%] left-[55%] text-2xl z-20 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.2s forwards' }}>🥚</div>
           <div className="absolute top-[45%] left-[20%] text-2xl z-20 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.3s forwards' }}>🥥</div>
           <div className="absolute top-[47%] left-[13%] text-2xl z-20 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.4s forwards' }}>🥛</div>
-          <div className="absolute top-[55%] left-[50%] text-2xl z-20 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.5s forwards' }}>🧈</div>
+          <div className="absolute top-[55%] left-[50%] text-2xl z-20 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.5s forwards' }}>バター</div>
 
           {/* Camada 2: MEIO (Intermediária) -> Delays: 1.5s a 1.9s */}
           <div className="absolute top-[40%] left-[25%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.60s forwards' }}>🧃</div>
@@ -88,8 +88,8 @@ export const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
           <div className="absolute top-[35%] left-[35%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.70s forwards' }}>🍎</div>
           <div className="absolute top-[40%] left-[50%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.75s forwards' }}>🧀</div>
           <div className="absolute top-[38%] left-[40%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.80s forwards' }}>🥦</div>
-          <div className="absolute top-[33%] left-[55%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.85s forwards' }}>🥑</div>
-          <div className="absolute top-[30%] left-[60%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.90s forwards' }}>🍇</div>
+          <div className="absolute top-[33%] left-[55%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.85s forwards' }}>アボカド</div>
+          <div className="absolute top-[30%] left-[60%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.90s forwards' }}>ぶどう</div>
           <div className="absolute top-[42%] left-[15%] text-xl z-30 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 1.95s forwards' }}>🍆</div>
 
           {/* Camada 3: TOPO (Transbordando) -> Delays: 2.0s a 2.4s */}
@@ -99,15 +99,15 @@ export const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
           <div className="absolute top-[23%] left-[45%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.3s forwards' }}>🍪</div>
           <div className="absolute top-[10%] left-[40%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.4s forwards' }}>🍞</div>
           <div className="absolute top-[18%] left-[25%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.5s forwards' }}>🍗</div>
-          <div className="absolute top-[12%] left-[65%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.6s forwards' }}>🍩</div>
-          <div className="absolute top-[25%] left-[50%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.7s forwards' }}>🥜</div>
+          <div className="absolute top-[12%] left-[65%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.6s forwards' }}>ドーナツ</div>
+          <div className="absolute top-[25%] left-[50%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.7s forwards' }}>ピーナッツ</div>
 
           {/* Camada 4: SUPERLOTAÇÃO (Topo Extra) -> Delays: 2.3s a 2.6s */}
           <div className="absolute top-[5%] left-[30%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.85s forwards' }}>🥞</div>
-          <div className="absolute top-[8%] left-[50%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.95s forwards' }}>🥐</div>
-          <div className="absolute top-[2%] left-[45%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 3.00s forwards' }}>🥖</div>
-          <div className="absolute top-[10%] left-[20%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 3.05s forwards' }}>🌽</div>
-          <div className="absolute top-[6%] left-[60%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 3.10s forwards' }}>🥔</div>
+          <div className="absolute top-[8%] left-[50%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 2.95s forwards' }}>クロワッサン</div>
+          <div className="absolute top-[2%] left-[45%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 3.00s forwards' }}>バゲット</div>
+          <div className="absolute top-[10%] left-[20%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 3.05s forwards' }}>とうもろこし</div>
+          <div className="absolute top-[6%] left-[60%] text-lg z-35 opacity-0" style={{ animation: 'aparecer 0.4s ease-out 3.10s forwards' }}>じゃがいも</div>
         </div>
 
         {/* Mensagem amigável */}
@@ -143,3 +143,5 @@ export const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
     </div>
   );
 };
+
+export default ModalLoadingCarrinho;

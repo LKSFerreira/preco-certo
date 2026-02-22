@@ -76,7 +76,7 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
           <button
             onClick={finalizarRecorte}
             disabled={processando}
-            className="flex-1 py-3.5 font-bold text-white bg-verde-600 rounded-xl shadow-lg hover:bg-verde-700 active:scale-95 transition-transform flex items-center justify-center gap-2 disabled:bg-gray-400"
+            className="flex-1 py-3.5 font-bold text-white bg-verde-700 rounded-xl shadow-lg hover:bg-verde-700 active:scale-95 transition-transform flex items-center justify-center gap-2 disabled:bg-gray-400"
           >
             {processando ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-check"></i>}
             <span>CONFIRMAR</span>
