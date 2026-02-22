@@ -465,289 +465,291 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-900 flex justify-center items-start overflow-x-hidden">
+      <div className="w-full max-w-3xl min-h-screen bg-white shadow-[0_0_80px_-15px_rgba(0,0,0,0.6)] flex flex-col font-sans relative border-x border-slate-800">
 
-      {/* 1. Barra de Navegação Superior */}
-      <header className="bg-white shadow-sm sticky top-0 z-20">
-        <div className="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+        {/* 1. Barra de Navegação Superior */}
+        <header className="bg-white shadow-sm sticky top-0 z-20 w-full">
+          <div className="w-full px-4 py-3 flex justify-between items-center">
 
-          {/* Logo e Título */}
-          <div className="flex items-center gap-3">
-            <div className="bg-verde-50 text-verde-600 p-2 rounded-xl border border-verde-100 shadow-sm flex items-center justify-center transition-colors">
-              <i className="fas fa-shopping-cart fa-flip-horizontal text-2xl"></i>
+            {/* Logo e Título */}
+            <div className="flex items-center gap-3">
+              <div className="bg-verde-50 text-verde-600 p-2 rounded-xl border border-verde-100 shadow-sm flex items-center justify-center transition-colors">
+                <i className="fas fa-shopping-cart fa-flip-horizontal text-2xl"></i>
+              </div>
+              <div className="flex flex-col justify-center">
+                <h1 className="font-bold text-gray-800 leading-tight text-lg">Sem Susto</h1>
+                <p className="text-[9px] text-gray-500 uppercase tracking-widest -mt-0.5">Controle de Gastos</p>
+              </div>
             </div>
-            <div className="flex flex-col justify-center">
-              <h1 className="font-bold text-gray-800 leading-tight text-lg">Sem Susto</h1>
-              <p className="text-[9px] text-gray-500 uppercase tracking-widest -mt-0.5">Controle de Gastos</p>
-            </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            {/* 
+            <div className="flex items-center gap-2">
+              {/* 
               BOTÃO WHATSAPP - Linhas 429-435
               Classes para ajustar:
               - p-3        → padding (p-1, p-2, p-3, p-4, p-5...)
               - rounded-xl → bordas (rounded, rounded-lg, rounded-xl, rounded-2xl, rounded-full)
               - text-xl    → tamanho do ícone (text-sm, text-base, text-lg, text-xl, text-2xl, text-3xl)
             */}
-            <button
-              onClick={() => setMostrarContato(true)}
-              className="bg-green-50 text-green-600 p-2 rounded-xl text-sm font-bold border border-green-100 hover:bg-green-100 transition-colors flex items-center justify-center shadow-sm"
-              title="Fale conosco via WhatsApp"
-            >
-              <i className="fab fa-whatsapp text-2xl"></i>
-            </button>
+              <button
+                onClick={() => setMostrarContato(true)}
+                className="bg-green-50 text-green-600 p-2 rounded-xl text-sm font-bold border border-green-100 hover:bg-green-100 transition-colors flex items-center justify-center shadow-sm"
+                title="Fale conosco via WhatsApp"
+              >
+                <i className="fab fa-whatsapp text-2xl"></i>
+              </button>
 
-            {/* 
+              {/* 
               BOTÃO DOAÇÃO - Linhas 437-444
               Classes para ajustar:
               - p-3        → padding (p-1, p-2, p-3, p-4, p-5...)
               - rounded-xl → bordas (rounded, rounded-lg, rounded-xl, rounded-2xl, rounded-full)
               - text-xl    → tamanho do ícone (text-sm, text-base, text-lg, text-xl, text-2xl, text-3xl)
             */}
-            <button
-              onClick={() => setMostrarDoacao(true)}
-              className="bg-red-50 text-red-500 p-2 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
-              title="Fazer uma doação"
-            >
-              <i className="fas fa-heart text-2xl"></i>
-            </button>
-
-            {/* Botão Esvaziar Carrinho */}
-            {carrinho.length > 0 && (
               <button
-                onClick={solicitarEsvaziamento}
-                className="p-2 rounded-lg text-sm font-medium transition-colors bg-red-50 text-red-600 hover:bg-red-100"
-                title="Esvaziar carrinho"
+                onClick={() => setMostrarDoacao(true)}
+                className="bg-red-50 text-red-500 p-2 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
+                title="Fazer uma doação"
               >
-                <i className="fas fa-trash-alt mr-1"></i>
-                <span className="text-xs">Esvaziar</span>
+                <i className="fas fa-heart text-2xl"></i>
               </button>
-            )}
-          </div>
-        </div>
-      </header>
 
-      {/* 2. Área Principal (Lista de Compras) */}
-      <main className="flex-1 max-w-md mx-auto w-full p-4 pb-32">
-        {carrinhoExpandido.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 text-gray-400">
-            <i className="fas fa-shopping-basket text-6xl mb-4 text-gray-200"></i>
-            <p>Seu carrinho está vazio.</p>
-            <p className="text-sm">Escaneie um produto para começar!</p>
+              {/* Botão Esvaziar Carrinho */}
+              {carrinho.length > 0 && (
+                <button
+                  onClick={solicitarEsvaziamento}
+                  className="p-2 rounded-lg text-sm font-medium transition-colors bg-red-50 text-red-600 hover:bg-red-100"
+                  title="Esvaziar carrinho"
+                >
+                  <i className="fas fa-trash-alt mr-1"></i>
+                  <span className="text-xs">Esvaziar</span>
+                </button>
+              )}
+            </div>
           </div>
-        ) : (
-          <ul className="space-y-3">
-            {carrinhoExpandido.map((item) => (
-              <li
-                key={item.codigo_barras}
-                onClick={() => aoEditarItem(item)}
-                className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex gap-3 animate-fade-in relative group cursor-pointer hover:border-verde-300 transition-colors active:scale-[0.99] transform"
+        </header>
+
+        {/* 2. Área Principal (Lista de Compras) */}
+        <main className="flex-1 w-full p-4 pb-32">
+          {carrinhoExpandido.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64 text-gray-400">
+              <i className="fas fa-shopping-basket text-6xl mb-4 text-gray-200"></i>
+              <p>Seu carrinho está vazio.</p>
+              <p className="text-sm">Escaneie um produto para começar!</p>
+            </div>
+          ) : (
+            <ul className="space-y-3">
+              {carrinhoExpandido.map((item) => (
+                <li
+                  key={item.codigo_barras}
+                  onClick={() => aoEditarItem(item)}
+                  className="bg-white p-3 rounded-lg shadow-sm border border-gray-100 flex gap-3 animate-fade-in relative group cursor-pointer hover:border-verde-300 transition-colors active:scale-[0.99] transform"
+                >
+
+                  {/* Imagem */}
+                  <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
+                    <img
+                      src={item.imagem || IMAGEM_PADRAO}
+                      alt={item.descricao}
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+
+                  {/* Conteúdo */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-800 truncate">
+                        {item.descricao}
+                      </h3>
+                      <p className="text-xs text-gray-500 truncate">
+                        {item.marca} • {item.tamanho}
+                      </p>
+                    </div>
+
+                    {/* Controles de Preço e Quantidade */}
+                    <div className="flex justify-between items-end mt-1">
+                      <div className="flex items-center gap-1 bg-gray-50 rounded p-1 border border-gray-100">
+                        {/* Botão Menos / Lixeira */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alterarQuantidade(item.codigo_barras, -1);
+                          }}
+                          className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${item.quantidade === 1
+                            ? 'text-red-500 hover:bg-red-50'
+                            : 'text-verde-600 hover:bg-verde-50'
+                            }`}
+                          title={item.quantidade === 1 ? "Remover" : "Diminuir"}
+                        >
+                          {item.quantidade === 1 ? (
+                            <i className="fas fa-trash-alt text-xs"></i>
+                          ) : (
+                            <i className="fas fa-minus text-xs"></i>
+                          )}
+                        </button>
+
+                        <span className="text-sm font-bold w-6 text-center text-gray-700 select-none">
+                          {item.quantidade}
+                        </span>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alterarQuantidade(item.codigo_barras, 1);
+                          }}
+                          className="w-8 h-8 flex items-center justify-center text-verde-600 hover:bg-verde-50 rounded transition-colors"
+                        >
+                          <i className="fas fa-plus text-xs"></i>
+                        </button>
+                      </div>
+
+                      <div className="text-right">
+                        <div className="text-xs text-gray-400 font-mono">
+                          {item.quantidade}x {formatarMoeda(item.preco_estimado || 0)}
+                        </div>
+                        <div className="font-bold text-gray-900 font-mono text-lg">
+                          {formatarMoeda((item.preco_estimado || 0) * item.quantidade)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </main>
+
+        {/* 3. Rodapé Fixo (Adaptado para Tablet/Desktop Wrapper) */}
+        <footer className="sticky bottom-0 w-full bg-white border-t border-gray-200 z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          <div className="w-full p-4 flex flex-col gap-3">
+
+            <div className="flex justify-between items-end px-1">
+              <span className="text-gray-500 font-medium">Total Geral</span>
+              <span className="text-3xl font-bold text-verde-600 font-mono">
+                {formatarMoeda(calcularTotal)}
+              </span>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  // --- MODO DEBUG: TESTE DE ANIMAÇÃO DE LOADING ---
+                  // Simula leitura de código direto para testar animação
+                  // 7891000100103 = Leite
+                  //aoLerCodigo('7891000100103');
+                  setTelaAtual('SCANNER'); // Original
+                }}
+                className="flex-1 bg-verde-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
               >
+                <i className="fas fa-barcode text-xl"></i>
+                <span>Ler Código</span>
+              </button>
 
-                {/* Imagem */}
-                <div className="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden flex items-center justify-center">
-                  <img
-                    src={item.imagem || IMAGEM_PADRAO}
-                    alt={item.descricao}
-                    className="max-w-full max-h-full object-contain"
-                  />
-                </div>
+              {carrinho.length > 0 && (
+                <button
+                  onClick={solicitarFinalizacao}
+                  className="flex-1 bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
+                >
+                  <i className="fas fa-check text-xl"></i>
+                  <span>Finalizar</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </footer>
 
-                {/* Conteúdo */}
-                <div className="flex-1 min-w-0 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-semibold text-gray-800 truncate">
-                      {item.descricao}
-                    </h3>
-                    <p className="text-xs text-gray-500 truncate">
-                      {item.marca} • {item.tamanho}
-                    </p>
-                  </div>
+        {/* Mobile Debugger (Apenas Dev) */}
+        {import.meta.env.DEV && <DebugConsole />}
 
-                  {/* Controles de Preço e Quantidade */}
-                  <div className="flex justify-between items-end mt-1">
-                    <div className="flex items-center gap-1 bg-gray-50 rounded p-1 border border-gray-100">
-                      {/* Botão Menos / Lixeira */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          alterarQuantidade(item.codigo_barras, -1);
-                        }}
-                        className={`w-8 h-8 flex items-center justify-center rounded transition-colors ${item.quantidade === 1
-                          ? 'text-red-500 hover:bg-red-50'
-                          : 'text-verde-600 hover:bg-verde-50'
-                          }`}
-                        title={item.quantidade === 1 ? "Remover" : "Diminuir"}
-                      >
-                        {item.quantidade === 1 ? (
-                          <i className="fas fa-trash-alt text-xs"></i>
-                        ) : (
-                          <i className="fas fa-minus text-xs"></i>
-                        )}
-                      </button>
+        {/* --- Modais e Telas Sobrepostas --- */}
 
-                      <span className="text-sm font-bold w-6 text-center text-gray-700 select-none">
-                        {item.quantidade}
-                      </span>
-
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          alterarQuantidade(item.codigo_barras, 1);
-                        }}
-                        className="w-8 h-8 flex items-center justify-center text-verde-600 hover:bg-verde-50 rounded transition-colors"
-                      >
-                        <i className="fas fa-plus text-xs"></i>
-                      </button>
-                    </div>
-
-                    <div className="text-right">
-                      <div className="text-xs text-gray-400 font-mono">
-                        {item.quantidade}x {formatarMoeda(item.preco_estimado || 0)}
-                      </div>
-                      <div className="font-bold text-gray-900 font-mono text-lg">
-                        {formatarMoeda((item.preco_estimado || 0) * item.quantidade)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+        {/* Modal de Doação */}
+        {mostrarDoacao && (
+          <ModalDoacao aoFechar={() => setMostrarDoacao(false)} />
         )}
-      </main>
 
-      {/* 3. Rodapé Fixo */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <div className="max-w-md mx-auto p-4 flex flex-col gap-3">
-
-          <div className="flex justify-between items-end px-1">
-            <span className="text-gray-500 font-medium">Total Geral</span>
-            <span className="text-3xl font-bold text-verde-600 font-mono">
-              {formatarMoeda(calcularTotal)}
-            </span>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => {
-                // --- MODO DEBUG: TESTE DE ANIMAÇÃO DE LOADING ---
-                // Simula leitura de código direto para testar animação
-                // 7891000100103 = Leite
-                //aoLerCodigo('7891000100103');
-                setTelaAtual('SCANNER'); // Original
-              }}
-              className="flex-1 bg-verde-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
-            >
-              <i className="fas fa-barcode text-xl"></i>
-              <span>Ler Código</span>
-            </button>
-
-            {carrinho.length > 0 && (
-              <button
-                onClick={solicitarFinalizacao}
-                className="flex-1 bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
-              >
-                <i className="fas fa-check text-xl"></i>
-                <span>Finalizar</span>
-              </button>
-            )}
-          </div>
-        </div>
-      </footer>
-
-      {/* Mobile Debugger (Apenas Dev) */}
-      {import.meta.env.DEV && <DebugConsole />}
-
-      {/* --- Modais e Telas Sobrepostas --- */}
-
-      {/* Modal de Doação */}
-      {mostrarDoacao && (
-        <ModalDoacao aoFechar={() => setMostrarDoacao(false)} />
-      )}
-
-      {/* Modal de Contato WhatsApp */}
-      {mostrarContato && (
-        <ModalContato aoFechar={() => setMostrarContato(false)} />
-      )}
-      {/* Tela de Loading Reutilizável */}
-      <LoadingCarrinho
-        visivel={etapaBusca !== null}
-        titulo={etapaBusca || "Carregando..."}
-      />
-
-      {/* Scanner Modal */}
-      {telaAtual === 'SCANNER' && (
-        <ScannerBarras
-          aoLerCodigo={aoLerCodigo}
-          aoCancelar={() => setTelaAtual('DASHBOARD')}
+        {/* Modal de Contato WhatsApp */}
+        {mostrarContato && (
+          <ModalContato aoFechar={() => setMostrarContato(false)} />
+        )}
+        {/* Tela de Loading Reutilizável */}
+        <LoadingCarrinho
+          visivel={etapaBusca !== null}
+          titulo={etapaBusca || "Carregando..."}
         />
-      )}
 
-      {/* Formulário de Produto Modal */}
-      {telaAtual === 'CADASTRO' && codigoLido && (
-        <FormularioProduto
-          gtinInicial={codigoLido}
-          aoSalvar={aoSalvarProduto}
-          aoCancelar={() => {
-            setTelaAtual('DASHBOARD');
-            setCodigoLido(null);
-            setDadosPrePreenchidos(null);
-            setModoEdicao(false);
-          }}
-          produtoExistente={catalogo[codigoLido] || null}
-          dadosPrePreenchidos={dadosPrePreenchidos}
-        />
-      )}
+        {/* Scanner Modal */}
+        {telaAtual === 'SCANNER' && (
+          <ScannerBarras
+            aoLerCodigo={aoLerCodigo}
+            aoCancelar={() => setTelaAtual('DASHBOARD')}
+          />
+        )}
 
-      {/* Modal de Confirmação - Esvaziar Carrinho */}
-      {mostrarConfirmacaoEsvaziar && (
-        <ModalConfirmacao
-          titulo="Esvaziar Carrinho"
-          mensagem="Tem certeza que deseja remover todos os itens do carrinho?"
-          textoBotaoConfirmar="Esvaziar"
-          textoBotaoCancelar="Cancelar"
-          corBotaoConfirmar="vermelho"
-          aoConfirmar={executarEsvaziamento}
-          aoCancelar={() => setMostrarConfirmacaoEsvaziar(false)}
-        />
-      )}
+        {/* Formulário de Produto Modal */}
+        {telaAtual === 'CADASTRO' && codigoLido && (
+          <FormularioProduto
+            gtinInicial={codigoLido}
+            aoSalvar={aoSalvarProduto}
+            aoCancelar={() => {
+              setTelaAtual('DASHBOARD');
+              setCodigoLido(null);
+              setDadosPrePreenchidos(null);
+              setModoEdicao(false);
+            }}
+            produtoExistente={catalogo[codigoLido] || null}
+            dadosPrePreenchidos={dadosPrePreenchidos}
+          />
+        )}
 
-      {/* Tela de Ativação Premium */}
-      {mostrarAtivarToken && (
-        <TelaAtivarToken
-          tokenObrigatorioUrl={deepLinkToken}
-          aoVoltar={() => {
-            setMostrarAtivarToken(false);
-            setDeepLinkToken(null);
-          }}
-          aoIrParaDashboard={() => {
-            setMostrarAtivarToken(false);
-            setDeepLinkToken(null);
-            setTelaAtual('DASHBOARD');
-          }}
-        />
-      )}
+        {/* Modal de Confirmação - Esvaziar Carrinho */}
+        {mostrarConfirmacaoEsvaziar && (
+          <ModalConfirmacao
+            titulo="Esvaziar Carrinho"
+            mensagem="Tem certeza que deseja remover todos os itens do carrinho?"
+            textoBotaoConfirmar="Esvaziar"
+            textoBotaoCancelar="Cancelar"
+            corBotaoConfirmar="vermelho"
+            aoConfirmar={executarEsvaziamento}
+            aoCancelar={() => setMostrarConfirmacaoEsvaziar(false)}
+          />
+        )}
 
-      {/* Modal de Confirmação - Finalizar Compra */}
-      {mostrarConfirmacaoFinalizar && (
-        <ModalConfirmacao
-          titulo="Finalizar Compra"
-          mensagem={`Confirma a compra de ${carrinho.length} ${carrinho.length === 1 ? 'item' : 'itens'} no valor de ${formatarMoeda(calcularTotal)}?`}
-          textoBotaoConfirmar="Finalizar"
-          textoBotaoCancelar="Voltar"
-          corBotaoConfirmar="verde"
-          aoConfirmar={executarFinalizacao}
-          aoCancelar={() => setMostrarConfirmacaoFinalizar(false)}
-        />
-      )}
+        {/* Tela de Ativação Premium */}
+        {mostrarAtivarToken && (
+          <TelaAtivarToken
+            tokenObrigatorioUrl={deepLinkToken}
+            aoVoltar={() => {
+              setMostrarAtivarToken(false);
+              setDeepLinkToken(null);
+            }}
+            aoIrParaDashboard={() => {
+              setMostrarAtivarToken(false);
+              setDeepLinkToken(null);
+              setTelaAtual('DASHBOARD');
+            }}
+          />
+        )}
 
-      {/* Tutorial de Primeiro Acesso */}
-      {mostrarTutorial && (
-        <ModalTutorial aoFechar={fecharTutorial} />
-      )}
+        {/* Modal de Confirmação - Finalizar Compra */}
+        {mostrarConfirmacaoFinalizar && (
+          <ModalConfirmacao
+            titulo="Finalizar Compra"
+            mensagem={`Confirma a compra de ${carrinho.length} ${carrinho.length === 1 ? 'item' : 'itens'} no valor de ${formatarMoeda(calcularTotal)}?`}
+            textoBotaoConfirmar="Finalizar"
+            textoBotaoCancelar="Voltar"
+            corBotaoConfirmar="verde"
+            aoConfirmar={executarFinalizacao}
+            aoCancelar={() => setMostrarConfirmacaoFinalizar(false)}
+          />
+        )}
 
+        {/* Tutorial de Primeiro Acesso */}
+        {mostrarTutorial && (
+          <ModalTutorial aoFechar={fecharTutorial} />
+        )}
+
+      </div>
     </div>
   );
 }

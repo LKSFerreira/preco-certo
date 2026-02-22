@@ -249,7 +249,7 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
     }
 
     return (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+        <div className="absolute inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
             <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative">
 
                 {/* Fechar Topo Direito - Mais no canto e refinado */}
@@ -280,10 +280,10 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
 
                         {/* Div do Núcleo com transição fluida de altura e MAIS ESPAÇAMENTO (Respiro) */}
                         <div className={`flex items-center justify-center transition-all duration-700 ease-out z-20 w-full ${status === 'IDLE' || status === 'ERRO'
-                            ? 'h-24 mt-10 mb-6'
+                            ? 'h-24 mt-6 mb-4 sm:mt-10 sm:mb-6' // Margens menores em telas curtas
                             : status === 'CARREGANDO'
-                                ? 'h-48 mt-12 mb-8'  // O Núcleo ganha muito espaço no carregamento
-                                : 'h-40 mt-12 mb-10'   // SUCESSO: Muito mais espaço para respirar
+                                ? 'h-40 mt-8 mb-6 sm:h-48 sm:mt-12 sm:mb-8'
+                                : 'h-36 mt-8 mb-8 sm:h-40 sm:mt-12 sm:mb-10'
                             }`}>
                             <QuantumCore status={status} />
                         </div>
@@ -291,7 +291,7 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
 
                     {/* Corpo */}
                     {status === 'SUCESSO' ? (
-                        <div className="text-center animate-scale-up space-y-6">
+                        <div className="text-center animate-scale-up space-y-4 sm:space-y-6">
                             <div className="mt-2">
                                 <p className="text-lg text-gray-800 font-medium">
                                     Parabéns! <i className="fas fa-heart text-red-500 animate-pulse text-xl inline-block mx-1"></i> sua conta foi ativada.
@@ -303,7 +303,7 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
 
                             <button
                                 onClick={aoIrParaDashboard}
-                                className="w-full relative group cursor-pointer rounded-xl overflow-hidden p-[3px] transition-all active:scale-95 shadow-xl mt-6"
+                                className="w-full relative group cursor-pointer rounded-xl overflow-hidden p-[3px] transition-all active:scale-95 shadow-xl mt-4 sm:mt-6"
                             >
                                 {/* Premium Gradient Layer para o botão Acessar */}
                                 <div className="absolute inset-[-500%] bg-[conic-gradient(from_0deg,#10b981,#059669,#06b6d4,#34d399,#10b981)]" style={{ animation: 'border-spin 3s linear infinite' }}></div>
@@ -318,7 +318,7 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
                         </div>
                     ) : status === 'CARREGANDO' ? (
                         // 🌟 Animação Incrível de Validação da Chave 🌟
-                        <div className="flex items-center justify-center py-6">
+                        <div className="flex items-center justify-center py-4">
                             {/* O Núcleo Quântico é a única estrela do carregamento */}
                         </div>
                     ) : (
@@ -331,9 +331,9 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
                                     className={`relative flex items-center w-full py-3 rounded-xl border-2 transition-colors cursor-text ${status === 'ERRO' ? 'border-red-300 bg-red-50' : 'border-gray-200 focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-50 bg-white shadow-sm'}`}
                                     onClick={() => document.getElementById('token-input')?.focus()}
                                 >
-                                    {/* Conteúdo Centralizado */}
-                                    <div className="flex w-full items-center justify-center pl-4 pr-16 sm:pr-24">
-                                        <span className={`text-lg font-mono font-bold tracking-widest uppercase select-none ${status === 'ERRO' ? 'text-red-600' : 'text-gray-800'}`}>
+                                    {/* Conteúdo Centralizado Fluido */}
+                                    <div className="flex w-full items-center justify-center pl-2 pr-10 sm:pr-14">
+                                        <span className={`text-base sm:text-lg font-mono font-bold tracking-wider uppercase select-none ${status === 'ERRO' ? 'text-red-600' : 'text-gray-800'}`}>
                                             SEM-SUSTO-
                                         </span>
                                         <input
@@ -360,7 +360,7 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
                                             }}
                                             placeholder="123ABCD"
                                             disabled={status === 'CARREGANDO'}
-                                            className={`bg-transparent text-lg font-mono font-bold tracking-widest outline-none uppercase placeholder-gray-300 w-[125px] sm:w-[140px] ${status === 'ERRO' ? 'text-red-600 focus:text-red-600' : 'text-gray-800 focus:text-gray-800'}`}
+                                            className={`bg-transparent text-base sm:text-lg font-mono font-bold tracking-widest outline-none uppercase placeholder-gray-300 w-24 sm:w-32 ${status === 'ERRO' ? 'text-red-600 focus:text-red-600' : 'text-gray-800 focus:text-gray-800'}`}
                                         />
                                     </div>
 
@@ -387,7 +387,7 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
                                                     console.error('Falha ao colar da área de transferência', err);
                                                 }
                                             }}
-                                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-indigo-50 text-indigo-600 font-bold text-xs py-1.5 px-3 rounded-lg flex items-center gap-1 transition-colors border border-gray-200 z-10"
+                                            className="absolute right-1 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-indigo-50 text-indigo-600 font-bold text-[10px] sm:text-xs py-1.5 px-2 sm:px-3 rounded-lg flex items-center gap-1 transition-colors border border-gray-200 z-10"
                                             title="Colar da Área de Transferência"
                                         >
                                             <i className="fas fa-paste"></i> Colar
@@ -397,11 +397,11 @@ export const TelaAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorio
                             </div>
 
                             {status === 'ERRO' && (
-                                <div className="flex flex-col items-center gap-1 animate-shake mt-4">
-                                    <p className="text-sm text-red-600 text-center font-bold flex items-center justify-center gap-2">
+                                <div className="flex flex-col items-center gap-1 animate-shake mt-2 sm:mt-4">
+                                    <p className="text-xs sm:text-sm text-red-600 text-center font-bold flex items-center justify-center gap-2">
                                         <i className="fas fa-exclamation-triangle text-base"></i> {mensagemErro || "Token inválido."}
                                     </p>
-                                    <p className="text-sm text-gray-500 text-center font-medium mt-1">
+                                    <p className="text-[10px] sm:text-sm text-gray-500 text-center font-medium mt-1">
                                         Tente novamente ou utilize outro código.
                                     </p>
                                 </div>

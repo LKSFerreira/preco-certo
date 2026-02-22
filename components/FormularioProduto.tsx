@@ -309,7 +309,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
   const origemCosmos = !!dadosPrePreenchidos && !produtoExistente;
 
   return (
-    <div className="fixed inset-0 bg-white z-50 flex flex-col h-full overflow-hidden">
+    <div className="absolute inset-0 bg-white z-50 flex flex-col h-full overflow-hidden animate-fade-in">
       <div className="bg-verde-600 text-white p-4 shadow-md flex items-center gap-3 shrink-0">
         <button
           type="button"
@@ -411,12 +411,12 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                     </p>
                   </div>
 
-                  {/* Botão com Borda Rainbow Animada Corrigida */}
+                  {/* Botão com Borda Rainbow Animada Padronizado com Ativar Premium */}
                   <label
                     className={`w-full relative group cursor-pointer rounded-lg overflow-hidden p-[3px] transition-all active:scale-95 ${analisandoIA ? 'cursor-wait opacity-80' : 'shadow-lg'
                       }`}
                   >
-                    {/* Gradient Layer */}
+                    {/* Gradient Layer - Réplica exata de Ativar Premium */}
                     {!analisandoIA && (
                       <div
                         className="absolute inset-[-500%] bg-[conic-gradient(from_0deg,#ff0000,#ff8800,#ffff00,#00ff00,#0000ff,#8800ff,#ff0000)]"
@@ -424,14 +424,14 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                       ></div>
                     )}
 
-                    {/* Content Layer */}
-                    <div className="relative w-full h-full rounded-[5px] flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-blue-700 to-indigo-700 text-white z-10">
+                    {/* Content Layer - Sincronizado com rounded-[5px] e py-4 */}
+                    <div className="relative w-full h-full rounded-[5px] flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-blue-700 to-indigo-700 text-white z-10 transition-colors">
                       {analisandoIA ? (
                         <i className="fas fa-spinner fa-spin"></i>
                       ) : (
-                        <i className="fas fa-camera text-sm"></i>
+                        <i className="fas fa-camera text-lg"></i>
                       )}
-                      <span className="font-bold text-xs uppercase tracking-wide">
+                      <span className="font-bold text-sm uppercase tracking-wide">
                         {analisandoIA ? 'Processando...' : 'AUTO PREENCHER'}
                       </span>
                     </div>

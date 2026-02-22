@@ -20,7 +20,7 @@ export const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black bg-opacity-80 animate-fade-in">
+    <div className="absolute inset-0 z-[60] flex items-center justify-center p-4 bg-black bg-opacity-80 animate-fade-in">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden relative">
 
         {/* Header */}

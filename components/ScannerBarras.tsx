@@ -138,7 +138,7 @@ export const ScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center p-4">
+    <div className="absolute inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center p-4">
       <div className="w-full max-w-md bg-white rounded-lg overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
         {/* Cabeçalho */}
         <div className="bg-gray-800 text-white p-4 flex justify-between items-center shrink-0">

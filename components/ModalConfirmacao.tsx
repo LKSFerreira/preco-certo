@@ -46,13 +46,13 @@ export const ModalConfirmacao: React.FC<PropsModalConfirmacao> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="absolute inset-0 z-50 flex items-center justify-center p-4">
       {/* Overlay escuro com animação de fade */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 animate-fade-in"
         onClick={aoCancelar}
       />
-      
+
       {/* Card do modal com animação de slide */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-slide-up">
         {/* Cabeçalho */}
@@ -62,12 +62,12 @@ export const ModalConfirmacao: React.FC<PropsModalConfirmacao> = ({
             {titulo}
           </h2>
         </div>
-        
+
         {/* Mensagem */}
         <div className="px-5 pb-5">
           <p className="text-gray-600">{mensagem}</p>
         </div>
-        
+
         {/* Botões */}
         <div className="flex border-t border-gray-100">
           <button

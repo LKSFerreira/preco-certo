@@ -37,7 +37,7 @@ export const ModalTutorial: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col">
+    <div className="absolute inset-0 z-[100] flex flex-col">
       <div className="absolute inset-0 bg-gradient-to-b from-blue-500 via-blue-500 via-[65%] backdrop-blur-md"></div>
 
       {/* Conteúdo do tutorial */}

@@ -41,7 +41,7 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black bg-opacity-95 flex flex-col animate-fade-in">
+    <div className="absolute inset-0 z-[60] bg-black bg-opacity-95 flex flex-col animate-fade-in">
       <div className="flex-1 relative bg-black flex items-center justify-center p-4">
         <Cropper
           src={imagem}
