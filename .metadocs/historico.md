@@ -167,5 +167,10 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 ### 22/02: [Refatoração de Componentes (Modais & Hooks)](./walkthrough/walkthrough_refatoracao_modais.md) 🏗️
 *   **Padronização de UI**: Migração massiva de componentes de página/tela para o padrão de Modais (`ModalFormularioProduto`, `ModalScannerBarras`, etc).
 *   **Modularização de Lógica**: Extração de regras de tutorial de primeiro acesso para Hooks reutilizáveis (`useTutorialUso`, `useTutorialFoto`).
-*   **Higiene de Importação**: Refatoração do `App.tsx` para uma estrutura mais limpa e declarativa, facilitando a manutenção de fluxos de sobreposição.
-*   **Limpeza**: Remoção de componentes legados e redundantes, consolidando a identidade visual e técnica do projeto.
+*   **Higiene de Importação**: Refatoração do `App.tsx` para uma estrutura mais limpa e declarativa, facilitando a manutenção de fluxos de sobreposição.*   **Limpeza**: Remoção de componentes legados e redundantes, consolidando a identidade visual e técnica do projeto.
+
+### 22/02: [Otimização de SEO e Correção de HMR](./walkthrough/seo_hmr_otimizacao.md) 🚀
+*   **SEO SPA:** Criado fallback de conteúdo textual para robôs de busca no `index.html`, eliminando o erro de "0 palavras detectadas".
+*   **Semântica Técnica:** Implementada hierarquia `H1/H2` e metatag `apple-touch-icon` para pontuação mobile e acessibilidade.
+*   **HMR (Fast Refresh):** Correção definitiva do erro de invalidação do Vite através do isolamento total de Hooks e constantes de componentes `.tsx`.
+*   **Documentação:** Consolidação do relatório de auditoria e técnica no post-mortem de performance.
