@@ -8,7 +8,7 @@
 A estratégia implementada consistiu em **nunca armazenar o token puro no dispositivo do usuário**, mas sim convertê-lo irreversivelmente em um _Hash_ logo após a validação inicial.
 
 ### 🛡️ Client-Side Hashing (Front-end)
-Criamos a abstração [RepositorioPremium](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/repositorios/premium.ts#1-29) ([repositorios/premium.ts](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/repositorios/premium.ts)) injetada via Contexto React. 
+Criamos a abstração [RepositorioPremium](../../repositorios/premium.ts#L1-L29) ([repositorios/premium.ts](../../repositorios/premium.ts)) injetada via Contexto React. 
 - Quando a rota profunda (`/ativar?token=...`) lê o token e a Vercel retorna sucesso, o Frontend aciona a API Nativa de criptografia do Javascript (`crypto.subtle.digest("SHA-256")`).
 - Apenas a string resultante (64 caracteres hexa) é armazenada no `localStorage.setItem('sem_susto_premium_hash', ...)`.
 
@@ -18,7 +18,7 @@ Foi criada a página (modal) `<TelaAtivarToken />` acessível automaticamente ca
 - Oculta instantaneamente a string pura do usuário ao final da animação de sucesso.
 
 ### ⚙️ Serverless & Middlewares (Back-end)
-Atualizamos as rotas da Vercel ([api/tokens/consultar.ts](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/api/tokens/consultar.ts) e [api/ia/analisar.ts](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/api/ia/analisar.ts)) para lidar com o Hash.
+Atualizamos as rotas da Vercel ([api/tokens/consultar.ts](../../api/tokens/consultar.ts) e [api/ia/analisar.ts](../../api/ia/analisar.ts)) para lidar com o Hash.
 - O Frontend agora constrói e envia um cabeçalho customizado seguro `X-Premium-Token`.
 - O Proxy da IA intercepta e verifica esse Hash no banco PostgreSQL antes de disparar consumos abusivos à Groq.
 
@@ -28,7 +28,7 @@ Atualizamos as rotas da Vercel ([api/tokens/consultar.ts](file:///c:/Users/LKSFE
 > **Automação Restabelecida!**
 > Para assegurar que as mudanças de header e a nova proteção da IA não quebravam clientes antigos ou o ecossistema, rodamos a suite original.
 
-1. **Testes de Endpoints ([scripts/testar_endpoints.ts](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/scripts/testar_endpoints.ts))**
+1. **Testes de Endpoints ([scripts/testar_endpoints.ts](../../scripts/testar_endpoints.ts))**
    - Forjamos requisições (Mocks) locais contra os endpoins isolados.
    - Foram validadas respostas de formato `201`, `200` e tratamento de erros visando brute-force (`429`).
    - Os 9 casos testados passaram. O isolamento lógico funcionou perfeitamente.

@@ -6,7 +6,7 @@ Corrigida a falha onde remover uma foto corrompida mantinha os campos de texto l
 
 ### Componentes de UI
 
-#### [FormularioProduto.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/FormularioProduto.tsx)
+#### [ModalFormularioProduto.tsx](../../components/ModalFormularioProduto.tsx)
 - **Estado Dinâmico:** Implementado `useMemo` para `faseFormulario`. Agora o app "sabe" que está na fase de foto sempre que a imagem é `undefined`.
 - **Bloqueio Seletivo:** 
   - Campos **Produto**, **Marca** e **Tamanho** são bloqueados estritamente na ausência de foto.

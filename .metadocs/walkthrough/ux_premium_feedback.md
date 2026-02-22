@@ -8,7 +8,7 @@ Concluímos a integração completa do sistema de ativação de Tokens Premium, 
 Substituímos o ícone estático por um componente dinâmico com:
 - **Modelo 3D (Octaedro)**: Renderizado com CSS puro (`preserve-3d`).
 - **Estados Dinâmicos**: Cores e partículas que reagem à fase da ativação (Prateado/IDLE, Arco-íris/CARREGANDO, Verde/SUCESSO, Carmesim/ERRO).
-- **Animações SVG**: Anéis orbitais magnéticos e ondas de choque ([Shockwave](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/TelaAtivarToken.tsx#129-138)) na confirmação.
+- **Animações SVG**: Anéis orbitais magnéticos e ondas de choque ([Shockwave](../../components/ModalAtivarToken.tsx#L129-L138)) na confirmação.
 
 ### 2. Blindagem e UX do Input
 - **Máscara de Prefixo**: O prefixo `SEM-SUSTO-` agora é pré-preenchido e impossível de apagar, garantindo a integridade do token.
