@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { validarAcessoPremium } from '../_lib/auth';
+import { validarAcessoPremium } from '../_lib/auth.ts';
 
 /**
  * Proxy serverless para a API Groq (Meta Llama).
