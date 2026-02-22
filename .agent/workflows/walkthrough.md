@@ -19,3 +19,4 @@ description: Salva o artefato de walkthrough e atualiza o histórico de document
 - Crie um resumo do arquivo que você acabou de salvar na Etapa 1.
 - **Ação Obrigatória:** Adicione esse resumo ao `historico.md` seguindo **exatamente** o mesmo padrão visual e de formatação das entradas anteriores. 
 - ⚠️ **Trava de Segurança:** É estritamente obrigatório que o resumo contenha um link Markdown válido apontando para o novo arquivo criado (ex: `[Resumo da feature](.metadocs/walkthrough/nome_do_arquivo.md)`).
+> Use caminhos relativos.
