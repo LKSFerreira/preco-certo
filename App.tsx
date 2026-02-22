@@ -14,6 +14,7 @@ import { useRepositorios } from './contextos/ContextoRepositorios';
 import { buscarProdutoCosmos } from './services/cosmos';
 import { buscarProdutoOFF } from './services/openfoodfacts';
 import { TelaAtivarToken } from './components/TelaAtivarToken';
+import { acordarAPIsSilenciosamente } from './services/warmup';
 
 export default function App() {
   // --- Acesso aos repositórios via contexto ---
@@ -633,11 +634,9 @@ export default function App() {
             <div className="flex gap-3">
               <button
                 onClick={() => {
-                  // --- MODO DEBUG: TESTE DE ANIMAÇÃO DE LOADING ---
-                  // Simula leitura de código direto para testar animação
-                  // 7891000100103 = Leite
-                  //aoLerCodigo('7891000100103');
-                  setTelaAtual('SCANNER'); // Original
+                  // Acorda as APIs em paralelo enquanto o usuário abre a câmera
+                  acordarAPIsSilenciosamente();
+                  setTelaAtual('SCANNER');
                 }}
                 className="flex-1 bg-verde-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
               >
