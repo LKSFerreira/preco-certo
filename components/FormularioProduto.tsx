@@ -48,15 +48,14 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
   // Fluxo OCR-First: campos bloqueados até o usuário tirar foto
   // 'foto' = aguardando foto (campos texto desabilitados)
   // 'dados' = foto tirada, campos liberados para edição
-  const faseInicial = (): 'foto' | 'dados' => {
-    // Se estamos editando um produto que já tem imagem, pula direto para dados
-    if (produtoExistente?.imagem) return 'dados';
-    // Se a API retornou imagem, pula direto para dados
-    if (dadosPrePreenchidos?.imagem) return 'dados';
-    // Caso contrário, exige foto primeiro
+  // Fluxo OCR-First: campos bloqueados até o usuário tirar foto
+  // 'foto' = aguardando foto (campos texto desabilitados)
+  // 'dados' = foto tirada, campos liberados para edição
+  const faseFormulario = useMemo((): 'foto' | 'dados' => {
+    // Se temos imagem (existente, pré-preenchida ou tirada agora), libera os campos
+    if (imagem) return 'dados';
     return 'foto';
-  };
-  const [faseFormulario, setFaseFormulario] = useState<'foto' | 'dados'>(faseInicial);
+  }, [imagem]);
 
   // Campos de texto ficam bloqueados na fase 'foto' ou durante análise IA
   const camposTextoBloqueados = faseFormulario === 'foto' || analisandoIA;
@@ -119,18 +118,18 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
     const timer = setTimeout(() => {
       let focou = false;
 
-      // Prioridade: Campos vazios
-      if (!descricao) {
+      // Prioridade: Campos vazios (apenas se não estiverem bloqueados)
+      if (!descricao && !camposTextoBloqueados) {
         refDescricao.current?.focus();
         focou = true;
-      } else if (!marca) {
+      } else if (!marca && !camposTextoBloqueados) {
         refMarca.current?.focus();
         focou = true;
-      } else if (!tamanho) {
+      } else if (!tamanho && !camposTextoBloqueados) {
         refTamanho.current?.focus();
         focou = true;
       } else {
-        // Se tudo preenchido, foca no preço para validação (Regra do Usuário)
+        // Se tudo preenchido ou campos de texto bloqueados, foca no preço (sempre liberado)
         refPrice.current?.focus();
         setTimeout(() => refPrice.current?.select(), 50);
         focou = true;
@@ -176,8 +175,8 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
     const precisaOcr = !descricao || !marca;
 
     if (!precisaOcr) {
-      // Foto adicionada, dados completos — libera campos e vibra confirmação
-      setFaseFormulario('dados');
+      // Foto adicionada, dados completos — vibra confirmação
+      // Fase muda automaticamente via useMemo ao atualizar 'imagem'
       if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(50);
       return;
     }
@@ -201,8 +200,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
       setErro(`Não foi possível ler o rótulo automaticamente, mas a foto foi salva.`);
     } finally {
       setAnalisandoIA(false);
-      // Sempre libera os campos após tentativa de OCR (sucesso ou falha)
-      setFaseFormulario('dados');
+      // Fase muda automaticamente via useMemo ao atualizar 'imagem'
     }
   };
 
@@ -511,7 +509,7 @@ export const FormularioProduto: React.FC<PropsFormulario> = ({
                 onClick={() => {
                   // TODO: Quando premium estiver implementado, verificar token ativo aqui
                   // Por enquanto, sempre mostra mensagem de funcionalidade premium
-                  setErro('🔒 Preenchimento manual sem foto disponível no plano Premium.');
+                  setErro('🔒 Preenchimento manual sem foto disponível somente no plano Premium.');
                 }}
                 className="mt-2 w-full text-xs text-gray-400 flex items-center justify-center gap-1 py-1.5 rounded border border-gray-200 bg-gray-50 cursor-not-allowed transition-colors hover:bg-gray-100"
               >

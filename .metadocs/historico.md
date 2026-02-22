@@ -155,3 +155,7 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Refatoração de Modais:** Migração de posicionamento `fixed` para `absolute` nos componentes de UI para respeitar os limites do container central.
 *   **Padronização Estética:** Sincronizado o estilo do botão "Auto Preencher" com o botão "Ativar Premium", utilizando gradientes rainbow e animações de borda suaves.
 *   **Responsividade Fluida:** Ajustes na tela de ativação para suporte perfeito em dispositivos estreitos (iPhone SE/320px).
+### 22/02: [Bloqueio Reativo de Campos](./walkthrough/bloqueio_reativo_campos.md) 🛡️
+*   **Problema:** A remoção de fotos corrompidas ou manuais deixava os campos de descrição, marca e tamanho liberados para edição sem evidência fotográfica.
+*   **Solução:** Implementado estado derivado (`useMemo`) para a fase do formulário, tornando o bloqueio de campos uma consequência direta e instantânea da ausência de imagem.
+*   **Regra de Negócio:** Mantida a liberdade de edição do campo de preço, enquanto os campos de texto permanecem estritamente vinculados à presença da foto (OCR-First).

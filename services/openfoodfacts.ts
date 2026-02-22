@@ -15,7 +15,7 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
         }
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 segundos
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos
 
         const response = await fetch(`${OFF_API_URL}/${gtin}.json`, {
             method: 'GET',
