@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
   <title>Sem Susto - Controle suas Compras</title>
   <meta name="description"
     content="Controle suas compras em tempo real com o App Sem Susto. Escaneie produtos, veja o total e evite surpresas no caixa do supermercado. Simples, rápido e fácil." />
@@ -66,7 +67,32 @@
 </head>
 
 <body class="bg-gray-50 text-gray-900 antialiased">
-  <div id="root"></div>
+  <div id="root">
+    <!-- Conteúdo Fallback para SEO (Invisível após o carregamento do React) -->
+    <header role="banner">
+      <h1>Sem Susto - Sua Calculadora de Supermercado Inteligente</h1>
+      <p>O App Sem Susto ajuda você a controlar suas compras em tempo real, evitando surpresas no caixa.</p>
+    </header>
+    <main role="main">
+      <section>
+        <h2>Como funciona o Sem Susto?</h2>
+        <p>Utilize o scanner de código de barras para adicionar produtos ao seu carrinho virtual. O aplicativo busca automaticamente os preços e nomes dos produtos em bases de dados nacionais e internacionais utilizando inteligência artificial.</p>
+      </section>
+      <section>
+        <h2>Principais Funcionalidades:</h2>
+        <ul>
+          <li><strong>Leitura de Código de Barras:</strong> Identificação instantânea de milhares de produtos.</li>
+          <li><strong>Totalizador em Tempo Real:</strong> Saiba exatamente quanto vai pagar antes de chegar ao caixa.</li>
+          <li><strong>Inteligência Artificial:</strong> Extração de dados de rótulos via foto e padronização inteligente de nomes.</li>
+          <li><strong>Modo Premium:</strong> Ativação de funcionalidades exclusivas via tokens.</li>
+        </p>
+      </section>
+      <article>
+        <h2>Economize no Supermercado</h2>
+        <p>Com o Sem Susto, você mantém o foco no seu orçamento. Chega de somar preços mentalmente ou se surpreender com valores errados na prateleira. Escaneou? Somou! Simples, rápido e grátis.</p>
+      </article>
+    </main>
+  </div>
   <script type="module" src="/index.tsx"></script>
 </body>
 

@@ -536,7 +536,7 @@ export default function App() {
           {carrinhoExpandido.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-gray-400">
               <i className="fas fa-shopping-basket text-6xl mb-4 text-gray-200"></i>
-              <p>Seu carrinho está vazio.</p>
+              <h2 className="text-lg font-medium">Seu carrinho está vazio</h2>
               <p className="text-sm">Escaneie um produto para começar!</p>
             </div>
           ) : (
