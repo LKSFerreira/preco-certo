@@ -71,7 +71,22 @@ Ao escanear um código `789...`:
 
 ---
 
-## 5. Histórico e Evolução
+## 5. Padrões de Desenvolvimento (Para o Agente)
+
+Se você, Agente, está assumindo agora, siga estas regras sagradas:
+1.  **Idioma:** Português (pt-BR) sempre. Código, Vars, Comentários, Commits.
+2.  **Abreviações:** PROIBIDAS. Use `quantidade_itens`, não `qtd`.
+3.  **Atomicidade:** Um commit por mudança lógica. Use o workflow `@[/commit]`.
+4.  **Local-First:** Teste tudo rodando dentro do container (Docker).
+5.  **Segurança em Primeiro Lugar:** Toda nova API ou modificação de banco deve passar por validação de schema (Zod) e auditoria.
+
+---
+
+> _"Faça com qualidade e leve o tempo que precisar."_
+
+---
+
+## 6. Histórico e Evolução
 
 ### Janeiro 2026: The Big Bang
 *   Nasce como **"Preço Certo"**.
@@ -135,17 +150,8 @@ Ao escanear um código `789...`:
 *   **Higiene de Navegação:** Implementado fallback de rota global (`404`) que limpa incondicionalmente a barra de endereços suja, mantendo a experiência PWA limpa.
 *   **Acessibilidade:** Adicionado botão de colar inteligente com limpeza de clipboard e foco automático via `focus-within`.
 
----
-
-## 6. Padrões de Desenvolvimento (Para o Agente)
-
-Se você, Agente, está assumindo agora, siga estas regras sagradas:
-1.  **Idioma:** Português (pt-BR) sempre. Código, Vars, Comentários, Commits.
-2.  **Abreviações:** PROIBIDAS. Use `quantidade_itens`, não `qtd`.
-3.  **Atomicidade:** Um commit por mudança lógica. Use o workflow `@[/commit]`.
-4.  **Local-First:** Teste tudo rodando dentro do container (Docker).
-5.  **Segurança em Primeiro Lugar:** Toda nova API ou modificação de banco deve passar por validação de schema (Zod) e auditoria.
-
----
-
-> _"Faça com qualidade e leve o tempo que precisar."_
+### 22/02: [Universalização de Layout e Refinamento de Botões](./walkthrough/universalizacao_tablet_refinamento_botoes.md) 📱💎
+*   **Tablet Mode Universal:** Implementado Wrapper de Tablet (`768px`) centralizado no Desktop, garantindo contenção de todas as telas e modais (Scanner, Cadastro, etc).
+*   **Refatoração de Modais:** Migração de posicionamento `fixed` para `absolute` nos componentes de UI para respeitar os limites do container central.
+*   **Padronização Estética:** Sincronizado o estilo do botão "Auto Preencher" com o botão "Ativar Premium", utilizando gradientes rainbow e animações de borda suaves.
+*   **Responsividade Fluida:** Ajustes na tela de ativação para suporte perfeito em dispositivos estreitos (iPhone SE/320px).
