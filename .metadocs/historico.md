@@ -159,3 +159,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Problema:** A remoção de fotos corrompidas ou manuais deixava os campos de descrição, marca e tamanho liberados para edição sem evidência fotográfica.
 *   **Solução:** Implementado estado derivado (`useMemo`) para a fase do formulário, tornando o bloqueio de campos uma consequência direta e instantânea da ausência de imagem.
 *   **Regra de Negócio:** Mantida a liberdade de edição do campo de preço, enquanto os campos de texto permanecem estritamente vinculados à presença da foto (OCR-First).
+### 22/02: [Despertador de APIs (Warm-up)](./walkthrough/warmup_api.md) ⏰
+*   **Incidente:** Cold Start de Serverless Functions (Vercel) causava falha na primeira requisição após inatividade. Documentado em `postmortem_cold_start_api.md`.
+*   **Solução:** Implementado sistema de "Warm-up" silencioso disparado antecipadamente pelo botão "Ler Código".
+*   **Controle:** Adicionada variável de ambiente `VITE_COLD_START_API` para ligar/desligar o recurso.
+*   **Higiene:** Uso de requisições `HEAD` e throttle de 10 minutos para otimização de banda e recursos.
