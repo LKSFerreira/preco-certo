@@ -1,35 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <title>Sem Susto</title>
-    <!-- Tailwind e Font Awesome agora são processados localmente via PostCSS -->
-    <script type="importmap">
-      {
-        "imports": {
-          "react-dom": "https://esm.sh/react-dom@^18.3.1",
-          "react-dom/client": "https://esm.sh/react-dom@^18.3.1/client",
-          "react": "https://esm.sh/react@^18.3.1",
-          "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-          "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-          "react/": "https://esm.sh/react@^19.2.3/",
-          "vite": "https://esm.sh/vite@^7.3.0",
-          "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-          "path": "https://esm.sh/path@^0.12.7",
-          "url": "https://esm.sh/url@^0.11.4"
-        }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <title>Sem Susto - Controle suas Compras</title>
+  <meta name="description"
+    content="Controle suas compras em tempo real com o App Sem Susto. Escaneie produtos, veja o total e evite surpresas no caixa do supermercado. Simples, rápido e fácil." />
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.semsusto.app/" />
+  <meta property="og:title" content="Sem Susto - Controle suas Compras" />
+  <meta property="og:site_name" content="Sem Susto" />
+  <meta property="og:description"
+    content="Controle suas compras em tempo real. Escaneie produtos, some o total e evite surpresas no caixa. Escaneou? Somou!" />
+  <meta property="og:image" content="https://www.semsusto.app/og-image.png" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://www.semsusto.app/" />
+  <meta property="twitter:title" content="Sem Susto - Controle suas Compras" />
+  <meta property="twitter:description"
+    content="Controle suas compras em tempo real. Escaneie produtos, some o total e evite surpresas no caixa." />
+  <meta property="twitter:image" content="https://www.semsusto.app/og-image.png" />
+
+  <!-- Structured Data (IA SEO) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Sem Susto",
+      "operatingSystem": "Web, Android, iOS",
+      "applicationCategory": "FinanceApplication, ShoppingApplication",
+      "description": "Calculadora de supermercado em tempo real que utiliza scanner de código de barras para controle de gastos.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "BRL"
       }
+    }
     </script>
-    <link rel="stylesheet" href="/index.css" />
-  </head>
-  <body class="bg-gray-50 text-gray-900 antialiased">
-    <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+  <!-- Mobile App Settings -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Sem Susto" />
+  <meta name="theme-color" content="#3b82f6" />
+  <!-- Tailwind e Font Awesome agora são processados localmente via PostCSS -->
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "https://esm.sh/react@19.2.3",
+      "react-dom": "https://esm.sh/react-dom@19.2.3",
+      "react-dom/client": "https://esm.sh/react-dom@19.2.3/client",
+      "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+      "vite": "https://esm.sh/vite@^7.3.0",
+      "path": "https://esm.sh/path@^0.12.7",
+      "url": "https://esm.sh/url@^0.11.4"
+    }
+  }
+</script>
+  <link rel="stylesheet" href="/index.css" />
+</head>
+
+<body class="bg-gray-50 text-gray-900 antialiased">
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>
