@@ -190,7 +190,7 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Código de Barras Premium:** Criado um novo design literal e padronizado (**w-8 h-8**) com alinhamento otimizado para uma experiência mais moderna.
 *   **Segurança Visual:** Todos os SVGs agora usam `currentColor` e são controlados via Tailwind, eliminando flash de ícones não carregados.
 
-### 23/02: [Acessibilidade e Tutorial](./walkthrough/acessibilidade_tutorial_ajustes.md) 🎨
-*   **Conformidade WCAG AA**: Revisão global de contraste em todos os modais e dashboard. Substituição de tons `gray-600/green-500` por cores mais escuras e legíveis.
-*   **Gatilho Manual de Tutorial**: Removida a exibição automática do tutorial. Implementado sistema de "Ação Pendente" onde o clique em "Ler Código" dispara o tutorial e, após o fechamento, prossegue automaticamente para o scanner.
-*   **UX Invisível**: Adicionado gatilho de tutorial em áreas vazias da aplicação sem o uso de cursor pointer, mantendo a interface limpa e intuitiva para descoberta.
+### 23/02: [Recuperação de Ambiente e Contraste Final](./walkthrough/recuperacao_contraste_final.md) 🛠️
+*   **Recuperação Docker**: Resolvido erro de parsing JSON apagando volumes anônimos e reconstruindo o ambiente.
+*   **Acessibilidade Global**: Ajustados contrastes em 8 componentes (Cinzas, Verdes, Azuis) para conformidade estrita WCAG AA (ratio > 4.5:1).
+*   **Gatilho de Tutorial**: Ajustada a lógica de "Ação Pendente" para garantir continuidade entre tutorial e scanner.
