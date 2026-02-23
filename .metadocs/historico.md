@@ -184,3 +184,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Performance Percebida:** Implementado `React.lazy` e `Suspense` para todos os modais da aplicação, reduzindo o bundle inicial.
 *   **Modularização:** Convertidos 9 componentes para `export default`, permitindo o carregamento assíncrono apenas sob demanda (on-click).
 *   **Robustez UX:** Adicionado fallback visual durante o carregamento dos chunks dinâmicos, evitando "piscadas" ou erros de mount.
+### 22/02: [Substituição Global de Ícones (SVG)](./walkthrough/substituicao_icones_svg.md) 🚀
+*   **Migração Total:** Removidos todos os ícones Font Awesome da aplicação, substituídos por SVGs nativos e emojis.
+*   **Performance:** Excluída a dependência `@fortawesome/fontawesome-free` do `package.json` e as importações no `index.tsx/index.html`.
+*   **Código de Barras Premium:** Criado um novo design literal e padronizado (**w-8 h-8**) com alinhamento otimizado para uma experiência mais moderna.
+*   **Segurança Visual:** Todos os SVGs agora usam `currentColor` e são controlados via Tailwind, eliminando flash de ícones não carregados.
