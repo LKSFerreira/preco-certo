@@ -8,6 +8,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Groq](https://img.shields.io/badge/Groq-Meta_Llama-F55036?style=for-the-badge&logo=meta&logoColor=white)](https://groq.com/)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-100%2F100-brightgreen?style=for-the-badge&logo=lighthouse&logoColor=white)](https://pagespeed.web.dev/analysis/https-www-semsusto-app/fsc793b59t?view=desktop)
 
 [Demonstração](#-demonstração) •
 [Funcionalidades](#-funcionalidades) •
@@ -27,7 +28,22 @@
 
 Consumidores frequentemente perdem o controle do valor total durante compras, resultando em orçamentos estourados. Este app oferece uma solução prática e inteligente para manter o controle financeiro.
 
-> [!NOTE] > **Histórico:** Este projeto foi originalmente chamado **"Preço Certo"** e renomeado para **"Sem Susto"** em Janeiro/2026 para refletir o novo domínio `semsusto.app`. O repositório GitHub pode ainda conter referências ao nome antigo em commits históricos.
+> [!NOTE] 
+> **Histórico:** Este projeto foi originalmente chamado **"Preço Certo"** e renomeado para **"Sem Susto"** em Janeiro/2026 para refletir o novo domínio `semsusto.app`. O repositório GitHub pode ainda conter referências ao nome antigo em commits históricos.
+
+---
+
+## ⚡ Performance
+
+O **Sem Susto** foi projetado com foco extremo em performance e experiência do usuário. Recentemente, alcançamos a pontuação máxima em todas as categorias do Google Lighthouse:
+
+<img src=".github/assets/lighthouse-score.png" alt="Lighthouse Score" width="500">
+
+### Otimizações Implementadas
+- **Build Optimization:** Uso de Terser para minificação agressiva, removendo comentários e `console.log` em produção.
+- **Critical Path:** Remoção de operações bloqueantes de I/O (como `localStorage.clear()`) do fluxo de renderização inicial.
+- **Asset Management:** Otimização de pacotes e uso de imports dinâmicos para reduzir o bundle size.
+- **Acessibilidade:** Ajustes rigorosos de contraste e semântica HTML para conformidade WCAG AA.
 
 ---
 
