@@ -39,7 +39,7 @@ const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
             </svg>
           </div>
           <h2 className="font-bold text-lg">Gostou do App?</h2>
-          <p className="text-xs text-verde-100 px-4">
+          <p className="text-xs text-white opacity-90 px-4">
             O Sem Susto é gratuito. Se ele te ajuda a economizar, considere fazer uma doação de qualquer valor!
           </p>
         </div>
@@ -62,7 +62,7 @@ const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
                 </div>
               )}
             </div>
-            <p className="text-xs text-gray-500 font-medium">Escaneie o QR Code no app do seu banco</p>
+            <p className="text-xs text-gray-700 font-medium">Escaneie o QR Code no app do seu banco</p>
           </div>
 
           <div className="border-t border-gray-100 my-1"></div>
@@ -72,12 +72,12 @@ const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
 
             {/* Pix Copia e Cola */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Pix Copia e Cola</label>
+              <label className="text-[10px] uppercase font-bold text-gray-700 tracking-wider">Pix Copia e Cola</label>
               <div className="flex gap-2">
                 <input
                   readOnly
                   value={dadosPix.copia_e_cola_pix}
-                  className="flex-1 bg-gray-100 text-xs text-gray-600 p-2 rounded border border-gray-200 truncate font-mono"
+                  className="flex-1 bg-gray-100 text-xs text-gray-800 p-2 rounded border border-gray-200 truncate font-mono"
                 />
                 <button
                   onClick={() => copiarTexto(dadosPix.copia_e_cola_pix, 'copia')}
@@ -92,12 +92,12 @@ const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
 
             {/* Chave Aleatória/Email/CPF */}
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Chave Pix</label>
+              <label className="text-[10px] uppercase font-bold text-gray-700 tracking-wider">Chave Pix</label>
               <div className="flex gap-2">
                 <input
                   readOnly
                   value={dadosPix.chave_aleatoria_pix}
-                  className="flex-1 bg-gray-100 text-xs text-gray-600 p-2 rounded border border-gray-200 truncate font-mono"
+                  className="flex-1 bg-gray-100 text-xs text-gray-800 p-2 rounded border border-gray-200 truncate font-mono"
                 />
                 <button
                   onClick={() => copiarTexto(dadosPix.chave_aleatoria_pix, 'chave')}
@@ -147,7 +147,7 @@ const ModalDoacao: React.FC<PropsModalDoacao> = ({ aoFechar }) => {
 
         {/* Footer */}
         <div className="bg-gray-50 p-3 text-center">
-          <button onClick={aoFechar} className="text-gray-500 text-sm font-semibold hover:text-gray-800">
+          <button onClick={aoFechar} className="text-gray-700 text-sm font-semibold hover:text-gray-900 underline">
             Talvez depois
           </button>
         </div>

@@ -303,8 +303,8 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   };
 
   const classeInput =
-    'w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:ring-2 focus:ring-verde-500 outline-none transition-colors';
-  const classeLabel = 'block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1';
+    'w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:ring-2 focus:ring-verde-700 outline-none transition-colors';
+  const classeLabel = 'block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1';
   const origemCosmos = !!dadosPrePreenchidos && !produtoExistente;
 
   return (
@@ -460,7 +460,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
               <div className="flex flex-col items-center shrink-0 animate-fade-in">
                 <div className="relative group">
                   <div
-                    className={`w-32 h-32 rounded-xl overflow-hidden border-2 border-dashed flex items-center justify-center relative transition-colors ${imagem ? 'border-verde-500 bg-white shadow-sm' : 'border-gray-300'
+                    className={`w-32 h-32 rounded-xl overflow-hidden border-2 border-dashed flex items-center justify-center relative transition-colors ${imagem ? 'border-verde-700 bg-white shadow-sm' : 'border-gray-300'
                       }`}
                   >
                     <img
@@ -502,7 +502,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
               className="w-8 h-8 text-gray-400">
               <path d="M2 4h2v16H2zm3.5 0h1v16h-1zM8 4h3v16H8zm4.5 0h1.5v16h-1.5zm3 0h2.5v16h-2.5zm4 0h1v16h-1zm2.5 0h2v16h-2zm3.5 0h3v16h-3zm4.5 0h1v16h-1zm2.5 0h1.5v16h-1.5z" />
             </svg>
-            <span className="font-mono font-bold text-gray-600 text-sm tracking-wider">
+            <span className="font-mono font-bold text-gray-700 text-sm tracking-wider">
               {gtinInicial}
             </span>
           </div>
@@ -532,7 +532,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                   // Por enquanto, sempre mostra mensagem de funcionalidade premium
                   setErro('🔒 Preenchimento manual sem foto disponível somente no plano Premium.');
                 }}
-                className="mt-2 w-full text-xs text-gray-400 flex items-center justify-center gap-1 py-1.5 rounded border border-gray-200 bg-gray-50 cursor-not-allowed transition-colors hover:bg-gray-100"
+                className="mt-2 w-full text-xs text-gray-700 flex items-center justify-center gap-1 py-1.5 rounded border border-gray-300 bg-gray-50 cursor-not-allowed transition-colors hover:bg-gray-100"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -619,7 +619,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                 }}
                 className={`w-full p-2 bg-white border-2 rounded-lg text-gray-900 font-bold text-2xl placeholder-gray-300 focus:outline-none shadow-sm ${campoComErro === 'price'
                   ? 'border-red-500 ring-2 ring-red-400'
-                  : 'border-verde-500'
+                  : 'border-verde-700'
                   }`}
                 placeholder="0,00"
               />

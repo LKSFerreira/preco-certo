@@ -118,7 +118,7 @@ const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
 
           <div className="h-10 w-full flex justify-center items-center relative z-20">
             {/* Dinheiro que é somado */}
-            <div className="bg-green-500 text-white font-bold px-5 py-2 rounded-full text-base animate-float-money-sync absolute opacity-0 shadow-lg shadow-green-500/30 flex items-center gap-2">
+            <div className="bg-green-600 text-white font-bold px-5 py-2 rounded-full text-base animate-float-money-sync absolute opacity-0 shadow-lg shadow-green-600/30 flex items-center gap-2">
               <span className="text-sm font-black">+</span> {formataMoeda(precoAtual)}
             </div>
             <div className="h-full w-0.5 border-l-2 border-dashed border-white/30"></div>
@@ -146,7 +146,7 @@ const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
         </div>
 
         <div className="mt-8 mb-4">
-          <button onClick={finalizarTutorial} className="w-full bg-green-500 text-white text-xl font-bold py-5 rounded-2xl shadow-[0_8px_30px_rgba(34,197,94,0.4)] hover:bg-green-600 active:scale-95 transition-all flex items-center justify-center gap-3 animate-button-pulse-sync">
+          <button onClick={finalizarTutorial} className="w-full bg-green-600 text-white text-xl font-bold py-5 rounded-2xl shadow-[0_8px_30px_rgba(22,163,74,0.4)] hover:bg-green-700 active:scale-95 transition-all flex items-center justify-center gap-3 animate-button-pulse-sync">
             <span>Entendi, vamos começar!</span>
             <span className="text-2xl">🚀</span>
           </button>
@@ -192,7 +192,7 @@ const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
         @keyframes priceColorSync { 0%, 69% { color: #1e293b; } 70%, 90% { color: #16a34a; } 95%, 100% { color: #1e293b; } }
         .animate-price-color-sync { animation: priceColorSync var(--duracao-animacao) infinite; }
 
-        @keyframes buttonPulseSync { 0%, 75%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(34,197,94,0.4); background-color: #22c55e; } 85% { transform: scale(1.04); box-shadow: 0 15px 35px rgba(34,197,94,0.7); background-color: #16a34a; } }
+        @keyframes buttonPulseSync { 0%, 75%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(22,163,74,0.4); background-color: #16a34a; } 85% { transform: scale(1.04); box-shadow: 0 15px 35px rgba(22,163,74,0.7); background-color: #15803d; } }
         .animate-button-pulse-sync { animation: buttonPulseSync var(--duracao-animacao) infinite ease-in-out; }
       `}</style>
     </div>

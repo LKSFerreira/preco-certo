@@ -67,14 +67,14 @@ const ModalConfirmacao: React.FC<PropsModalConfirmacao> = ({
 
         {/* Mensagem */}
         <div className="px-5 pb-5">
-          <p className="text-gray-600">{mensagem}</p>
+          <p className="text-gray-700">{mensagem}</p>
         </div>
 
         {/* Botões */}
         <div className="flex border-t border-gray-100">
           <button
             onClick={aoCancelar}
-            className="flex-1 py-4 font-semibold text-gray-600 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+            className="flex-1 py-4 font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors"
           >
             {textoBotaoCancelar}
           </button>

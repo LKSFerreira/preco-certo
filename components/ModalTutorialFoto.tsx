@@ -157,10 +157,10 @@ export const ModalTutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => 
                         {/* Check de Foto Perfeita */}
                         <div className="absolute inset-0 flex items-center justify-center bg-green-500/20 backdrop-blur-sm animate-photo-success-sync z-40 opacity-0">
                             <div className="flex flex-col items-center">
-                                <div className="bg-green-500 rounded-full w-16 h-16 flex items-center justify-center shadow-lg shadow-green-500/50 mb-2">
+                                <div className="bg-green-600 rounded-full w-16 h-16 flex items-center justify-center shadow-lg shadow-green-600/50 mb-2">
                                     <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                                 </div>
-                                <span className="text-white font-bold bg-green-600/90 px-5 py-1.5 rounded-full text-sm backdrop-blur-md shadow-lg">
+                                <span className="text-white font-bold bg-green-700/90 px-5 py-1.5 rounded-full text-sm backdrop-blur-md shadow-lg">
                                     Rótulo Legível!
                                 </span>
                             </div>
@@ -185,7 +185,7 @@ export const ModalTutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => 
                 <div className="mt-8 mb-4">
                     <button
                         onClick={finalizarTutorial}
-                        className="w-full bg-green-500 text-white text-xl font-bold py-5 rounded-2xl shadow-[0_8px_30px_rgba(34,197,94,0.4)] hover:bg-green-600 active:scale-95 transition-all flex items-center justify-center gap-3 animate-button-pulse-sync"
+                        className="w-full bg-green-600 text-white text-xl font-bold py-5 rounded-2xl shadow-[0_8px_30px_rgba(22,163,74,0.4)] hover:bg-green-700 active:scale-95 transition-all flex items-center justify-center gap-3 animate-button-pulse-sync"
                     >
                         <span>Entendi, abrir câmera!</span>
                         <span className="text-2xl">📸</span>
@@ -253,13 +253,13 @@ export const ModalTutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => 
                 @keyframes buttonPulseSync {
                     0%, 75%, 100% { 
                         transform: scale(1); 
-                        box-shadow: 0 8px 30px rgba(34,197,94,0.4); 
-                        background-color: #22c55e;
+                        box-shadow: 0 8px 30px rgba(22,163,74,0.4); 
+                        background-color: #16a34a;
                     }
                     85% { 
                         transform: scale(1.04); 
-                        box-shadow: 0 15px 35px rgba(34,197,94,0.7); 
-                        background-color: #16a34a; 
+                        box-shadow: 0 15px 35px rgba(22,163,74,0.7); 
+                        background-color: #15803d; 
                     }
                 }
                 .animate-button-pulse-sync {
