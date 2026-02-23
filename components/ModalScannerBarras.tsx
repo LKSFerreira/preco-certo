@@ -143,10 +143,24 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
         {/* Cabeçalho */}
         <div className="bg-gray-800 text-white p-4 flex justify-between items-center shrink-0">
           <h3 className="font-bold text-lg">
-            <i className="fas fa-barcode mr-2"></i>Scanner
+            <div className="flex items-center">
+              {/* Container Flexbox para alinhar perfeitamente no meio */}
+              <div className="flex items-center justify-center">
+                <span className="font-medium">Scanner</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 36 24"
+                  fill="currentColor"
+                  className="w-8 h-8 ml-4">
+                  <path d="M2 4h2v16H2zm3.5 0h1v16h-1zM8 4h3v16H8zm4.5 0h1.5v16h-1.5zm3 0h2.5v16h-2.5zm4 0h1v16h-1zm2.5 0h2v16h-2zm3.5 0h3v16h-3zm4.5 0h1v16h-1zm2.5 0h1.5v16h-1.5z" />
+                </svg>
+              </div>
+            </div>
           </h3>
           <button onClick={fecharScanner} className="text-gray-400 hover:text-white p-2">
-            <i className="fas fa-times fa-lg"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
@@ -158,7 +172,10 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
           {statusCamera === 'iniciando' && (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-black">
               <div className="animate-pulse mb-4">
-                <i className="fas fa-camera fa-3x text-gray-600"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-gray-600">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+                </svg>
               </div>
               <p className="text-gray-400">Iniciando câmera...</p>
               <p className="text-xs text-gray-600 mt-2">Certifique-se de permitir o acesso.</p>
@@ -168,7 +185,9 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
           {/* Overlay: Erro */}
           {statusCamera === 'erro' && (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-gray-900 p-6 text-center">
-              <i className="fas fa-exclamation-circle fa-3x text-red-500 mb-4"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12 text-red-500 mb-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" />
+              </svg>
               <p className="font-bold mb-2 text-lg">{mensagemErro}</p>
               <p className="text-sm text-gray-400 mb-4">
                 Por favor, digite o código manualmente abaixo.
@@ -177,7 +196,9 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
                 onClick={fecharScanner}
                 className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
               >
-                <i className="fas fa-arrow-left mr-2"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 mr-2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
                 Voltar
               </button>
             </div>

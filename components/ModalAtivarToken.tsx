@@ -258,8 +258,8 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                     className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 z-10"
                     aria-label="Fechar"
                 >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
 
@@ -294,7 +294,9 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                         <div className="text-center animate-scale-up space-y-4 sm:space-y-6">
                             <div className="mt-2">
                                 <p className="text-lg text-gray-800 font-medium">
-                                    Parabéns! <i className="fas fa-heart text-red-500 animate-pulse text-xl inline-block mx-1"></i> sua conta foi ativada.
+                                    Parabéns! <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500 animate-pulse inline-block mx-1">
+                                        <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                                    </svg> sua conta foi ativada.
                                 </p>
                                 <p className="text-base text-gray-600 mt-2">
                                     Você tem <b className="text-emerald-600 text-xl">{diasAtivados} dias</b> de Premium.
@@ -390,7 +392,9 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                                             className="absolute right-1 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-indigo-50 text-indigo-600 font-bold text-[10px] sm:text-xs py-1.5 px-2 sm:px-3 rounded-lg flex items-center gap-1 transition-colors border border-gray-200 z-10"
                                             title="Colar da Área de Transferência"
                                         >
-                                            <i className="fas fa-paste"></i> Colar
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                                            </svg> Colar
                                         </button>
                                     )}
                                 </div>
@@ -399,7 +403,9 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                             {status === 'ERRO' && (
                                 <div className="flex flex-col items-center gap-1 animate-shake mt-2 sm:mt-4">
                                     <p className="text-xs sm:text-sm text-red-600 text-center font-bold flex items-center justify-center gap-2">
-                                        <i className="fas fa-exclamation-triangle text-base"></i> {mensagemErro || "Token inválido."}
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" />
+                                        </svg> {mensagemErro || "Token inválido."}
                                     </p>
                                     <p className="text-[10px] sm:text-sm text-gray-500 text-center font-medium mt-1">
                                         Tente novamente ou utilize outro código.
@@ -432,13 +438,21 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                                     <div className="relative w-full h-full rounded-[5px] flex items-center justify-center gap-2 py-4 bg-gradient-to-r from-blue-700 to-indigo-700 text-white z-10 transition-colors">
                                         {status === 'ERRO' ? (
                                             <>
-                                                <i className="fas fa-redo text-lg"></i>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                                </svg>
                                                 <span className="font-bold text-sm uppercase tracking-wide">Tentar Novamente</span>
                                             </>
                                         ) : (
                                             <>
-                                                <i className="fas fa-key text-lg"></i>
                                                 <span className="font-bold text-sm uppercase tracking-wide">Ativar Premium</span>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 36 24"
+                                                    fill="currentColor"
+                                                    className="w-8 h-8 ml-4">
+                                                    <path d="M2 4h2v16H2zm3.5 0h1v16h-1zM8 4h3v16H8zm4.5 0h1.5v16h-1.5zm3 0h2.5v16h-2.5zm4 0h1v16h-1zm2.5 0h2v16h-2zm3.5 0h3v16h-3zm4.5 0h1v16h-1zm2.5 0h1.5v16h-1.5z" />
+                                                </svg>
                                             </>
                                         )}
                                     </div>

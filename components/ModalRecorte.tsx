@@ -70,7 +70,9 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
             className="w-14 items-center justify-center font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl active:scale-95 transition-transform flex"
             aria-label="Cancelar"
           >
-            <i className="fas fa-times text-lg"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
           </button>
 
           <button
@@ -78,7 +80,13 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
             disabled={processando}
             className="flex-1 py-3.5 font-bold text-white bg-verde-700 rounded-xl shadow-lg hover:bg-verde-700 active:scale-95 transition-transform flex items-center justify-center gap-2 disabled:bg-gray-400"
           >
-            {processando ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-check"></i>}
+            {processando ? (
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+            )}
             <span>CONFIRMAR</span>
           </button>
         </div>
