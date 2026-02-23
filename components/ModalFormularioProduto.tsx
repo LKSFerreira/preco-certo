@@ -304,7 +304,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 
   const classeInput =
     'w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:ring-2 focus:ring-verde-700 outline-none transition-colors';
-  const classeLabel = 'block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1';
+  const classeLabel = 'block text-xs font-bold text-gray-800 uppercase tracking-wide mb-1';
   const origemCosmos = !!dadosPrePreenchidos && !produtoExistente;
 
   return (
@@ -360,7 +360,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
               </svg>
               <div>
                 <p className="text-amber-800 text-sm font-medium">Complete os dados para melhorar o catálogo</p>
-                <p className="text-amber-600 text-xs mt-0.5">
+                <p className="text-amber-700 text-xs mt-0.5">
                   Campos faltantes: {camposFaltantes.map(c => c === 'imagem' ? 'foto' : c).join(', ')}
                 </p>
               </div>
@@ -385,7 +385,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 mb-2 opacity-50">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                       </svg>
-                      <span className="text-[10px] font-bold uppercase tracking-wide text-gray-500">
+                      <span className="text-[10px] font-bold uppercase tracking-wide text-gray-600">
                         Galeria
                       </span>
                     </>
@@ -412,7 +412,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                         Foto Obrigatória
                       </span>
                     </div>
-                    <p className="text-[11px] text-blue-700 leading-tight">
+                    <p className="text-[11px] text-blue-800 leading-tight">
                       {origemCosmos
                         ? 'Confirmar visual do produto.'
                         : 'Tire foto para preenchimento IA.'}
@@ -519,7 +519,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                   <p className="text-blue-800 text-sm font-medium">
                     Tire uma foto do rótulo para preencher automaticamente
                   </p>
-                  <p className="text-blue-600 text-xs mt-0.5">
+                  <p className="text-blue-700 text-xs mt-0.5">
                     Os campos serão preenchidos com IA após a foto.
                   </p>
                 </div>
@@ -623,7 +623,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                   }`}
                 placeholder="0,00"
               />
-              <p className="text-[10px] text-gray-500 mt-1 text-right">
+              <p className="text-[10px] text-gray-600 mt-1 text-right">
                 Toque para selecionar tudo
               </p>
             </div>

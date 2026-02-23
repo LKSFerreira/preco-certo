@@ -275,7 +275,7 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                         )}
 
                         {status !== 'SUCESSO' && (
-                            <p className="text-sm text-gray-500 mt-2">Insira o token para liberar novas funcionalidades.</p>
+                            <p className="text-sm text-gray-600 mt-2">Insira o token para liberar novas funcionalidades.</p>
                         )}
 
                         {/* Div do Núcleo com transição fluida de altura e MAIS ESPAÇAMENTO (Respiro) */}
@@ -298,8 +298,8 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                                         <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                                     </svg> sua conta foi ativada.
                                 </p>
-                                <p className="text-base text-gray-600 mt-2">
-                                    Você tem <b className="text-emerald-600 text-xl">{diasAtivados} dias</b> de Premium.
+                                <p className="text-base text-gray-700 mt-2">
+                                    Você tem <b className="text-emerald-700 text-xl">{diasAtivados} dias</b> de Premium.
                                 </p>
                             </div>
 
@@ -407,7 +407,7 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" />
                                         </svg> {mensagemErro || "Token inválido."}
                                     </p>
-                                    <p className="text-[10px] sm:text-sm text-gray-500 text-center font-medium mt-1">
+                                    <p className="text-[10px] sm:text-sm text-gray-600 text-center font-medium mt-1">
                                         Tente novamente ou utilize outro código.
                                     </p>
                                 </div>
@@ -465,7 +465,7 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                 {/* Footer Secundário Destacado */}
                 {status !== 'SUCESSO' && (
                     <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                        <p className="text-[11px] text-gray-400 max-w-[200px]">
+                        <p className="text-[11px] text-gray-600 max-w-[200px]">
                             O token é pessoal e intransferível,<br />
                             com limite de dispositivos.
                         </p>

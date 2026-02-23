@@ -67,7 +67,7 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
           <button
             onClick={aoCancelar}
             disabled={processando}
-            className="w-14 items-center justify-center font-bold text-white bg-red-500 hover:bg-red-600 rounded-xl active:scale-95 transition-transform flex"
+            className="w-14 items-center justify-center font-bold text-white bg-red-700 hover:bg-red-800 rounded-xl active:scale-95 transition-transform flex"
             aria-label="Cancelar"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">

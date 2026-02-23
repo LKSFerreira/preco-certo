@@ -60,7 +60,7 @@ export const ModalTutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => 
                     <h1 className="text-white text-3xl font-black tracking-tight mb-2">
                         Dica de Ouro
                     </h1>
-                    <p className="text-blue-200 text-base">
+                    <p className="text-blue-50 text-base">
                         Para o app reconhecer rapidinho:
                     </p>
                 </div>
@@ -171,11 +171,11 @@ export const ModalTutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => 
                     <div className="flex flex-col gap-3 w-full mt-8 animate-tips-fade-in">
                         <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
-                            <span className="text-white/90 text-md font-medium">Mostre a marca e o nome do produto</span>
+                            <span className="text-white text-md font-medium">Mostre a marca e o nome do produto</span>
                         </div>
                         <div className="flex items-center gap-3">
                             <svg className="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
-                            <span className="text-white/90 text-md font-medium">Garanta que o texto esteja legível</span>
+                            <span className="text-white text-md font-medium">Garanta que o texto esteja legível</span>
                         </div>
                     </div>
 

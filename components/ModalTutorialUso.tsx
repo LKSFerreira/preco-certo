@@ -87,12 +87,12 @@ const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
             <span className="text-4xl">✨</span>
           </div>
           <h1 className="text-white text-3xl font-black tracking-tight mb-2">Como usar o App</h1>
-          <p className="text-blue-200 text-base">Veja como é simples controlar seus gastos:</p>
+          <p className="text-blue-50 text-base">Veja como é simples controlar seus gastos:</p>
         </div>
 
         <div className="relative w-full aspect-[3/4] bg-white/10 backdrop-blur-md rounded-[2rem] border border-white/20 flex flex-col items-center justify-center p-6 shadow-2xl pointer-events-none mt-4">
           <div className="flex flex-col items-center mb-6 relative w-full">
-            <p className="text-white/80 font-medium mb-3 text-lg text-center">
+            <p className="text-white font-medium mb-3 text-lg text-center">
               1. <span className="text-green-400 font-bold">Aproxime e centralize</span> o código
             </p>
             {/* Visor da Câmera: w-[220px] */}
@@ -125,7 +125,7 @@ const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
           </div>
 
           <div className="flex flex-col items-center mt-2 w-full">
-            <p className="text-white/80 font-medium mb-3 text-lg">
+            <p className="text-white font-medium mb-3 text-lg">
               2. O App soma automaticamente
             </p>
 
@@ -135,7 +135,7 @@ const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
                 <svg className="w-6 h-6 text-green-500 transform -scale-x-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
               </div>
               <div className="text-right flex-1 ml-2 overflow-hidden">
-                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-0.5 truncate">Total Geral</p>
+                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-0.5 truncate">Total Geral</p>
                 {/* Fonte ajustada para text-[26px] e tracking-tighter para garantir encaixe perfeito */}
                 <p className="text-slate-800 text-[26px] font-black tabular-nums tracking-tighter transition-all leading-none">
                   <span className="animate-price-color-sync block whitespace-nowrap">{formataMoeda(totalAcumulado)}</span>

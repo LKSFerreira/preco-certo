@@ -482,7 +482,7 @@ export default function App() {
               </div>
               <div className="flex flex-col justify-center">
                 <h1 className="font-bold text-gray-800 leading-tight text-lg">Sem Susto</h1>
-                <p className="text-[9px] text-gray-500 uppercase tracking-widest -mt-0.5">Controle de Gastos</p>
+                <p className="text-[9px] text-gray-600 uppercase tracking-widest -mt-0.5">Controle de Gastos</p>
               </div>
             </div>
 
@@ -550,7 +550,7 @@ export default function App() {
           {carrinhoExpandido.length === 0 ? (
             // Trocado de text-gray-400 para text-gray-500 para dar contraste no fundo branco
             <div className="flex flex-col items-center justify-center h-64 text-gray-700">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-16 h-16 mb-4 text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-16 h-16 mb-4 text-gray-500">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
               </svg>
               <h2 className="text-lg font-bold text-gray-800">Seu carrinho está vazio</h2>
@@ -580,7 +580,7 @@ export default function App() {
                       <h3 className="font-semibold text-gray-800 truncate">
                         {item.descricao}
                       </h3>
-                      <p className="text-xs text-gray-500 truncate">
+                      <p className="text-xs text-gray-600 truncate">
                         {item.marca} • {item.tamanho}
                       </p>
                     </div>
@@ -625,7 +625,7 @@ export default function App() {
                       </div>
 
                       <div className="text-right">
-                        <div className="text-xs text-gray-400 font-mono">
+                        <div className="text-xs text-gray-500 font-mono">
                           {item.quantidade}x {formatarMoeda(item.preco_estimado || 0)}
                         </div>
                         <div className="font-bold text-gray-900 font-mono text-lg">
@@ -645,7 +645,7 @@ export default function App() {
           <div className="w-full p-4 flex flex-col gap-3">
 
             <div className="flex justify-between items-end px-1">
-              <span className="text-gray-500 font-medium">Total Geral</span>
+              <span className="text-gray-600 font-medium">Total Geral</span>
               <span className="text-3xl font-bold text-verde-700 font-mono">
                 {formatarMoeda(calcularTotal)}
               </span>

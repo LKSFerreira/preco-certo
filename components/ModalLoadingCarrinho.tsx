@@ -113,7 +113,7 @@ const ModalLoadingCarrinho: React.FC<LoadingCarrinhoProps> = ({
         {/* Mensagem amigável */}
         <div className="text-center">
           <p className="text-white text-xl font-bold mb-2">{titulo}</p>
-          <p className="text-white/70 text-sm">{subtitulo}</p>
+          <p className="text-white/80 text-sm">{subtitulo}</p>
         </div>
 
         {/* Spinner circular de progresso */}
