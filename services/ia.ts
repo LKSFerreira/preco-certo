@@ -1,4 +1,4 @@
-import { servicoIA } from "./ia/fabrica";
+import { FabricaServicoIA } from "./ia/fabrica";
 
 /**
  * Entidade para abstrair o uso da IA no sistema.
@@ -10,7 +10,8 @@ export const extrairDadosDoRotulo = async (imagemBase64: string) => {
     console.warn('🚫 [IA] Uso da API Groq DESATIVADO pelo desenvolvedor.');
     return null;
   }
-  return await servicoIA.extrairDados(imagemBase64);
+  const servico = await FabricaServicoIA.obterInstancia();
+  return await servico.extrairDados(imagemBase64);
 };
 
 export const padronizarDadosProduto = async (texto: string) => {
@@ -18,5 +19,6 @@ export const padronizarDadosProduto = async (texto: string) => {
     console.warn('🚫 [IA] Uso da API Groq DESATIVADO pelo desenvolvedor.');
     return null;
   }
-  return await servicoIA.extrairDadosDeTexto(texto);
+  const servico = await FabricaServicoIA.obterInstancia();
+  return await servico.extrairDadosDeTexto(texto);
 };

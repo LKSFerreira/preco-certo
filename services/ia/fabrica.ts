@@ -1,23 +1,23 @@
 import { ServicoLeituraRotulo } from "./tipos";
-import { ServicoIAGroq } from "./groq";
-import { ServicoIAMock } from "./mock";
 
 export class FabricaServicoIA {
-  static criar(): ServicoLeituraRotulo {
-    // Em modo de teste/demonstração, a variável VITE_MOCK_IA=true ativa o mock.
-    // Caso contrário, SEMPRE usa o proxy serverless (sem chave no frontend).
+  private static instancia: ServicoLeituraRotulo | null = null;
+
+  static async obterInstancia(): Promise<ServicoLeituraRotulo> {
+    if (this.instancia) return this.instancia;
+
     const usarMock = import.meta.env.VITE_MOCK_IA === 'true';
 
     if (usarMock) {
-      console.log("🏭 FabricaIA: Usando MOCK (modo demonstração).");
-      return new ServicoIAMock();
+      console.log("🏭 FabricaIA: Usando MOCK (carregamento dinâmico).");
+      const { ServicoIAMock } = await import("./mock");
+      this.instancia = new ServicoIAMock();
+    } else {
+      console.log("🏭 FabricaIA: Usando serviço GROQ (carregamento dinâmico)");
+      const { ServicoIAGroq } = await import("./groq");
+      this.instancia = new ServicoIAGroq();
     }
 
-    // O proxy serverless cuida da chave — o frontend não precisa dela
-    console.log("🏭 FabricaIA: Usando serviço GROQ (via proxy serverless)");
-    return new ServicoIAGroq();
+    return this.instancia;
   }
 }
-
-// Instância singleton para uso no app
-export const servicoIA = FabricaServicoIA.criar();

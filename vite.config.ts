@@ -54,20 +54,7 @@ export default defineConfig({
   },
   // --- ADICIONADO: Configuração de Code Splitting para Performance Máxima ---
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // Se o arquivo vier de dentro da pasta node_modules
-          if (id.includes('node_modules')) {
-            // Separa o React do resto para garantir que o core seja leve
-            if (id.includes('react')) {
-              return 'vendor-react';
-            }
-            // Agrupa todas as outras bibliotecas (incluindo a IA e ícones) em outro arquivo
-            return 'vendor-libs';
-          }
-        }
-      }
-    }
+    // Deixamos o Vite gerenciar os chunks automaticamente para garantir 
+    // que o Lazy Loading dos modais (Scanner/Cropper) funcione isoladamente.
   }
 });
