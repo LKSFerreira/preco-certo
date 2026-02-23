@@ -22,7 +22,7 @@ export default function App() {
   const { produtos: repositorioProdutos, carrinho: repositorioCarrinho, historico: repositorioHistorico } = useRepositorios();
 
   // --- Tutorial de primeiro acesso ---
-  const { mostrar: mostrarTutorial, fechar: fecharTutorial } = useTutorialPrimeiroAcesso();
+  const { mostrar: mostrarTutorial, fechar: fecharTutorial, tentarMostrar } = useTutorialPrimeiroAcesso();
 
   // --- Estados ---
   const [telaAtual, setTelaAtual] = useState<TelaApp>('DASHBOARD');
@@ -54,6 +54,9 @@ export default function App() {
   // Estados Premium
   const [mostrarAtivarToken, setMostrarAtivarToken] = useState(false);
   const [deepLinkToken, setDeepLinkToken] = useState<string | null>(null);
+
+  // Controle de continuidade após tutorial
+  const [acaoPendenteTutorial, setAcaoPendenteTutorial] = useState<(() => void) | null>(null);
 
   // --- Efeitos (Carregamento inicial) ---
 
@@ -536,7 +539,14 @@ export default function App() {
         </header>
 
         {/* 2. Área Principal (Lista de Compras) */}
-        <main className="flex-1 w-full p-4 pb-32">
+        <main
+          className="flex-1 w-full p-4 pb-32"
+          onClick={() => {
+            // Gatilho em áreas neutras: tenta mostrar tutorial, limpa pendências
+            setAcaoPendenteTutorial(null);
+            tentarMostrar();
+          }}
+        >
           {carrinhoExpandido.length === 0 ? (
             // Trocado de text-gray-400 para text-gray-500 para dar contraste no fundo branco
             <div className="flex flex-col items-center justify-center h-64 text-gray-700">
@@ -644,9 +654,19 @@ export default function App() {
             <div className="flex gap-3">
               <button
                 onClick={() => {
-                  // Acorda as APIs em paralelo enquanto o usuário abre a câmera
-                  acordarAPIsSilenciosamente();
-                  setTelaAtual('SCANNER');
+                  const abrirScanner = () => {
+                    acordarAPIsSilenciosamente();
+                    setTelaAtual('SCANNER');
+                  };
+
+                  // Se for o primeiro uso, salva a intenção e mostra o tutorial
+                  const mostrou = tentarMostrar();
+                  if (mostrou) {
+                    setAcaoPendenteTutorial(() => abrirScanner);
+                    return;
+                  }
+
+                  abrirScanner();
                 }}
                 className="flex-1 bg-verde-700 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
               >
@@ -763,7 +783,16 @@ export default function App() {
 
           {/* Tutorial de Primeiro Acesso */}
           {mostrarTutorial && (
-            <ModalTutorialUso aoFechar={fecharTutorial} />
+            <ModalTutorialUso
+              aoFechar={() => {
+                fecharTutorial();
+                // Se houver uma ação pendente (ex: abrir scanner), executa agora
+                if (acaoPendenteTutorial) {
+                  acaoPendenteTutorial();
+                  setAcaoPendenteTutorial(null);
+                }
+              }}
+            />
           )}
         </Suspense>
 
