@@ -56,11 +56,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Separa o React do resto do app
-          'vendor-react': ['react', 'react-dom'],
-          // Separa a IA do Google para carregar só quando for chamada
-          'vendor-ai': ['@google/genai']
+        manualChunks(id) {
+          // Se o arquivo vier de dentro da pasta node_modules
+          if (id.includes('node_modules')) {
+            // Separa o React do resto para garantir que o core seja leve
+            if (id.includes('react')) {
+              return 'vendor-react';
+            }
+            // Agrupa todas as outras bibliotecas (incluindo a IA e ícones) em outro arquivo
+            return 'vendor-libs';
+          }
         }
       }
     }
