@@ -8,18 +8,18 @@ O objetivo desta etapa foi reduzir o tamanho do bundle inicial do Sem Susto, apl
 - Convertidos 9 componentes de modal para o padrão `export default`. 
 - Isso permite que o `React.lazy` identifique corretamente o componente a ser carregado dinamicamente.
 - Componentes afetados:
-    - [ModalScannerBarras.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalScannerBarras.tsx)
-    - [ModalFormularioProduto.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalFormularioProduto.tsx)
-    - [ModalLoadingCarrinho.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalLoadingCarrinho.tsx)
-    - [ModalAtivarToken.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalAtivarToken.tsx)
-    - [ModalConfirmacao.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalConfirmacao.tsx)
-    - [ModalDoacao.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalDoacao.tsx)
-    - [ModalContato.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalContato.tsx)
-    - [ModalTutorialUso.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalTutorialUso.tsx)
-    - [DebugConsole.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/DebugConsole.tsx)
+    - [ModalScannerBarras.tsx](../../components/ModalScannerBarras.tsx)
+    - [ModalFormularioProduto.tsx](../../components/ModalFormularioProduto.tsx)
+    - [ModalLoadingCarrinho.tsx](../../components/ModalLoadingCarrinho.tsx)
+    - [ModalAtivarToken.tsx](../../components/ModalAtivarToken.tsx)
+    - [ModalConfirmacao.tsx](../../components/ModalConfirmacao.tsx)
+    - [ModalDoacao.tsx](../../components/ModalDoacao.tsx)
+    - [ModalContato.tsx](../../components/ModalContato.tsx)
+    - [ModalTutorialUso.tsx](../../components/ModalTutorialUso.tsx)
+    - [DebugConsole.tsx](../../components/DebugConsole.tsx)
 
 ### App.tsx
-- [App.tsx](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/App.tsx)
+- [App.tsx](../../App.tsx)
 - Substituídas as importações estáticas por importações dinâmicas via `lazy`.
 - Envolvida toda a lógica de renderização de modais com um componente `<Suspense>`.
 - Definido um fallback visual usando o `ModalLoadingCarrinho` para que o usuário saiba que o componente está sendo baixado.
