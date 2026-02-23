@@ -13,9 +13,7 @@ const ModalTutorialUso = lazy(() => import('./components/ModalTutorialUso'));
 const ModalAtivarToken = lazy(() => import('./components/ModalAtivarToken'));
 import { useTutorialPrimeiroAcesso } from './hooks/useTutorialUso';
 import { useRepositorios } from './contextos/ContextoRepositorios';
-import { buscarProdutoCosmos } from './services/cosmos';
-import { buscarProdutoOFF } from './services/openfoodfacts';
-import { acordarAPIsSilenciosamente } from './services/warmup';
+
 
 export default function App() {
   // --- Acesso aos repositórios via contexto ---
@@ -286,8 +284,8 @@ export default function App() {
     setEtapaBusca('🌍 Buscando produtos...');
     console.log(`🌍 [BUSCANDO] OpenFoodFacts API...`);
 
-    // Delay simulado para UX (opcional, pode ser removido depois)
-    //await new Promise(r => setTimeout(r, 9999999999999));
+    // IMPORTAÇÃO DINÂMICA
+    const { buscarProdutoOFF } = await import('./services/openfoodfacts');
     let produtoEncontrado = await buscarProdutoOFF(codigo_barras);
 
     if (produtoEncontrado) {
@@ -307,7 +305,8 @@ export default function App() {
       setEtapaBusca('📦 Verificando catálogo...');
       console.log(`📦 [BUSCANDO] Cosmos API...`);
 
-      // await new Promise(r => setTimeout(r, 9999999999999));
+      // IMPORTAÇÃO DINÂMICA
+      const { buscarProdutoCosmos } = await import('./services/cosmos');
       produtoEncontrado = await buscarProdutoCosmos(codigo_barras);
 
       if (produtoEncontrado) {
@@ -654,7 +653,9 @@ export default function App() {
             <div className="flex gap-3">
               <button
                 onClick={() => {
-                  const abrirScanner = () => {
+                  const abrirScanner = async () => {
+                    // IMPORTAÇÃO DINÂMICA: Só baixa esse código se o usuário clicar!
+                    const { acordarAPIsSilenciosamente } = await import('./services/warmup');
                     acordarAPIsSilenciosamente();
                     setTelaAtual('SCANNER');
                   };
