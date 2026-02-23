@@ -54,6 +54,17 @@ export default defineConfig({
   },
   // --- ADICIONADO: Configuração de Code Splitting para Performance Máxima ---
   build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        // Remove todos os console.log e debugger do build de produção
+        // Isso libera a CPU para renderizar a UI mais rápido
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    // Mantém os arquivos pequenos agrupados para evitar múltiplas requisições HTTP
+    cssCodeSplit: false,
     // Deixamos o Vite gerenciar os chunks automaticamente para garantir 
     // que o Lazy Loading dos modais (Scanner/Cropper) funcione isoladamente.
   }
