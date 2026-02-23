@@ -84,7 +84,7 @@ const ModalTutorialUso: React.FC<PropsModalTutorial> = ({ aoFechar }) => {
       <div className="relative flex-1 flex flex-col justify-between z-10 px-6 py-10 max-w-md mx-auto w-full">
         <div className="text-center animate-fade-in mt-2">
           <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg backdrop-blur-sm">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+            <span className="text-4xl">✨</span>
           </div>
           <h1 className="text-white text-3xl font-black tracking-tight mb-2">Como usar o App</h1>
           <p className="text-blue-200 text-base">Veja como é simples controlar seus gastos:</p>
