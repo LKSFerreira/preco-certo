@@ -190,8 +190,7 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Código de Barras Premium:** Criado um novo design literal e padronizado (**w-8 h-8**) com alinhamento otimizado para uma experiência mais moderna.
 *   **Segurança Visual:** Todos os SVGs agora usam `currentColor` e são controlados via Tailwind, eliminando flash de ícones não carregados.
 
-### 23/02: [Otimização de Bundle Size](./walkthrough/otimizacao_bundle_size.md) ⚡
-*   **Limpeza de Dependências**: Removida biblioteca `openai` (inútil no front) e movidas `pg`, `path`, `url` para `devDependencies`.
-*   **IA Dinâmica**: Refatorada `FabricaServicoIA` para carregar implementações pesadas de IA via `import()` dinâmico apenas sob demanda.
-*   **Code Splitting**: Removido `manualChunks` agressivo do `vite.config.ts`, permitindo que o Vite isole corretamente bibliotecas pesadas em chunks de `lazy loading`.
-*   **Performance**: Economia estimada de ~115 KiB no bundle principal, focando no gabarito do Lighthouse.
+### 23/02: [Otimização de Performance (Lighthouse 100)](./walkthrough/otimizacao_performance_terser.md) ⚡
+*   **Minificação Agressiva:** Implementada configuração do `terser` no `vite.config.ts` para remoção de `console.log` e `debugger` em produção.
+*   **Consolidação de CSS:** Desativado `cssCodeSplit` para reduzir requisições HTTP críticas durante o carregamento inicial.
+*   **Build via Docker:** Processo de build padronizado e executado via `docker compose exec app npm run build`.
