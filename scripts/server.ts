@@ -15,6 +15,10 @@ import ativarTokenHandler from '../api/tokens/ativar';
 import consultarTokenHandler from '../api/tokens/consultar';
 // @ts-ignore
 import produtosHandler from '../api/produtos/[codigo]';
+// @ts-ignore
+import pixHandler from '../api/pagamentos/pix';
+// @ts-ignore
+import pixStatusHandler from '../api/pagamentos/status';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -100,6 +104,10 @@ app.all('/api/produtos/:codigo', (req, res) => {
     return adapter(produtosHandler)(req, res);
 });
 
+// Pagamentos
+app.post('/api/pagamentos/pix', adapter(pixHandler));
+app.get('/api/pagamentos/status', adapter(pixStatusHandler));
+
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', ambiente: 'local-server' });
@@ -166,6 +174,8 @@ app.listen(PORT, '0.0.0.0', () => {
         console.log('        - POST /api/tokens/gerar');
         console.log('        - POST /api/tokens/ativar');
         console.log('        - GET  /api/tokens/consultar');
-        console.log('        - ALL  /api/produtos/:codigo\n');
+        console.log('        - ALL  /api/produtos/:codigo');
+        console.log('        - POST /api/pagamentos/pix');
+        console.log('        - GET  /api/pagamentos/status\n');
     }, 500);
 });
