@@ -11,7 +11,11 @@ const ModalContato = lazy(() => import('./components/ModalContato'));
 const ModalConfirmacao = lazy(() => import('./components/ModalConfirmacao'));
 const ModalTutorialUso = lazy(() => import('./components/ModalTutorialUso'));
 const ModalAtivarToken = lazy(() => import('./components/ModalAtivarToken'));
+const ModalPlano = lazy(() => import('./components/ModalPlano'));
+const ModalPagamento = lazy(() => import('./components/ModalPagamento'));
 import { useTutorialPrimeiroAcesso } from './hooks/useTutorialUso';
+import { fabricaPagamento } from './services/pagamento/fabrica';
+import { RespostaCriacaoPagamento, PlanoID } from './services/pagamento/tipos';
 import { useRepositorios } from './contextos/ContextoRepositorios';
 
 
@@ -52,6 +56,11 @@ export default function App() {
   // Estados Premium
   const [mostrarAtivarToken, setMostrarAtivarToken] = useState(false);
   const [deepLinkToken, setDeepLinkToken] = useState<string | null>(null);
+
+  // Estados de Pagamento (Monetização)
+  const [mostrarModalPlano, setMostrarModalPlano] = useState(false);
+  const [mostrarModalPagamento, setMostrarModalPagamento] = useState(false);
+  const [dadosPagamento, setDadosPagamento] = useState<RespostaCriacaoPagamento | null>(null);
 
   // Controle de continuidade após tutorial
   const [acaoPendenteTutorial, setAcaoPendenteTutorial] = useState<(() => void) | null>(null);
@@ -418,7 +427,7 @@ export default function App() {
       await repositorioHistorico.salvar(novaCompra);
       await repositorioCarrinho.limpar();
       setCarrinho([]);
-      setMostrarDoacao(true);
+      setMostrarModalPlano(true);
     } catch (erro) {
       console.error('🚨 Erro ao finalizar compra:', erro);
     }
@@ -445,7 +454,7 @@ export default function App() {
 
     try {
       await repositorioCarrinho.limpar();
-      setMostrarDoacao(true);
+      setMostrarModalPlano(true);
     } catch (erro) {
       console.error('🚨 Erro ao limpar carrinho:', erro);
     }
@@ -511,9 +520,9 @@ export default function App() {
               - text-xl    → tamanho do ícone (text-sm, text-base, text-lg, text-xl, text-2xl, text-3xl)
             */}
               <button
-                onClick={() => setMostrarDoacao(true)}
+                onClick={() => setMostrarModalPlano(true)}
                 className="bg-red-50 text-red-500 p-2 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
-                title="Fazer uma doação"
+                title="Seja Premium"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                   <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
@@ -701,7 +710,40 @@ export default function App() {
 
         {/* --- Modais e Telas Sobrepostas --- */}
         <Suspense fallback={<ModalLoadingCarrinho visivel={true} titulo="Carregando..." />}>
-          {/* Modal de Doação */}
+          {/* Modal de Planos Premium */}
+          {mostrarModalPlano && (
+            <ModalPlano
+              aoFechar={() => setMostrarModalPlano(false)}
+              aoSelecionarPlano={async (plano_id: PlanoID) => {
+                const servico = fabricaPagamento.obterProvedor();
+                const dados = await servico.gerarPix(plano_id);
+                setDadosPagamento(dados);
+                setMostrarModalPlano(false);
+                setMostrarModalPagamento(true);
+              }}
+            />
+          )}
+
+          {/* Modal de Pagamento PIX */}
+          {mostrarModalPagamento && dadosPagamento && (
+            <ModalPagamento
+              pagamento_id={dadosPagamento.pagamento_id}
+              qr_code={dadosPagamento.codigo_qr}
+              copia_e_cola={dadosPagamento.codigo_copia_e_cola}
+              aoFechar={() => {
+                setMostrarModalPagamento(false);
+                setDadosPagamento(null);
+              }}
+              aoSucesso={() => {
+                setMostrarModalPagamento(false);
+                setDadosPagamento(null);
+                // TODO: Notificar serviço de licença local
+                setTelaAtual('DASHBOARD');
+              }}
+            />
+          )}
+
+          {/* Modal de Doação (Inativa no fluxo, mantida por segurança) */}
           {mostrarDoacao && (
             <ModalDoacao aoFechar={() => setMostrarDoacao(false)} />
           )}
