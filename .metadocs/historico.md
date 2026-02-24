@@ -194,3 +194,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Minificação Agressiva:** Implementada configuração do `terser` no `vite.config.ts` para remoção de `console.log` e `debugger` em produção.
 *   **Consolidação de CSS:** Desativado `cssCodeSplit` para reduzir requisições HTTP críticas durante o carregamento inicial.
 *   **Build via Docker:** Processo de build padronizado e executado via `docker compose exec app npm run build`.
+### 23/02: [Monetização Premium & Automação](./walkthrough/monetizacao_premium_final.md) 💎
+*   **Strategy Pattern & Polling:** Implementada arquitetura desacoplada para Mercado Pago com sistema de polling resiliente, cleanup automático e validação de preços server-side.
+*   **Aesthetics & Responsividade:** `ModalPlano` redesenhada com animações premium e adaptabilidade dinâmica (`max-height`) para dispositivos móveis e telas pequenas.
+*   **Mock de Pagamento:** Provedor flexível para testes rápidos, simulando aprovação automática sem dependência de APIs externas.
+*   **Automação (premium.sh):** Script de geração de tokens com detecção automática de banco de dados e execução de migrações via Docker.
