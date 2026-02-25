@@ -16,6 +16,7 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
   const scannerMountingRef = useRef(false);
   // Controle de estado do scanner para evitar chamar stop() quando não está rodando
   const scannerAtivoRef = useRef(false);
+  const refInputManual = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // ID único para esta instância do componente
@@ -81,7 +82,7 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
         // Em PC desktop ou sem permissão, isso é esperado. Não é um erro fatal.
         if (msg.includes('NotFound') || msg.includes('Permission') || msg.includes('PermissionDeniedError')) {
           console.warn('⚠️ Scanner indisponível (Câmera não encontrada ou permissão negada):', msg);
-          if (msg.includes('NotFound')) setMensagemErro('Câmera não encontrada. Digite o código manualmente abaixo.');
+          if (msg.includes('NotFound')) setMensagemErro('Câmera não encontrada \n ou sem permissão.');
           else setMensagemErro('Acesso à câmera negado. Digite o código manualmente abaixo.');
         } else {
           console.error('🚨 Erro fatal scanner:', msg);
@@ -108,6 +109,16 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
       scannerRef.current = null;
     };
   }, [aoLerCodigo]);
+
+  // Foco automático quando ocorre erro
+  useEffect(() => {
+    if (statusCamera === 'erro') {
+      const timer = setTimeout(() => {
+        refInputManual.current?.focus();
+      }, 300); // Pequeno delay para garantir que o input está renderizado
+      return () => clearTimeout(timer);
+    }
+  }, [statusCamera]);
 
   const lidarComEnvioManual = (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,18 +199,18 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12 text-red-500 mb-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" />
               </svg>
-              <p className="font-bold mb-2 text-lg">{mensagemErro}</p>
+              <p className="font-bold mb-2 text-lg whitespace-pre-line">{mensagemErro}</p>
               <p className="text-sm text-gray-400 mb-4">
                 Por favor, digite o código manualmente abaixo.
               </p>
               <button
                 onClick={fecharScanner}
-                className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors py-3 px-6 rounded-full border border-gray-700 active:bg-gray-800"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                 </svg>
-                Voltar
+                <span className="font-bold text-sm uppercase tracking-widest">Voltar</span>
               </button>
             </div>
           )}
@@ -209,13 +220,13 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
         <div className="p-4 bg-gray-100 shrink-0 border-t border-gray-200">
           <form onSubmit={lidarComEnvioManual} className="flex gap-2">
             <input
+              ref={refInputManual}
               type="tel"
               inputMode="numeric"
               value={codigoManual}
               onChange={e => setCodigoManual(e.target.value)}
               placeholder="Digite o código de barras..."
               className="flex-1 p-3 bg-white border border-gray-300 rounded text-gray-900 font-bold focus:ring-2 focus:ring-verde-700 outline-none shadow-sm"
-              autoFocus={statusCamera === 'erro'}
             />
             <button
               type="submit"
