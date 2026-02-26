@@ -203,3 +203,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Scale Visual Inteligente (Loading Carrinho):** Implementada a manipulação CSS de fator global atrelada ao `ResizeObserver` para simular uma lente quântica em celulares de tela baixa: a "chuva de comida" não invade bordas alheias, garantindo proporção física perfeita 1:1 de animações em qualquer tela.
 *   **Migração de Mocks para Real Data (Modais):** Mapeamento 100% real implementado entre os Modais base e de instrução de uso com a verdadeira Factory da arquitetura IA do projeto e os persisters de localStorage do Hook padrão.
 *   **React Lifecycle (ModalAtivarToken & Plano):** Substituição cirúrgica dos CSS puros do Tailwind para medição de visores assíncrona baseada em ResizeObserver (flags visuais dinâmicas de estados curtos / compactos em tempo real).
+### 26/02: [Refinamento Padrão Ouro (Scanner)](./walkthrough/refinamento_scanner_ouro.md) 🟢
+*   **Responsividade Dinâmica:** Implementação de `ResizeObserver` no `ModalScannerBarras.tsx` para ajuste automático de interface em telas curtas e tablets.
+*   **QR Box Adaptativo:** Inteligência visual que redimensiona a área de captura do scanner em tempo real, garantindo visibilidade total do formulário manual.
+*   **Upgrade Estético:** Aplicação de Glassmorphism (`backdrop-blur`) e animações sequenciais de erro, elevando o componente ao nível de curadoria premium.
+*   **Status de Curadoria:** Atualização do mapeamento oficial do projeto, removendo o scanner da lista de pendências e promovendo-o ao "Padrão Ouro".

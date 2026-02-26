@@ -23,6 +23,32 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
   const scannerMountingRef = useRef(false);
   const scannerAtivoRef = useRef(false);
   const refInputManual = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Controle de Responsividade DinÃ¢mica
+  const [tamanhoTela, setTamanhoTela] = useState<'normal' | 'compacto' | 'muito-compacto'>('normal');
+
+  // Monitora o tamanho real do container para ajustar a UI
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        const height = entry.contentRect.height;
+        if (height < 600) {
+          setTamanhoTela('muito-compacto');
+        } else if (height < 700) {
+          setTamanhoTela('compacto');
+        } else {
+          setTamanhoTela('normal');
+        }
+      }
+    });
+
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const isMuitoCompacto = tamanhoTela === 'muito-compacto';
+  const isCompacto = tamanhoTela !== 'normal';
 
   useEffect(() => {
     const elementoId = 'leitor-codigo-barras';
@@ -52,7 +78,11 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
 
         const config = {
           fps: 10,
-          qrbox: { width: 250, height: 150 },
+          qrbox: isMuitoCompacto 
+            ? { width: 200, height: 120 } 
+            : isCompacto 
+              ? { width: 230, height: 140 } 
+              : { width: 250, height: 150 },
           aspectRatio: 1.0,
           formatsToSupport: [
             Html5QrcodeSupportedFormats.EAN_13,
@@ -84,13 +114,13 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
         const msg = erro instanceof Error ? erro.message : String(erro);
 
         if (msg.includes('Permission') || msg.includes('NotAllowedError')) {
-          setMensagemErro('Acesso a camera negado.');
+          setMensagemErro('Acesso à câmera negado.');
           setDetalheErro('permissao');
         } else if (msg.includes('NotFound') || msg.includes('DevicesNotFound')) {
-          setMensagemErro('Camera nao encontrada.');
+          setMensagemErro('Câmera não encontrada.');
           setDetalheErro('hardware');
         } else {
-          setMensagemErro('Erro ao acessar camera.');
+          setMensagemErro('Erro ao acessar câmera.');
           setDetalheErro('tecnico');
         }
 
@@ -111,7 +141,7 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
       }
       scannerRef.current = null;
     };
-  }, [aoLerCodigo, simularErroAtivo, tipoErroSimulado]);
+  }, [aoLerCodigo, simularErroAtivo, tipoErroSimulado, isCompacto, isMuitoCompacto]);
 
   useEffect(() => {
     if (statusCamera === 'erro') {
@@ -146,10 +176,10 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
   };
 
   return (
-    <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex flex-col justify-center items-center p-4 transition-all duration-300">
-      <div className="w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
-        <div className="bg-slate-900/95 text-white p-4 flex justify-between items-center shrink-0 border-b border-slate-800">
-          <h3 className="font-bold text-lg">
+    <div ref={containerRef} className="absolute inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex flex-col justify-center items-center p-4 transition-all duration-300">
+      <div className={`w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl relative flex flex-col ${isMuitoCompacto ? 'max-h-[98vh]' : 'max-h-[90vh]'}`}>
+        <div className={`bg-slate-900/95 text-white ${isMuitoCompacto ? 'p-2' : 'p-4'} flex justify-between items-center shrink-0 border-b border-slate-800`}>
+          <h3 className={`font-bold ${isMuitoCompacto ? 'text-base' : 'text-lg'}`}>
             <div className="flex items-center">
               <div className="flex items-center justify-center">
                 <span className="font-medium">Scanner</span>
@@ -157,37 +187,37 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 36 24"
                   fill="currentColor"
-                  className="w-8 h-8 ml-4">
+                  className={`${isMuitoCompacto ? 'w-6 h-6' : 'w-8 h-8'} ml-4`}>
                   <path d="M2 4h2v16H2zm3.5 0h1v16h-1zM8 4h3v16H8zm4.5 0h1.5v16h-1.5zm3 0h2.5v16h-2.5zm4 0h1v16h-1zm2.5 0h2v16h-2zm3.5 0h3v16h-3zm4.5 0h1v16h-1zm2.5 0h1.5v16h-1.5z" />
                 </svg>
               </div>
             </div>
           </h3>
           <button onClick={fecharScanner} className="text-gray-400 hover:text-white p-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`${isMuitoCompacto ? 'w-4 h-4' : 'w-5 h-5'}`}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <div className="bg-slate-950 relative grow flex items-center justify-center overflow-hidden min-h-[300px]">
+        <div className={`bg-slate-950 relative grow flex items-center justify-center overflow-hidden ${isMuitoCompacto ? 'min-h-[200px]' : 'min-h-[300px]'}`}>
           <div id="leitor-codigo-barras" className="w-full h-full opacity-90 mix-blend-screen"></div>
 
           {statusCamera === 'iniciando' && (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-slate-900/80 backdrop-blur-sm">
               <div className="animate-pulse mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`${isMuitoCompacto ? 'w-8 h-8' : 'w-12 h-12'} text-gray-400`}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
                 </svg>
               </div>
-              <p className="text-gray-300">Iniciando camera...</p>
+              <p className={`${isMuitoCompacto ? 'text-xs' : 'text-sm'} text-gray-300`}>Iniciando câmera...</p>
             </div>
           )}
 
           {statusCamera === 'erro' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-slate-900/80 backdrop-blur-md p-6 text-center border-t border-slate-800/50">
-              <div className="relative w-16 h-16 mx-auto mb-6">
+            <div className={`absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-slate-900/80 backdrop-blur-md ${isMuitoCompacto ? 'p-3' : 'p-6'} text-center border-t border-slate-800/50`}>
+              <div className={`${isMuitoCompacto ? 'w-12 h-12 mb-4' : 'w-16 h-16 mb-6'} relative mx-auto`}>
                 <style>{`
                   @keyframes animCameraSeq {
                     0%, 15% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0px); }
@@ -233,27 +263,27 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
                 </div>
               </div>
 
-              <p className="font-bold mb-1 text-lg whitespace-pre-line">{mensagemErro}</p>
-              <p className="text-sm text-gray-400 mb-5 px-4">
+              <p className={`font-bold mb-1 ${isMuitoCompacto ? 'text-base' : 'text-lg'} whitespace-pre-line`}>{mensagemErro}</p>
+              <p className={`${isMuitoCompacto ? 'text-[10px]' : 'text-sm'} text-gray-400 mb-5 px-4`}>
                 {detalheErro === 'permissao'
-                  ? 'Verifique as configuracoes de privacidade do seu navegador.'
-                  : 'Certifique-se que o dispositivo nao esta sendo usado por outro app.'}
+                  ? 'Verifique as configurações de privacidade do seu navegador.'
+                  : 'Certifique-se que o dispositivo não está sendo usado por outro app.'}
               </p>
 
               <button
                 onClick={fecharScanner}
-                className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors py-2.5 px-6 rounded-full border border-gray-700 active:bg-gray-800"
+                className={`flex items-center gap-2 text-gray-400 hover:text-white transition-colors ${isMuitoCompacto ? 'py-1.5 px-4' : 'py-2.5 px-6'} rounded-full border border-gray-700 active:bg-gray-800`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                 </svg>
-                <span className="font-bold text-xs uppercase tracking-widest">Voltar</span>
+                <span className={`font-bold ${isMuitoCompacto ? 'text-[10px]' : 'text-xs'} uppercase tracking-widest`}>Voltar</span>
               </button>
             </div>
           )}
         </div>
 
-        <div className="p-4 bg-gray-100 shrink-0 border-t border-gray-200">
+        <div className={`${isMuitoCompacto ? 'p-2' : 'p-4'} bg-gray-100 shrink-0 border-t border-gray-200`}>
           <form onSubmit={lidarComEnvioManual} className="flex gap-2">
             <input
               ref={refInputManual}
@@ -261,12 +291,12 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
               inputMode="numeric"
               value={codigoManual}
               onChange={e => setCodigoManual(e.target.value)}
-              placeholder="Digite o codigo..."
-              className="flex-1 min-w-0 p-3 bg-white border border-gray-300 rounded-xl text-gray-900 font-bold focus:ring-2 focus:ring-green-700 outline-none shadow-sm"
+              placeholder="Digite o código..."
+              className={`flex-1 min-w-0 ${isMuitoCompacto ? 'p-2 text-base' : 'p-3 text-lg'} bg-white border border-gray-300 rounded-xl text-gray-900 font-bold focus:ring-2 focus:ring-green-700 outline-none shadow-sm`}
             />
             <button
               type="submit"
-              className="bg-green-700 text-white px-6 rounded-xl font-bold hover:bg-green-800 transition-colors shadow-sm"
+              className={`bg-green-700 text-white ${isMuitoCompacto ? 'px-4' : 'px-6'} rounded-xl font-bold hover:bg-green-800 transition-colors shadow-sm`}
             >
               OK
             </button>
@@ -278,3 +308,4 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
 };
 
 export default ModalScannerBarras;
+
