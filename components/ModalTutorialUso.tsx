@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 
-// Simulando a importação do hook para que o arquivo funcione de forma independente no preview
-// No seu projeto real, você pode voltar a usar: import { useTutorialPrimeiroAcesso, CHAVE_TUTORIAL_VISTO } from '../hooks/useTutorialUso';
-const CHAVE_TUTORIAL_VISTO = '@app:tutorial_visto';
+import { useTutorialPrimeiroAcesso, CHAVE_TUTORIAL_VISTO } from '../hooks/useTutorialUso';
 
 // Configuração da velocidade da animação (em milissegundos).
 const VELOCIDADE_ANIMACAO_MS = 4500;
@@ -20,7 +18,7 @@ const PORCENTAGEM_ATUALIZACAO_TOTAL = 0.70;
  * Tutorial visual de primeiro acesso (Tela Única).
  * Foco em ensinar o utilizador a aproximar a câmara e mostrar a soma automática.
  */
-const ModalTutorialUso = ({ aoFechar }) => {
+export const ModalTutorialUso = ({ aoFechar }) => {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [totalAcumulado, setTotalAcumulado] = useState(0);
   const [direcaoDescarte, setDirecaoDescarte] = useState(1);
@@ -30,7 +28,6 @@ const ModalTutorialUso = ({ aoFechar }) => {
   const containerRef = useRef(null);
 
   const finalizarTutorial = () => {
-    localStorage.setItem(CHAVE_TUTORIAL_VISTO, 'true');
     aoFechar();
   };
 
@@ -254,3 +251,4 @@ const ModalTutorialUso = ({ aoFechar }) => {
 };
 
 export default ModalTutorialUso;
+

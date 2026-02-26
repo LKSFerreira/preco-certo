@@ -19,5 +19,10 @@ export const useTutorialPrimeiroAcesso = () => {
 
     const fechar = () => setMostrar(false);
 
-    return { mostrar, fechar, tentarMostrar };
+    const marcarComoVisto = () => {
+        localStorage.setItem(CHAVE_TUTORIAL_VISTO, 'true');
+        fechar();
+    };
+
+    return { mostrar, fechar, tentarMostrar, marcarComoVisto };
 };

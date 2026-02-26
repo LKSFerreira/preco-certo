@@ -24,7 +24,7 @@ export default function App() {
   const { produtos: repositorioProdutos, carrinho: repositorioCarrinho, historico: repositorioHistorico } = useRepositorios();
 
   // --- Tutorial de primeiro acesso ---
-  const { mostrar: mostrarTutorial, fechar: fecharTutorial, tentarMostrar } = useTutorialPrimeiroAcesso();
+  const { mostrar: mostrarTutorial, fechar: fecharTutorial, tentarMostrar, marcarComoVisto: marcarTutorialComoVisto } = useTutorialPrimeiroAcesso();
 
   // --- Estados ---
   const [telaAtual, setTelaAtual] = useState<TelaApp>('DASHBOARD');
@@ -828,7 +828,7 @@ export default function App() {
           {mostrarTutorial && (
             <ModalTutorialUso
               aoFechar={() => {
-                fecharTutorial();
+                marcarTutorialComoVisto();
                 // Se houver uma ação pendente (ex: abrir scanner), executa agora
                 if (acaoPendenteTutorial) {
                   acaoPendenteTutorial();
