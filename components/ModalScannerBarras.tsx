@@ -83,10 +83,10 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
         if (msg.includes('NotFound') || msg.includes('Permission') || msg.includes('PermissionDeniedError')) {
           console.warn('⚠️ Scanner indisponível (Câmera não encontrada ou permissão negada):', msg);
           if (msg.includes('NotFound')) setMensagemErro('Câmera não encontrada \n ou sem permissão.');
-          else setMensagemErro('Acesso à câmera negado. Digite o código manualmente abaixo.');
+          else setMensagemErro('Acesso à câmera negado.');
         } else {
           console.error('🚨 Erro fatal scanner:', msg);
-          setMensagemErro('Erro ao acessar câmera. Digite o código manualmente abaixo.');
+          setMensagemErro('Erro ao acessar câmera.');
         }
 
         // Se falhou ao iniciar, não devemos tentar parar no cleanup
@@ -149,10 +149,10 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
   };
 
   return (
-    <div className="absolute inset-0 bg-black bg-opacity-95 z-50 flex flex-col justify-center items-center p-4">
-      <div className="w-full max-w-md bg-white rounded-lg overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
+    <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex flex-col justify-center items-center p-4 transition-all duration-300">
+      <div className="w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl relative flex flex-col max-h-[90vh]">
         {/* Cabeçalho */}
-        <div className="bg-gray-800 text-white p-4 flex justify-between items-center shrink-0">
+        <div className="bg-slate-900/95 text-white p-4 flex justify-between items-center shrink-0 border-b border-slate-800">
           <h3 className="font-bold text-lg">
             <div className="flex items-center">
               {/* Container Flexbox para alinhar perfeitamente no meio */}
@@ -176,12 +176,12 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
         </div>
 
         {/* Área da Câmera */}
-        <div className="bg-black relative grow flex items-center justify-center overflow-hidden min-h-[300px]">
-          <div id="leitor-codigo-barras" className="w-full h-full"></div>
+        <div className="bg-slate-950 relative grow flex items-center justify-center overflow-hidden min-h-[300px]">
+          <div id="leitor-codigo-barras" className="w-full h-full opacity-90 mix-blend-screen"></div>
 
           {/* Overlay: Iniciando */}
           {statusCamera === 'iniciando' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-black">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-slate-900/80 backdrop-blur-sm">
               <div className="animate-pulse mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-12 h-12 text-gray-400">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
@@ -195,13 +195,13 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({ aoLerCodigo, aoCancelar })
 
           {/* Overlay: Erro */}
           {statusCamera === 'erro' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-gray-900 p-6 text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12 text-red-500 mb-4">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-slate-900/80 backdrop-blur-md p-6 text-center border-t border-slate-800/50">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12 text-red-500 mb-4 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" />
               </svg>
               <p className="font-bold mb-2 text-lg whitespace-pre-line">{mensagemErro}</p>
               <p className="text-sm text-gray-400 mb-4">
-                Por favor, digite o código manualmente abaixo.
+                Digite o código manualmente abaixo.
               </p>
               <button
                 onClick={fecharScanner}
