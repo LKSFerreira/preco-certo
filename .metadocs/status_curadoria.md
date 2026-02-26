@@ -14,6 +14,7 @@ Componentes 100% integrados, sem mocks, com animações fluidas e responsividade
 | [ModalPlano](./components/ModalPlano.tsx#11-289) | **OK** | Remoção de media queries e implementação de ResizeObserver (`isMuitoCompacto`). |
 | [ModalLoadingCarrinho](./components/ModalLoadingCarrinho.tsx#9-177)| **OK** | Resolução da quebra em telas curtas usando Fator de Escala Global (`ResizeObserver`). |
 | [ModalScannerBarras](./components/ModalScannerBarras.tsx#9-281) | **OK** | Glassmorphism, animações avançadas e ResizeObserver (`isMuitoCompacto`) implementados. |
+| [ModalContato](./components/ModalContato.tsx#21-205) | **OK** | Botão premium com efeito shimmer, animações de sucesso e responsividade dinâmica. |
 
 ---
 
@@ -30,7 +31,6 @@ Layouts básicos ou puramente utilitários que ainda não receberam a identidade
 | [ModalPagamento](./components/ModalPagamento.tsx#13-133) | **UX Simples** | Checkout funcional mas sem o "fator uau" do PIX. |
 | [ModalDoacao](./components/ModalDoacao.tsx#9-158) | **Design Antigo** | Cores chapadas e layout simplista. |
 | [ModalConfirmacao](./components/ModalConfirmacao.tsx#13-92) | **Alerta Padrão** | Substituir o visual de alerta estilo sistema por algo personalizado. |
-| [ModalContato](./components/ModalContato.tsx#13-138) | **Básico** | Apenas um formulário padrão sem refinamento. |
 | [ModalRecorte](./components/ModalRecorte.tsx#12-97) | **Funcional** | O modal que envolve o Cropper precisa de bordas e sombras premium. |
 
 ---
