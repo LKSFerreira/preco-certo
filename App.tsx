@@ -479,7 +479,7 @@ export default function App() {
 
         {/* 1. Barra de Navegação Superior */}
         <header className="bg-white shadow-sm sticky top-0 z-20 w-full">
-          <div className="w-full px-4 py-3 flex justify-between items-center">
+          <div className="w-full px-4 py-3 [@media(max-height:700px)]:py-2 flex justify-between items-center transition-all">
 
             {/* Logo e Título */}
             <div className="flex items-center gap-3">
@@ -489,8 +489,8 @@ export default function App() {
                 </svg>
               </div>
               <div className="flex flex-col justify-center">
-                <h1 className="font-bold text-gray-800 leading-tight text-lg">Sem Susto</h1>
-                <p className="text-[9px] text-gray-600 uppercase tracking-widest -mt-0.5">Controle de Gastos</p>
+                <h1 className="font-bold text-gray-800 leading-tight text-lg [@media(max-height:700px)]:text-base">Sem Susto</h1>
+                <p className="text-[9px] text-gray-600 uppercase tracking-widest -mt-0.5 [@media(max-height:700px)]:hidden">Controle de Gastos</p>
               </div>
             </div>
 
@@ -504,7 +504,7 @@ export default function App() {
             */}
               <button
                 onClick={() => setMostrarContato(true)}
-                className="bg-green-50 text-green-600 p-2 rounded-xl text-sm font-bold border border-green-100 hover:bg-green-100 transition-colors flex items-center justify-center shadow-sm"
+                className="bg-green-50 text-green-600 p-2 [@media(max-height:700px)]:p-1.5 rounded-xl text-sm font-bold border border-green-100 hover:bg-green-100 transition-colors flex items-center justify-center shadow-sm"
                 title="Fale conosco via WhatsApp"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
@@ -521,7 +521,7 @@ export default function App() {
             */}
               <button
                 onClick={() => setMostrarModalPlano(true)}
-                className="bg-red-50 text-red-500 p-2 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
+                className="bg-red-50 text-red-500 p-2 [@media(max-height:700px)]:p-1.5 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
                 title="Seja Premium"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -548,7 +548,7 @@ export default function App() {
 
         {/* 2. Área Principal (Lista de Compras) */}
         <main
-          className="flex-1 w-full p-4 pb-32"
+          className="flex-1 w-full p-4 pb-32 [@media(max-height:700px)]:pb-24 transition-all"
           onClick={() => {
             // Gatilho em áreas neutras: tenta mostrar tutorial, limpa pendências
             setAcaoPendenteTutorial(null);
@@ -650,7 +650,7 @@ export default function App() {
 
         {/* 3. Rodapé Fixo (Adaptado para Tablet/Desktop Wrapper) */}
         <footer className="sticky bottom-0 w-full bg-white border-t border-gray-200 z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-          <div className="w-full p-4 flex flex-col gap-3">
+          <div className="w-full p-4 [@media(max-height:700px)]:p-3 flex flex-col gap-3 [@media(max-height:700px)]:gap-2 transition-all">
 
             <div className="flex justify-between items-end px-1">
               <span className="text-gray-600 font-medium">Total Geral</span>
@@ -678,9 +678,9 @@ export default function App() {
 
                   abrirScanner();
                 }}
-                className="flex-1 bg-verde-700 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
+                className="flex-1 bg-verde-700 text-white font-bold py-4 [@media(max-height:700px)]:py-2.5 rounded-xl shadow-lg hover:bg-verde-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
               >
-                <span>Ler Código</span>
+                <span className="[@media(max-height:700px)]:text-sm">Ler Código</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 36 24"
@@ -693,12 +693,12 @@ export default function App() {
               {carrinho.length > 0 && (
                 <button
                   onClick={solicitarFinalizacao}
-                  className="flex-1 bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-blue-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 bg-blue-600 text-white font-bold py-4 [@media(max-height:700px)]:py-2.5 rounded-xl shadow-lg hover:bg-blue-700 active:transform active:scale-95 transition-all flex items-center justify-center gap-2"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 [@media(max-height:700px)]:w-5 [@media(max-height:700px)]:h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                   </svg>
-                  <span>Finalizar</span>
+                  <span className="[@media(max-height:700px)]:text-sm">Finalizar</span>
                 </button>
               )}
             </div>

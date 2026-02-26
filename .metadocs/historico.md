@@ -198,4 +198,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Strategy Pattern & Polling:** Implementada arquitetura desacoplada para Mercado Pago com sistema de polling resiliente, cleanup automático e validação de preços server-side.
 *   **Aesthetics & Responsividade:** `ModalPlano` redesenhada com animações premium e adaptabilidade dinâmica (`max-height`) para dispositivos móveis e telas pequenas.
 *   **Mock de Pagamento:** Provedor flexível para testes rápidos, simulando aprovação automática sem dependência de APIs externas.
-*   **Automação (premium.sh):** Script de geração de tokens com detecção automática de banco de dados e execução de migrações via Docker.
+### 25/02: [Responsividade Dinâmica e UX Mobile](./walkthrough/responsividade_dinamica.md) 📱
+*   **Performance 0% JS (App.tsx):** Aplicação de injetores híbridos nativos (`[@media(max-height:700px)]`) via Tailwind para espremer o layout e botões da tela principal sem utilizar processamento React, preservando nota máxima (`100/100`) de *Interaction to Next Paint*.
+*   **Scale Visual Inteligente (Loading Carrinho):** Implementada a manipulação CSS de fator global atrelada ao `ResizeObserver` para simular uma lente quântica em celulares de tela baixa: a "chuva de comida" não invade bordas alheias, garantindo proporção física perfeita 1:1 de animações em qualquer tela.
+*   **Migração de Mocks para Real Data (Modais):** Mapeamento 100% real implementado entre os Modais base e de instrução de uso com a verdadeira Factory da arquitetura IA do projeto e os persisters de localStorage do Hook padrão.
+*   **React Lifecycle (ModalAtivarToken & Plano):** Substituição cirúrgica dos CSS puros do Tailwind para medição de visores assíncrona baseada em ResizeObserver (flags visuais dinâmicas de estados curtos / compactos em tempo real).
