@@ -22,13 +22,11 @@ interface PropsModalContato {
 const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
   const [nome, setNome] = useState('');
   const [mensagem, setMensagem] = useState('');
-  const [enviado, setEnviado] = useState(false);
   const [modoCompacto, setModoCompacto] = useState(false);
   const [textareaRows, setTextareaRows] = useState(3);
   const [mostrarIcone, setMostrarIcone] = useState(true);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const timeoutEnvioRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!wrapperRef.current) return;
@@ -57,15 +55,6 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
     return () => observer.disconnect();
   }, []);
 
-  // Cleanup do timeout para evitar memory leak ao desmontar
-  useEffect(() => {
-    return () => {
-      if (timeoutEnvioRef.current !== null) {
-        window.clearTimeout(timeoutEnvioRef.current);
-      }
-    };
-  }, []);
-
   const formularioValido = nome.trim().length > 0 && mensagem.trim().length >= 30;
 
   const lidarMudancaNome = (valor: string) => {
@@ -85,12 +74,8 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
       navigator.vibrate(50);
     }
 
-    setEnviado(true);
-
-    timeoutEnvioRef.current = window.setTimeout(() => {
-      window.open(`https://wa.me/${WHATSAPP_DESENVOLVEDOR}?text=${textoEncoded}`, '_blank');
-      aoFechar();
-    }, 1500);
+    window.open(`https://wa.me/${WHATSAPP_DESENVOLVEDOR}?text=${textoEncoded}`, '_blank');
+    aoFechar();
   };
 
   const lidarSubmit = (e: React.FormEvent) => {
@@ -104,7 +89,7 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
       className="absolute inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in"
     >
       <div
-        className={`bg-white rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.4)] w-full max-w-sm relative flex flex-col transition-all duration-500 transform max-h-[95%] ${enviado ? 'scale-90 opacity-0' : 'opacity-100'}`}
+        className="bg-white rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.4)] w-full max-w-sm relative flex flex-col max-h-[95%]"
       >
         {/* Header Premium com Gradiente Esmeralda */}
         <div className={`bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 text-white text-center rounded-t-[2.5rem] relative shrink-0 transition-all ${modoCompacto ? 'p-5' : 'p-8'}`}>
@@ -206,19 +191,6 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
           </button>
         </div>
       </div>
-
-      {/* Overlay de Sucesso */}
-      {enviado && (
-        <div className="absolute inset-0 z-[70] flex flex-col items-center justify-center bg-white rounded-3xl animate-fade-in">
-          <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mb-6 shadow-2xl shadow-emerald-500/40 animate-bounce">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={4} stroke="currentColor" className="w-12 h-12 text-white">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-          </div>
-          <h3 className="text-2xl font-black text-slate-900">Mensagem Enviada!</h3>
-          <p className="text-slate-400 font-bold mt-1">Conectando ao WhatsApp...</p>
-        </div>
-      )}
 
       {/* Animação do Shimmer */}
       <style>{`
