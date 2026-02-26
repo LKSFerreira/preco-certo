@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRepositorios } from '../contextos/ContextoRepositorios';
 
 // =======================================================
@@ -188,6 +188,33 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
     const [mensagemErro, setMensagemErro] = useState('');
     const [diasAtivados, setDiasAtivados] = useState(0);
 
+    // Controle de Responsividade Dinâmica
+    const [tamanhoTela, setTamanhoTela] = useState('normal');
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // Monitora o tamanho real do container para ajustar a UI
+    useEffect(() => {
+        const observer = new ResizeObserver((entries) => {
+            for (let entry of entries) {
+                const height = entry.contentRect.height;
+                // Ajusta os breakpoints conforme a altura da tela
+                if (height < 680) { // Ex: iPhone SE (667px)
+                    setTamanhoTela('muito-compacto');
+                } else if (height < 780) { // Ex: Telas médias (Galaxy S22)
+                    setTamanhoTela('compacto');
+                } else { // Ex: iPhone 14 Pro e maiores
+                    setTamanhoTela('normal');
+                }
+            }
+        });
+
+        if (containerRef.current) observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    const isCompacto = tamanhoTela !== 'normal';
+    const isMuitoCompacto = tamanhoTela === 'muito-compacto';
+
     // Se chegou o token por URL prop, preenche sozinho e permite que o usuario só aperte "Ativar"
     useEffect(() => {
         if (tokenObrigatorioUrl) {
@@ -249,8 +276,8 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
     }
 
     return (
-        <div className="absolute inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative">
+        <div ref={containerRef} className="absolute inset-0 z-50 bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+            <div className={`bg-white rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl relative transition-all ${isCompacto ? 'max-h-[90vh] overflow-y-auto' : ''}`}>
 
                 {/* Fechar Topo Direito - Mais no canto e refinado */}
                 <button
@@ -280,10 +307,10 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
 
                         {/* Div do Núcleo com transição fluida de altura e MAIS ESPAÇAMENTO (Respiro) */}
                         <div className={`flex items-center justify-center transition-all duration-700 ease-out z-20 w-full ${status === 'IDLE' || status === 'ERRO'
-                            ? 'h-24 mt-6 mb-4 sm:mt-10 sm:mb-6' // Margens menores em telas curtas
+                            ? (isCompacto ? 'h-24 mt-4 mb-4' : 'h-24 mt-10 mb-6')
                             : status === 'CARREGANDO'
-                                ? 'h-40 mt-8 mb-6 sm:h-48 sm:mt-12 sm:mb-8'
-                                : 'h-36 mt-8 mb-8 sm:h-40 sm:mt-12 sm:mb-10'
+                                ? (isCompacto ? 'h-40 mt-6 mb-6' : 'h-48 mt-12 mb-8')
+                                : (isCompacto ? 'h-36 mt-6 mb-6' : 'h-40 mt-12 mb-10')
                             }`}>
                             <QuantumCore status={status} />
                         </div>
@@ -291,7 +318,7 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
 
                     {/* Corpo */}
                     {status === 'SUCESSO' ? (
-                        <div className="text-center animate-scale-up space-y-4 sm:space-y-6">
+                        <div className={`text-center animate-scale-up ${isCompacto ? 'space-y-4' : 'space-y-6'}`}>
                             <div className="mt-2">
                                 <p className="text-lg text-gray-800 font-medium">
                                     Parabéns! <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500 animate-pulse inline-block mx-1">
@@ -305,7 +332,7 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
 
                             <button
                                 onClick={aoIrParaDashboard}
-                                className="w-full relative group cursor-pointer rounded-xl overflow-hidden p-[3px] transition-all active:scale-95 shadow-xl mt-4 sm:mt-6"
+                                className={`w-full relative group cursor-pointer rounded-xl overflow-hidden p-[3px] transition-all active:scale-95 shadow-xl ${isCompacto ? 'mt-4' : 'mt-6'}`}
                             >
                                 {/* Premium Gradient Layer para o botão Acessar */}
                                 <div className="absolute inset-[-500%] bg-[conic-gradient(from_0deg,#10b981,#059669,#06b6d4,#34d399,#10b981)]" style={{ animation: 'border-spin 3s linear infinite' }}></div>
@@ -334,8 +361,8 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                                     onClick={() => document.getElementById('token-input')?.focus()}
                                 >
                                     {/* Conteúdo Centralizado Fluido */}
-                                    <div className="flex w-full items-center justify-center pl-2 pr-10 sm:pr-14">
-                                        <span className={`text-base sm:text-lg font-mono font-bold tracking-wider uppercase select-none ${status === 'ERRO' ? 'text-red-600' : 'text-gray-800'}`}>
+                                    <div className={`flex w-full items-center justify-center pl-2 ${isCompacto ? 'pr-10' : 'pr-14'}`}>
+                                        <span className={`${isCompacto ? 'text-base' : 'text-lg'} font-mono font-bold tracking-wider uppercase select-none ${status === 'ERRO' ? 'text-red-600' : 'text-gray-800'}`}>
                                             SEM-SUSTO-
                                         </span>
                                         <input
@@ -362,7 +389,7 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                                             }}
                                             placeholder="123ABCD"
                                             disabled={status === 'CARREGANDO'}
-                                            className={`bg-transparent text-base sm:text-lg font-mono font-bold tracking-widest outline-none uppercase placeholder-gray-300 w-24 sm:w-32 ${status === 'ERRO' ? 'text-red-600 focus:text-red-600' : 'text-gray-800 focus:text-gray-800'}`}
+                                            className={`bg-transparent ${isCompacto ? 'text-base w-24' : 'text-lg w-32'} font-mono font-bold tracking-widest outline-none uppercase placeholder-gray-300 ${status === 'ERRO' ? 'text-red-600 focus:text-red-600' : 'text-gray-800 focus:text-gray-800'}`}
                                         />
                                     </div>
 
@@ -389,7 +416,7 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                                                     console.error('Falha ao colar da área de transferência', err);
                                                 }
                                             }}
-                                            className="absolute right-1 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-indigo-50 text-indigo-600 font-bold text-[10px] sm:text-xs py-1.5 px-2 sm:px-3 rounded-lg flex items-center gap-1 transition-colors border border-gray-200 z-10"
+                                            className={`absolute right-1 top-1/2 -translate-y-1/2 bg-gray-100 hover:bg-indigo-50 text-indigo-600 font-bold ${isCompacto ? 'text-[10px] px-2' : 'text-xs px-3'} py-1.5 rounded-lg flex items-center gap-1 transition-colors border border-gray-200 z-10`}
                                             title="Colar da Área de Transferência"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
@@ -401,13 +428,13 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
                             </div>
 
                             {status === 'ERRO' && (
-                                <div className="flex flex-col items-center gap-1 animate-shake mt-2 sm:mt-4">
-                                    <p className="text-xs sm:text-sm text-red-600 text-center font-bold flex items-center justify-center gap-2">
+                                <div className={`flex flex-col items-center gap-1 animate-shake ${isCompacto ? 'mt-2' : 'mt-4'}`}>
+                                    <p className={`${isCompacto ? 'text-xs' : 'text-sm'} text-red-600 text-center font-bold flex items-center justify-center gap-2`}>
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" />
                                         </svg> {mensagemErro || "Token inválido."}
                                     </p>
-                                    <p className="text-[10px] sm:text-sm text-gray-600 text-center font-medium mt-1">
+                                    <p className={`${isCompacto ? 'text-[10px]' : 'text-sm'} text-gray-600 text-center font-medium mt-1`}>
                                         Tente novamente ou utilize outro código.
                                     </p>
                                 </div>
