@@ -474,11 +474,11 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 flex justify-center items-start overflow-x-hidden">
-      <div className="w-full max-w-3xl min-h-screen bg-white shadow-[0_0_80px_-15px_rgba(0,0,0,0.6)] flex flex-col font-sans relative border-x border-slate-800">
+    <div className="h-[100dvh] bg-slate-900 flex justify-center items-stretch overflow-hidden">
+      <div className="w-full max-w-3xl h-[100dvh] bg-white shadow-[0_0_80px_-15px_rgba(0,0,0,0.6)] flex flex-col font-sans relative border-x border-slate-800 overflow-hidden">
 
         {/* 1. Barra de Navegação Superior */}
-        <header className="bg-white shadow-sm sticky top-0 z-20 w-full">
+        <header className="bg-white shadow-sm z-20 w-full shrink-0">
           <div className="w-full px-4 py-3 [@media(max-height:700px)]:py-2 flex justify-between items-center transition-all">
 
             {/* Logo e Título */}
@@ -548,7 +548,7 @@ export default function App() {
 
         {/* 2. Área Principal (Lista de Compras) */}
         <main
-          className="flex-1 w-full p-4 pb-32 [@media(max-height:700px)]:pb-24 transition-all"
+          className="flex-1 w-full p-4 pb-6 [@media(max-height:700px)]:pb-4 transition-all overflow-y-auto overscroll-contain"
           onClick={() => {
             // Gatilho em áreas neutras: tenta mostrar tutorial, limpa pendências
             setAcaoPendenteTutorial(null);
@@ -649,7 +649,7 @@ export default function App() {
         </main>
 
         {/* 3. Rodapé Fixo (Adaptado para Tablet/Desktop Wrapper) */}
-        <footer className="sticky bottom-0 w-full bg-white border-t border-gray-200 z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <footer className="w-full bg-white border-t border-gray-200 z-30 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] shrink-0 pb-[env(safe-area-inset-bottom)]">
           <div className="w-full p-4 [@media(max-height:700px)]:p-3 flex flex-col gap-3 [@media(max-height:700px)]:gap-2 transition-all">
 
             <div className="flex justify-between items-end px-1">

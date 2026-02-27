@@ -82,19 +82,19 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
                 `}
             </style>
 
-            <div ref={containerRef} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-emerald-950/70 backdrop-blur-sm anim-fade-in">
+            <div ref={containerRef} className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-emerald-950/70 backdrop-blur-sm anim-fade-in overflow-y-auto">
                 {/* Removido o overflow-y-auto e a barra de rolagem, a altura se adapta ao conteúdo inteligentemente */}
-                <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden anim-slide-up ring-1 ring-black/10 flex flex-col">
+                <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md max-h-[calc(100dvh-1rem)] overflow-hidden anim-slide-up ring-1 ring-black/10 flex flex-col">
                     
                     {/* Header Premium - Globalmente menor e espremido dinamicamente em telas pequenas */}
                     <div className={`bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-600 px-5 sm:px-6 ${isMuitoCompacto ? 'py-4' : 'py-5'} text-white text-center relative overflow-hidden flex-shrink-0`}>
-                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-400/20 rounded-full blur-3xl"></div>
-                        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-900/40 rounded-full blur-3xl"></div>
+                        <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none"></div>
+                        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-900/40 rounded-full blur-3xl pointer-events-none"></div>
                         
                         <button 
                             onClick={aoFechar} 
                             disabled={carregando !== null}
-                            className="absolute top-3 right-3 p-2 text-emerald-100 active:text-white active:bg-emerald-600/50 rounded-full transition-all disabled:opacity-50"
+                            className="absolute top-3 right-3 z-20 p-2 text-emerald-100 active:text-white active:bg-emerald-600/50 rounded-full transition-all disabled:opacity-50"
                             aria-label="Fechar"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
@@ -120,7 +120,7 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
                     </div>
 
                     {/* Content */}
-                    <div className={`flex-1 relative flex flex-col justify-between bg-white ${isMuitoCompacto ? 'px-4 py-4' : 'px-5 py-6 sm:px-7'}`}>
+                    <div className={`flex-1 relative flex flex-col justify-between bg-white overflow-y-auto ${isMuitoCompacto ? 'px-4 py-4' : 'px-5 py-6 sm:px-7'}`}>
                         
                         {/* Planos - "Espremidos" dinamicamente */}
                         <div className={`flex flex-col relative ${isMuitoCompacto ? 'gap-2.5 mb-4' : 'gap-3.5 mb-6'}`}>

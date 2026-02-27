@@ -86,10 +86,10 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
   return (
     <div
       ref={wrapperRef}
-      className="absolute inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in"
+      className="absolute inset-0 z-[60] flex items-center justify-end sm:justify-center p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] bg-slate-900/60 backdrop-blur-md animate-fade-in"
     >
       <div
-        className="bg-white rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.4)] w-full max-w-sm relative flex flex-col max-h-[95%]"
+        className="bg-white rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.4)] w-full max-w-sm relative flex flex-col max-h-[calc(100dvh-0.75rem)] overflow-hidden"
       >
         {/* Header Premium com Gradiente Esmeralda */}
         <div className={`bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 text-white text-center rounded-t-[2.5rem] relative shrink-0 transition-all ${modoCompacto ? 'p-5' : 'p-8'}`}>
@@ -117,7 +117,7 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
         </div>
 
         {/* Form Body (Sem Scroll, responsivo na altura) */}
-        <form onSubmit={lidarSubmit} className={`flex flex-col shrink-0 ${modoCompacto ? 'gap-3 p-4' : 'gap-5 p-6'}`}>
+        <form onSubmit={lidarSubmit} className={`flex-1 overflow-y-auto overscroll-contain flex flex-col ${modoCompacto ? 'gap-3 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]' : 'gap-5 p-6 pb-[calc(env(safe-area-inset-bottom)+1rem)]'}`}>
           <div className={modoCompacto ? 'space-y-3' : 'space-y-4'}>
             <div>
               <label className="text-[11px] uppercase font-black text-slate-400 tracking-widest mb-1.5 block ml-1">

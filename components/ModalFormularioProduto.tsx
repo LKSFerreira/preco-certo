@@ -43,6 +43,8 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   const refMarca = useRef<HTMLInputElement>(null);
   const refTamanho = useRef<HTMLInputElement>(null);
   const refPrice = useRef<HTMLInputElement>(null);
+  const refAutoPreencher = useRef<HTMLLabelElement>(null);
+  const refSalvar = useRef<HTMLButtonElement>(null);
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -197,6 +199,36 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     setPriceInput((parseInt(v, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
   };
 
+  const rolarParaSalvar = () => {
+    setTimeout(() => {
+      refSalvar.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }, 180);
+  };
+
+  const focarProximoElementoAposPreco = () => {
+    if (!imagem && !analisandoIA) {
+      refAutoPreencher.current?.focus();
+      return;
+    }
+
+    if (!camposTextoBloqueados) {
+      if (!descricao.trim()) {
+        refDescricao.current?.focus();
+        return;
+      }
+      if (!marca.trim()) {
+        refMarca.current?.focus();
+        return;
+      }
+      if (!tamanho.trim()) {
+        refTamanho.current?.focus();
+        return;
+      }
+    }
+
+    refSalvar.current?.focus();
+  };
+
   const validarESalvar = (e: React.FormEvent) => {
     e.preventDefault();
     setErro(null);
@@ -223,7 +255,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
         <h2 className="font-bold text-lg leading-none">{produtoExistente ? 'Editar Produto' : 'Novo Produto'}</h2>
       </div>
 
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col transition-all ${isCompacto ? 'p-3 pb-0' : 'p-5 pb-0'}`}>
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col transition-all ${isCompacto ? 'p-3 pb-2' : 'p-5 pb-2'}`}>
         {mostraRecorte && imagemParaRecorte && <ModalRecorte imagem={imagemParaRecorte} aoConfirmar={aoConfirmarRecorte} aoCancelar={() => setMostraRecorte(false)} />}
         {mostraTutorialFoto && <ModalTutorialFoto aoFechar={() => setMostraTutorialFoto(false)} />}
         
@@ -270,7 +302,18 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                     </p>
                   </div>
 
-                  <label className={`w-full relative group cursor-pointer rounded-lg overflow-hidden p-[3px] transition-all active:scale-95 ${analisandoIA ? 'cursor-wait opacity-80' : 'shadow-lg'}`}>
+                  <label
+                    ref={refAutoPreencher}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const seletor = e.currentTarget.querySelector('input[type="file"]') as HTMLInputElement | null;
+                        seletor?.click();
+                      }
+                    }}
+                    className={`w-full relative group cursor-pointer rounded-lg overflow-hidden p-[3px] transition-all active:scale-95 ${analisandoIA ? 'cursor-wait opacity-80' : 'shadow-lg'}`}
+                  >
                     {!analisandoIA && <div className="absolute inset-[-500%] bg-[conic-gradient(from_0deg,#ff0000,#ff8800,#ffff00,#00ff00,#0000ff,#8800ff,#ff0000)]" style={{ animation: 'border-spin 3s linear infinite' }}></div>}
                     <div className={`relative w-full h-full rounded-[5px] flex items-center justify-center px-3 ${isEstreito ? 'gap-2' : 'gap-1.5'} bg-gradient-to-r from-blue-700 to-indigo-700 text-white z-10 transition-colors ${isMuitoCompacto || isEstreito ? 'py-2' : 'py-4'}`}>
                       {analisandoIA ? <i className="fas fa-spinner fa-spin"></i> : (
@@ -331,14 +374,28 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
             </div>
             <div className={`bg-gray-50 rounded-lg border border-gray-200 ${isMuitoCompacto ? 'p-1.5' : 'p-2'}`}>
               <label className={`block font-bold text-green-700 uppercase tracking-wide ${isMuitoCompacto ? 'text-[10px] mb-0.5' : 'text-xs mb-1'}`}>Preço Unitário (R$) *</label>
-              <input ref={refPrice} type="tel" value={priceInput} onChange={lidarMudancaPreco} className={`w-full p-2 bg-white border-2 rounded-lg text-gray-900 font-bold focus:outline-none transition-all ${isMuitoCompacto ? 'text-xl' : 'text-2xl'} ${campoComErro === 'price' ? 'border-red-500' : 'border-green-700'}`} placeholder="0,00" />
+              <input
+                ref={refPrice}
+                type="tel"
+                value={priceInput}
+                onChange={lidarMudancaPreco}
+                onFocus={rolarParaSalvar}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    focarProximoElementoAposPreco();
+                  }
+                }}
+                className={`w-full p-2 bg-white border-2 rounded-lg text-gray-900 font-bold focus:outline-none transition-all ${isMuitoCompacto ? 'text-xl' : 'text-2xl'} ${campoComErro === 'price' ? 'border-red-500' : 'border-green-700'}`}
+                placeholder="0,00"
+              />
             </div>
           </div>
 
           {erro && <div className={`shrink-0 bg-red-50 text-red-600 rounded-lg border border-red-100 font-bold flex items-center p-3 text-sm animate-fade-in`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 mr-2 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" /></svg> {erro}</div>}
 
-          <div className={`mt-auto shrink-0 w-full transition-all ${isCompacto ? 'pt-2 pb-4' : 'pt-6 pb-6'} pb-[calc(env(safe-area-inset-bottom)+1.5rem)]`}>
-            <button type="submit" disabled={analisandoIA} className={`w-full text-white rounded-xl font-bold shadow-lg transition-all ${isCompacto ? 'py-3 text-base' : 'py-4 text-lg'} ${analisandoIA ? 'bg-gray-400' : 'bg-green-700 hover:bg-green-800 active:scale-95'}`}>
+          <div className={`mt-auto shrink-0 w-full transition-all ${isCompacto ? 'pt-2 pb-4' : 'pt-6 pb-6'} ${isCompacto ? 'pb-[calc(env(safe-area-inset-bottom)+3.5rem)]' : 'pb-[calc(env(safe-area-inset-bottom)+1.5rem)]'}`}>
+            <button ref={refSalvar} type="submit" disabled={analisandoIA} className={`w-full text-white rounded-xl font-bold shadow-lg transition-all ${isCompacto ? 'py-3 text-base' : 'py-4 text-lg'} ${analisandoIA ? 'bg-gray-400' : 'bg-green-700 hover:bg-green-800 active:scale-95'}`}>
               {analisandoIA ? 'Processando...' : 'Salvar Produto'}
             </button>
           </div>

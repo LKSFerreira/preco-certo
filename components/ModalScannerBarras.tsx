@@ -176,8 +176,8 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
   };
 
   return (
-    <div ref={containerRef} className="absolute inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex flex-col justify-center items-center p-4 transition-all duration-300">
-      <div className={`w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl relative flex flex-col ${isMuitoCompacto ? 'max-h-[98vh]' : 'max-h-[90vh]'}`}>
+    <div ref={containerRef} className="absolute inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex flex-col justify-end sm:justify-center items-center p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] transition-all duration-300">
+      <div className={`w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl relative flex flex-col ${isMuitoCompacto ? 'max-h-[calc(100dvh-0.75rem)]' : 'max-h-[calc(100dvh-1.5rem)] sm:max-h-[90vh]'}`}>
         <div className={`bg-slate-900/95 text-white ${isMuitoCompacto ? 'p-2' : 'p-4'} flex justify-between items-center shrink-0 border-b border-slate-800`}>
           <h3 className={`font-bold ${isMuitoCompacto ? 'text-base' : 'text-lg'}`}>
             <div className="flex items-center">
@@ -200,7 +200,7 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
           </button>
         </div>
 
-        <div className={`bg-slate-950 relative grow flex items-center justify-center overflow-hidden ${isMuitoCompacto ? 'min-h-[200px]' : 'min-h-[300px]'}`}>
+        <div className={`bg-slate-950 relative grow flex items-center justify-center overflow-hidden ${isMuitoCompacto ? 'min-h-[140px]' : 'min-h-[260px] sm:min-h-[300px]'}`}>
           <div id="leitor-codigo-barras" className="w-full h-full opacity-90 mix-blend-screen"></div>
 
           {statusCamera === 'iniciando' && (
@@ -292,11 +292,11 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
               value={codigoManual}
               onChange={e => setCodigoManual(e.target.value)}
               placeholder="Digite o código..."
-              className={`flex-1 min-w-0 ${isMuitoCompacto ? 'p-2 text-base' : 'p-3 text-lg'} bg-white border border-gray-300 rounded-xl text-gray-900 font-bold focus:ring-2 focus:ring-green-700 outline-none shadow-sm`}
+              className={`flex-1 min-w-0 ${isMuitoCompacto ? 'p-2 text-sm' : 'p-3 text-base'} bg-white border border-gray-300 rounded-xl text-gray-900 font-bold focus:ring-2 focus:ring-green-700 outline-none shadow-sm`}
             />
             <button
               type="submit"
-              className={`bg-green-700 text-white ${isMuitoCompacto ? 'px-4' : 'px-6'} rounded-xl font-bold hover:bg-green-800 transition-colors shadow-sm`}
+              className={`bg-green-700 text-white ${isMuitoCompacto ? 'px-4 py-2' : 'px-6 py-3'} rounded-xl font-bold hover:bg-green-800 transition-colors shadow-sm`}
             >
               OK
             </button>

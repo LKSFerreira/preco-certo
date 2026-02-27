@@ -97,7 +97,7 @@ export const ModalTutorialUso = ({ aoFechar }) => {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 z-[100] flex flex-col bg-gradient-to-b from-blue-600 to-blue-900 font-sans overflow-hidden"
+      className="absolute inset-0 z-[100] flex flex-col bg-gradient-to-b from-blue-600 to-blue-900 font-sans overflow-x-hidden overflow-y-auto overscroll-contain"
       style={{
         '--duracao-animacao': `${VELOCIDADE_ANIMACAO_MS}ms`,
         '--zoom-codigo-barras': isMuitoCompacto ? 1.20 : ZOOM_CODIGO_BARRAS,
@@ -115,9 +115,6 @@ export const ModalTutorialUso = ({ aoFechar }) => {
         
         {/* CABEÇALHO (Não estica) */}
         <div className={`flex-none text-center animate-fade-in flex flex-col items-center justify-center ${isMuitoCompacto ? 'mb-2' : 'mb-4'}`}>
-          <div className={`bg-white/10 rounded-2xl flex items-center justify-center shadow-lg backdrop-blur-sm transition-all ${isMuitoCompacto ? 'w-10 h-10 mb-2' : isCompacto ? 'w-12 h-12 mb-3' : 'w-16 h-16 mb-4'}`}>
-            <span className={isMuitoCompacto ? 'text-xl' : isCompacto ? 'text-2xl' : 'text-4xl'}>✨</span>
-          </div>
           <h1 className={`text-white font-black tracking-tight transition-all ${isCompacto ? 'text-2xl mb-1' : 'text-3xl mb-2'}`}>Como usar o App</h1>
           <p className={`text-blue-50 transition-all ${isCompacto ? 'text-sm' : 'text-base'}`}>Veja como é simples controlar seus gastos:</p>
         </div>

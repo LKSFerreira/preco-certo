@@ -208,3 +208,11 @@ Se vocÃª, Agente, estÃ¡ assumindo agora, siga estas regras sagradas:
 *   **QR Box Adaptativo:** InteligÃªncia visual que redimensiona a Ã¡rea de captura do scanner em tempo real, garantindo visibilidade total do formulÃ¡rio manual.
 *   **Upgrade EstÃ©tico:** AplicaÃ§Ã£o de Glassmorphism (`backdrop-blur`) e animaÃ§Ãµes sequenciais de erro, elevando o componente ao nÃ­vel de curadoria premium.
 *   **Status de Curadoria:** AtualizaÃ§Ã£o do mapeamento oficial do projeto, removendo o scanner da lista de pendÃªncias e promovendo-o ao "PadrÃ£o Ouro".
+
+### 27/02: [Curadoria Responsiva (Produção)](./walkthrough/curadoria_responsiva.md) ??
+*   **Escopo Preservado:** Ajustes restritos a responsividade (tamanho, espaçamento, limites e rolagem), sem alterar core, estilo, brilho ou efeitos.
+*   **Layout Base Estável:** `App.tsx` migrado para `100dvh` com rolagem no `main`, mantendo o rodapé sempre acessível em telas pequenas.
+*   **Modais com Teclado Virtual:** `ModalScannerBarras`, `ModalContato` e `ModalPlano` receberam limites por viewport, ancoragem mobile e overflow interno para evitar corte de campos e CTAs.
+*   **Fluxo de Formulário Aprimorado:** `ModalFormularioProduto` ganhou progressão de foco por Enter, visibilidade de ações com teclado aberto e acessibilidade de teclado no "Auto Preencher".
+*   **Curadoria Aplicada:** `ModalTutorialUso` e `ModalTutorialFoto` tiveram remoção dos ícones superiores e suporte melhor de rolagem vertical em alturas reduzidas.
+*   **Validação Técnica:** Build de produção validado com sucesso no fluxo Docker oficial (`docker compose -f .docker/compose.yaml run --rm app npm run build`).

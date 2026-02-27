@@ -92,7 +92,7 @@ export const ModalTutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => 
     return (
         <div
             ref={containerRef}
-            className="absolute inset-0 z-[110] flex flex-col bg-gradient-to-b from-blue-600 to-blue-900 font-sans overflow-hidden"
+            className="absolute inset-0 z-[110] flex flex-col bg-gradient-to-b from-blue-600 to-blue-900 font-sans overflow-x-hidden overflow-y-auto overscroll-contain"
             style={{
                 '--duracao-animacao': `${VELOCIDADE_ANIMACAO_MS}ms`,
                 // Ajuste proporcional isolado para o Android Básico (Muito Pequeno) - Valores aumentados para aproveitar o espaço
@@ -112,12 +112,6 @@ export const ModalTutorialFoto: React.FC<PropsTutorialFoto> = ({ aoFechar }) => 
                 {/* Cabeçalho */}
                 <div className={`text-center flex-none animate-fade-in flex flex-col items-center ${isMuitoPequeno ? 'mb-1' : 'mb-2'}`}>
                     
-                    {/* Ícone ocultado em dispositivos pequenos E muito pequenos */}
-                    {!(isPequeno || isMuitoPequeno) && (
-                        <div className={`bg-white/10 rounded-2xl flex items-center justify-center mx-auto shadow-lg backdrop-blur-sm transition-all ${isMedio ? 'w-14 h-14 mb-3' : 'w-16 h-16 mb-4'}`}>
-                            <svg className={`text-white ${isMedio ? 'w-7 h-7' : 'w-8 h-8'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                        </div>
-                    )}
                     {/* Fonte aumentada de 22px para 25px no Android Básico e para 36px (par) nos muito grandes */}
                     <h1 className={`text-white font-black tracking-tight transition-all ${isMuitoPequeno ? 'text-[25px] mb-0.5' : isCompacto ? 'text-[28px] mb-1' : isMuitoGrande ? 'text-[36px] mb-2' : 'text-3xl mb-2'}`}>
                         Dica de Ouro
