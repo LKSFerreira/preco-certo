@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Produto } from '../types';
-import { REGEX_UNIDADE, NOMES_INVALIDOS } from '../constants';
-import { comprimirImagemBase64 } from '../services/utilitarios';
+import { REGEX_UNIDADE } from '../constants';
 import { extrairDadosDoRotulo } from '../services/ia';
 import { ModalRecorte } from './ModalRecorte';
 import { ModalTutorialFoto } from './ModalTutorialFoto';
@@ -36,6 +35,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   const [mostraRecorte, setMostraRecorte] = useState(false);
   const [analisandoIA, setAnalisandoIA] = useState(false);
   const [inicializado, setInicializado] = useState(false);
+  const [tecladoAtivo, setTecladoAtivo] = useState(false);
   const [tamanhoTela, setTamanhoTela] = useState('normal');
   const [larguraTela, setLarguraTela] = useState('normal');
 
@@ -45,7 +45,9 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   const refPrice = useRef<HTMLInputElement>(null);
   const refAutoPreencher = useRef<HTMLLabelElement>(null);
   const refSalvar = useRef<HTMLButtonElement>(null);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const refConteudoRolavel = useRef<HTMLDivElement | null>(null);
+  const timerDesfoqueRef = useRef<number | null>(null);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -81,6 +83,11 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   const isEstreito = larguraTela === 'estreita';
   const faseFormulario = useMemo(() => (imagem ? 'dados' : 'foto'), [imagem]);
   const camposTextoBloqueados = faseFormulario === 'foto' || analisandoIA;
+  const tamanhoLimpo = tamanho.trim();
+  const tamanhoValido = useMemo(() => {
+    return tamanhoLimpo.length > 0 && REGEX_UNIDADE.test(tamanhoLimpo);
+  }, [tamanhoLimpo]);
+  const tamanhoInvalidoVisivel = tamanhoLimpo.length > 0 && !tamanhoValido;
 
   const [mostraTutorialFoto, setMostraTutorialFoto] = useState(false);
   const [inputPendente, setInputPendente] = useState<HTMLInputElement | null>(null);
@@ -97,47 +104,155 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 
   const temCamposFaltantes = camposFaltantes.length > 0;
 
-  useEffect(() => {
-    if (produtoExistente && !inicializado) {
-      setDescricao(produtoExistente.descricao);
-      setMarca(produtoExistente.marca);
-      setTamanho(produtoExistente.tamanho);
-      setPriceInput((produtoExistente.preco_estimado || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
-      setImagem(produtoExistente.imagem);
-      setInicializado(true);
-    } else if (dadosPrePreenchidos) {
-      if (!descricao && dadosPrePreenchidos.descricao) setDescricao(dadosPrePreenchidos.descricao);
-      if (!marca && dadosPrePreenchidos.marca) setMarca(dadosPrePreenchidos.marca);
-      if (!tamanho && dadosPrePreenchidos.tamanho) setTamanho(dadosPrePreenchidos.tamanho);
-      if (!priceInput && dadosPrePreenchidos.preco_estimado && dadosPrePreenchidos.preco_estimado > 0) {
-        setPriceInput(dadosPrePreenchidos.preco_estimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
+  const validarImagemInicial = (origemImagem?: string | null): Promise<string | undefined> => {
+    return new Promise((resolve) => {
+      const imagemCandidata = origemImagem?.trim();
+      if (!imagemCandidata) {
+        resolve(undefined);
+        return;
       }
-      if (!imagem && dadosPrePreenchidos.imagem) setImagem(dadosPrePreenchidos.imagem);
-    }
+
+      if (typeof window === 'undefined') {
+        resolve(imagemCandidata);
+        return;
+      }
+
+      if (imagemCandidata.startsWith('blob:')) {
+        resolve(imagemCandidata);
+        return;
+      }
+
+      const imagemTeste = new Image();
+      let finalizado = false;
+
+      const concluir = (valida: boolean) => {
+        if (finalizado) return;
+        finalizado = true;
+        window.clearTimeout(timeoutId);
+        resolve(valida ? imagemCandidata : undefined);
+      };
+
+      const timeoutId = window.setTimeout(() => concluir(false), 2500);
+      imagemTeste.onload = () => concluir(true);
+      imagemTeste.onerror = () => concluir(false);
+      imagemTeste.src = imagemCandidata;
+    });
+  };
+
+  useEffect(() => {
+    if (inicializado) return;
+
+    let ativo = true;
+
+    const hidratarEstadoInicial = async () => {
+      const origem = produtoExistente ?? dadosPrePreenchidos ?? null;
+
+      if (!origem) {
+        if (ativo) setInicializado(true);
+        return;
+      }
+
+      const imagemValidada = await validarImagemInicial(origem.imagem);
+      if (!ativo) return;
+
+      setDescricao(origem.descricao ?? '');
+      setMarca(origem.marca ?? '');
+      setTamanho(origem.tamanho ?? '');
+
+      if ((origem.preco_estimado ?? 0) > 0) {
+        setPriceInput((origem.preco_estimado ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
+      }
+
+      setImagem(imagemValidada);
+      setInicializado(true);
+    };
+
+    hidratarEstadoInicial();
+
+    return () => {
+      ativo = false;
+    };
   }, [produtoExistente, dadosPrePreenchidos, inicializado]);
 
   useEffect(() => {
-    if (focoInicialFeito || analisandoIA) return;
-    const timer = setTimeout(() => {
-      let focou = false;
-      if (!descricao && !camposTextoBloqueados) {
-        refDescricao.current?.focus();
-        focou = true;
-      } else if (!marca && !camposTextoBloqueados) {
-        refMarca.current?.focus();
-        focou = true;
-      } else if (!tamanho && !camposTextoBloqueados) {
-        refTamanho.current?.focus();
-        focou = true;
-      } else {
-        refPrice.current?.focus();
-        setTimeout(() => refPrice.current?.select(), 50);
-        focou = true;
+    return () => {
+      if (timerDesfoqueRef.current) {
+        window.clearTimeout(timerDesfoqueRef.current);
       }
-      if (focou) setFocoInicialFeito(true);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [descricao, marca, tamanho, analisandoIA, focoInicialFeito, camposTextoBloqueados]);
+    };
+  }, []);
+
+  const focarCampoVisivel = (elemento: HTMLElement | null) => {
+    if (timerDesfoqueRef.current) {
+      window.clearTimeout(timerDesfoqueRef.current);
+      timerDesfoqueRef.current = null;
+    }
+
+    setTecladoAtivo(true);
+    window.setTimeout(() => {
+      elemento?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      refSalvar.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }, 120);
+  };
+
+  const lidarBlurCampo = () => {
+    if (timerDesfoqueRef.current) {
+      window.clearTimeout(timerDesfoqueRef.current);
+    }
+
+    timerDesfoqueRef.current = window.setTimeout(() => {
+      const ativo = document.activeElement as HTMLElement | null;
+      const aindaEmCampo = !!ativo && (ativo.tagName === 'INPUT' || ativo.tagName === 'TEXTAREA');
+      if (!aindaEmCampo) {
+        setTecladoAtivo(false);
+      }
+    }, 140);
+  };
+
+  useEffect(() => {
+    if (!inicializado || focoInicialFeito || analisandoIA || mostraRecorte || mostraTutorialFoto) return;
+
+    const timer = window.setTimeout(() => {
+      let proximoFoco: HTMLElement | null = null;
+
+      if (!imagem) {
+        proximoFoco = refAutoPreencher.current;
+      } else if (!descricao.trim() && !camposTextoBloqueados) {
+        proximoFoco = refDescricao.current;
+      } else if (!marca.trim() && !camposTextoBloqueados) {
+        proximoFoco = refMarca.current;
+      } else if (!tamanhoValido && !camposTextoBloqueados) {
+        proximoFoco = refTamanho.current;
+      } else {
+        proximoFoco = refPrice.current;
+      }
+
+      proximoFoco?.focus();
+
+      if (proximoFoco === refPrice.current) {
+        focarCampoVisivel(refPrice.current);
+        window.setTimeout(() => refPrice.current?.select(), 60);
+      }
+
+      if (proximoFoco) {
+        setFocoInicialFeito(true);
+      }
+    }, 220);
+
+    return () => window.clearTimeout(timer);
+  }, [
+    inicializado,
+    imagem,
+    descricao,
+    marca,
+    tamanho,
+    tamanhoValido,
+    analisandoIA,
+    focoInicialFeito,
+    camposTextoBloqueados,
+    mostraRecorte,
+    mostraTutorialFoto,
+  ]);
 
   const interceptarClickFoto = (e: React.MouseEvent<HTMLInputElement>) => {
     if (tutorialFoto.deveExibir()) {
@@ -145,6 +260,15 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
       setInputPendente(e.currentTarget);
       setMostraTutorialFoto(true);
     }
+  };
+
+  const fecharTutorialFotoEContinuar = () => {
+    const inputAlvo = inputPendente;
+    setMostraTutorialFoto(false);
+    setInputPendente(null);
+    window.setTimeout(() => {
+      inputAlvo?.click();
+    }, 40);
   };
 
   const lidarComSelecaoImagem = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,9 +324,62 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   };
 
   const rolarParaSalvar = () => {
-    setTimeout(() => {
+    window.setTimeout(() => {
       refSalvar.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }, 180);
+  };
+
+  const focarProximoCampoVazio = (campoAtual: 'descricao' | 'marca' | 'tamanho' | 'price') => {
+    const valorDescricao = (refDescricao.current?.value ?? descricao).trim();
+    const valorMarca = (refMarca.current?.value ?? marca).trim();
+    const valorTamanho = (refTamanho.current?.value ?? tamanho).trim();
+    const valorPrecoTexto = refPrice.current?.value ?? priceInput;
+    const valorPreco = parseFloat(valorPrecoTexto.replace(/\./g, '').replace(',', '.'));
+
+    const campos = {
+      descricao: valorDescricao.length > 0,
+      marca: valorMarca.length > 0,
+      tamanho: valorTamanho.length > 0 && REGEX_UNIDADE.test(valorTamanho),
+      price: !Number.isNaN(valorPreco) && valorPreco > 0,
+    };
+
+    if (!campos[campoAtual]) {
+      if (campoAtual === 'descricao') refDescricao.current?.focus();
+      if (campoAtual === 'marca') refMarca.current?.focus();
+      if (campoAtual === 'tamanho') refTamanho.current?.focus();
+      if (campoAtual === 'price') {
+        refPrice.current?.focus();
+        focarCampoVisivel(refPrice.current);
+      }
+      return;
+    }
+
+    const ordem: Array<'descricao' | 'marca' | 'tamanho' | 'price'> = ['descricao', 'marca', 'tamanho', 'price'];
+    const indiceAtual = ordem.indexOf(campoAtual);
+    const proximos = ordem.slice(indiceAtual + 1);
+
+    for (const campo of proximos) {
+      if (!campos[campo]) {
+        if (campo === 'descricao') refDescricao.current?.focus();
+        if (campo === 'marca') refMarca.current?.focus();
+        if (campo === 'tamanho') refTamanho.current?.focus();
+        if (campo === 'price') {
+          refPrice.current?.focus();
+          focarCampoVisivel(refPrice.current);
+          window.setTimeout(() => refPrice.current?.select(), 60);
+        }
+        return;
+      }
+    }
+
+    if (campoAtual === 'price') {
+      refSalvar.current?.focus();
+      return;
+    }
+
+    refPrice.current?.focus();
+    focarCampoVisivel(refPrice.current);
+    window.setTimeout(() => refPrice.current?.select(), 60);
   };
 
   const focarProximoElementoAposPreco = () => {
@@ -220,7 +397,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
         refMarca.current?.focus();
         return;
       }
-      if (!tamanho.trim()) {
+      if (!tamanhoValido) {
         refTamanho.current?.focus();
         return;
       }
@@ -233,15 +410,43 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     e.preventDefault();
     setErro(null);
     setCampoComErro(null);
-    if (!imagem) { setErro('A foto do produto é obrigatória.'); return; }
-    if (!descricao.trim()) { setErro('O nome do produto é obrigatório.'); setCampoComErro('descricao'); refDescricao.current?.focus(); return; }
-    if (!marca.trim()) { setErro('A marca é obrigatória.'); setCampoComErro('marca'); refMarca.current?.focus(); return; }
-    if (!tamanho.trim()) { setErro('O tamanho é obrigatório.'); setCampoComErro('tamanho'); refTamanho.current?.focus(); return; }
-    if (!REGEX_UNIDADE.test(tamanho)) { setErro('Tamanho inválido.'); setCampoComErro('tamanho'); refTamanho.current?.focus(); return; }
+    const tamanhoNormalizado = tamanho.trim();
+
+    if (!imagem) { setErro('A foto do produto e obrigatoria.'); return; }
+    if (!descricao.trim()) { setErro('O nome do produto e obrigatorio.'); setCampoComErro('descricao'); refDescricao.current?.focus(); return; }
+    if (!marca.trim()) { setErro('A marca e obrigatoria.'); setCampoComErro('marca'); refMarca.current?.focus(); return; }
+    if (!tamanhoNormalizado) { setErro('O tamanho e obrigatorio.'); setCampoComErro('tamanho'); refTamanho.current?.focus(); return; }
+    if (!REGEX_UNIDADE.test(tamanhoNormalizado)) {
+      setErro('Tamanho invalido. Use unidade, ex: 1L, 500g, 250ml.');
+      setCampoComErro('tamanho');
+      refTamanho.current?.focus();
+      return;
+    }
+
     const p = parseFloat(priceInput.replace(/\./g, '').replace(',', '.'));
-    if (isNaN(p) || p <= 0) { setErro('O preço é obrigatório.'); setCampoComErro('price'); refPrice.current?.focus(); return; }
-    aoSalvar({ gtinInicial, descricao, marca, tamanho, preco_estimado: p, imagem: imagem! } as any);
+    if (isNaN(p) || p <= 0) { setErro('O preco e obrigatorio.'); setCampoComErro('price'); refPrice.current?.focus(); return; }
+
+    aoSalvar({ gtinInicial, descricao, marca, tamanho: tamanhoNormalizado, preco_estimado: p, imagem: imagem! } as any);
   };
+
+  const precoNumerico = useMemo(() => {
+    return parseFloat(priceInput.replace(/\./g, '').replace(',', '.'));
+  }, [priceInput]);
+
+  const formularioPodeSalvar = useMemo(() => {
+    if (!imagem) return false;
+    if (!descricao.trim()) return false;
+    if (!marca.trim()) return false;
+    if (!tamanhoValido) return false;
+    if (Number.isNaN(precoNumerico) || precoNumerico <= 0) return false;
+    return true;
+  }, [imagem, descricao, marca, tamanhoValido, precoNumerico]);
+
+  const classeEspacamentoSalvar = tecladoAtivo
+    ? 'pt-2 pb-[calc(env(safe-area-inset-bottom)+8.5rem)]'
+    : isCompacto
+      ? 'pt-2 pb-[calc(env(safe-area-inset-bottom)+3.5rem)]'
+      : 'pt-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)]';
 
   const classeInput = `w-full bg-gray-700 border border-gray-600 rounded-lg text-white font-bold placeholder-gray-400 focus:ring-2 focus:ring-green-700 outline-none transition-colors ${isMuitoCompacto ? 'p-1.5 text-sm' : 'p-2'}`;
   const classeLabel = `block font-bold text-gray-800 uppercase tracking-wide ${isMuitoCompacto ? 'text-[10px] mb-0.5' : 'text-xs mb-1'}`;
@@ -255,12 +460,17 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
         <h2 className="font-bold text-lg leading-none">{produtoExistente ? 'Editar Produto' : 'Novo Produto'}</h2>
       </div>
 
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col transition-all ${isCompacto ? 'p-3 pb-2' : 'p-5 pb-2'}`}>
+      <div ref={refConteudoRolavel} className={`flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide flex flex-col transition-all ${isCompacto ? 'p-3 pb-2' : 'p-5 pb-2'} ${tecladoAtivo ? 'pb-[calc(env(safe-area-inset-bottom)+8.5rem)]' : ''}`}>
         {mostraRecorte && imagemParaRecorte && <ModalRecorte imagem={imagemParaRecorte} aoConfirmar={aoConfirmarRecorte} aoCancelar={() => setMostraRecorte(false)} />}
-        {mostraTutorialFoto && <ModalTutorialFoto aoFechar={() => setMostraTutorialFoto(false)} />}
+        {mostraTutorialFoto && <ModalTutorialFoto aoFechar={fecharTutorialFotoEContinuar} />}
         
         <style>{`
           @keyframes border-spin { 100% { transform: rotate(360deg); } }
+          @keyframes salvar-ready-glow {
+            0%, 100% { box-shadow: 0 10px 18px rgba(21, 128, 61, 0.28), 0 0 0 0 rgba(34, 197, 94, 0.16); }
+            50% { box-shadow: 0 12px 22px rgba(21, 128, 61, 0.34), 0 0 0 4px rgba(34, 197, 94, 0.10); }
+          }
+          .salvar-pronto { animation: salvar-ready-glow 2.2s ease-in-out infinite; }
           .scrollbar-hide::-webkit-scrollbar { display: none; }
           .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
         `}</style>
@@ -331,7 +541,16 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
               <div className="flex flex-col items-center shrink-0 animate-fade-in">
                 <div className="relative group">
                   <div className={`rounded-xl overflow-hidden border-2 border-dashed flex items-center justify-center relative transition-colors ${imagem ? 'border-green-700 bg-white shadow-sm' : 'border-gray-300'} ${isMuitoCompacto ? 'w-24 h-24 shrink-0' : 'w-32 h-32 shrink-0'}`}>
-                    <img src={imagem} alt="Preview" className="w-full h-full object-contain p-1" onError={() => setImagem(undefined)} />
+                    <img
+                      src={imagem}
+                      alt="Preview"
+                      className="w-full h-full object-contain p-1"
+                      onError={() => {
+                        setImagem(undefined);
+                        setErro('A imagem carregada esta invalida. Tire uma nova foto.');
+                        setFocoInicialFeito(false);
+                      }}
+                    />
                     <button type="button" onClick={removerFoto} className="absolute top-1 right-1 bg-red-500 text-white w-7 h-7 rounded-full shadow-lg flex items-center justify-center z-20"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3"><path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" /></svg></button>
                   </div>
                 </div>
@@ -360,16 +579,72 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
           <div className={`shrink-0 flex flex-col transition-opacity duration-300 ${isCompacto ? 'gap-2' : 'gap-3'} ${camposTextoBloqueados ? 'opacity-50' : 'opacity-100'}`}>
             <div>
               <label className={classeLabel}>Produto</label>
-              <input ref={refDescricao} value={descricao} onChange={e => setDescricao(e.target.value)} className={classeInput} placeholder="Ex: Coca-Cola 350ml" disabled={camposTextoBloqueados} />
+              <input
+                ref={refDescricao}
+                value={descricao}
+                onChange={e => setDescricao(e.target.value)}
+                onFocus={(e) => focarCampoVisivel(e.currentTarget)}
+                onBlur={lidarBlurCampo}
+                enterKeyHint="next"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === 'Tab') {
+                    e.preventDefault();
+                    focarProximoCampoVazio('descricao');
+                  }
+                }}
+                className={classeInput}
+                placeholder="Ex: Coca-Cola 350ml"
+                disabled={camposTextoBloqueados}
+              />
             </div>
             <div className={`flex ${isMuitoCompacto ? 'gap-2' : 'gap-3'}`}>
               <div className="flex-[3] min-w-0">
                 <label className={classeLabel}>Marca</label>
-                <input ref={refMarca} value={marca} onChange={e => setMarca(e.target.value)} className={classeInput} placeholder="Ex: Longa Vida" disabled={camposTextoBloqueados} />
+                <input
+                  ref={refMarca}
+                  value={marca}
+                  onChange={e => setMarca(e.target.value)}
+                  onFocus={(e) => focarCampoVisivel(e.currentTarget)}
+                  onBlur={lidarBlurCampo}
+                  enterKeyHint="next"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === 'Tab') {
+                      e.preventDefault();
+                      focarProximoCampoVazio('marca');
+                    }
+                  }}
+                  className={classeInput}
+                  placeholder="Ex: Longa Vida"
+                  disabled={camposTextoBloqueados}
+                />
               </div>
               <div className="flex-[2] min-w-0">
                 <label className={classeLabel}>Tamanho</label>
-                <input ref={refTamanho} value={tamanho} onChange={e => setTamanho(e.target.value)} className={classeInput} placeholder="Ex: 1L, 500g" disabled={camposTextoBloqueados} />
+                <input
+                  ref={refTamanho}
+                  value={tamanho}
+                  onChange={e => {
+                    setTamanho(e.target.value);
+                    if (campoComErro === 'tamanho') setCampoComErro(null);
+                  }}
+                  onFocus={(e) => focarCampoVisivel(e.currentTarget)}
+                  onBlur={lidarBlurCampo}
+                  enterKeyHint="next"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === 'Tab') {
+                      e.preventDefault();
+                      focarProximoCampoVazio('tamanho');
+                    }
+                  }}
+                  className={`${classeInput} ${(campoComErro === 'tamanho' || tamanhoInvalidoVisivel) ? 'border-red-500 focus:ring-red-500' : ''}`}
+                  placeholder="Ex: 1L, 500g"
+                  disabled={camposTextoBloqueados}
+                />
+                {tamanhoInvalidoVisivel && (
+                  <p className={`mt-1 font-medium text-red-600 ${isMuitoCompacto ? 'text-[10px]' : 'text-xs'}`}>
+                    Tamanho invalido. Use unidade: 1L, 500g, 250ml.
+                  </p>
+                )}
               </div>
             </div>
             <div className={`bg-gray-50 rounded-lg border border-gray-200 ${isMuitoCompacto ? 'p-1.5' : 'p-2'}`}>
@@ -377,11 +652,17 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
               <input
                 ref={refPrice}
                 type="tel"
+                inputMode="decimal"
+                enterKeyHint="done"
                 value={priceInput}
                 onChange={lidarMudancaPreco}
-                onFocus={rolarParaSalvar}
+                onFocus={(e) => {
+                  focarCampoVisivel(e.currentTarget);
+                  rolarParaSalvar();
+                }}
+                onBlur={lidarBlurCampo}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
+                  if (e.key === 'Enter' || e.key === 'Tab') {
                     e.preventDefault();
                     focarProximoElementoAposPreco();
                   }
@@ -394,8 +675,17 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 
           {erro && <div className={`shrink-0 bg-red-50 text-red-600 rounded-lg border border-red-100 font-bold flex items-center p-3 text-sm animate-fade-in`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 mr-2 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3Z" /></svg> {erro}</div>}
 
-          <div className={`mt-auto shrink-0 w-full transition-all ${isCompacto ? 'pt-2 pb-4' : 'pt-6 pb-6'} ${isCompacto ? 'pb-[calc(env(safe-area-inset-bottom)+3.5rem)]' : 'pb-[calc(env(safe-area-inset-bottom)+1.5rem)]'}`}>
-            <button ref={refSalvar} type="submit" disabled={analisandoIA} className={`w-full text-white rounded-xl font-bold shadow-lg transition-all ${isCompacto ? 'py-3 text-base' : 'py-4 text-lg'} ${analisandoIA ? 'bg-gray-400' : 'bg-green-700 hover:bg-green-800 active:scale-95'}`}>
+          <div className={`mt-auto shrink-0 w-full transition-all ${classeEspacamentoSalvar}`}>
+            <button
+              ref={refSalvar}
+              type="submit"
+              disabled={analisandoIA || !formularioPodeSalvar}
+              className={`w-full text-white rounded-xl font-bold transition-all ${isCompacto ? 'py-3 text-base' : 'py-4 text-lg'} ${analisandoIA
+                ? 'bg-gray-400 cursor-wait'
+                : formularioPodeSalvar
+                  ? 'bg-green-700 hover:bg-green-800 active:scale-[0.99] shadow-lg salvar-pronto'
+                  : 'bg-green-400/80 text-white/90 shadow-none opacity-70 cursor-not-allowed'}`}
+            >
               {analisandoIA ? 'Processando...' : 'Salvar Produto'}
             </button>
           </div>
@@ -406,3 +696,4 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 };
 
 export default ModalFormularioProduto;
+

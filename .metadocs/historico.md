@@ -216,3 +216,11 @@ Se vocÃª, Agente, estÃ¡ assumindo agora, siga estas regras sagradas:
 *   **Fluxo de Formulário Aprimorado:** `ModalFormularioProduto` ganhou progressão de foco por Enter, visibilidade de ações com teclado aberto e acessibilidade de teclado no "Auto Preencher".
 *   **Curadoria Aplicada:** `ModalTutorialUso` e `ModalTutorialFoto` tiveram remoção dos ícones superiores e suporte melhor de rolagem vertical em alturas reduzidas.
 *   **Validação Técnica:** Build de produção validado com sucesso no fluxo Docker oficial (`docker compose -f .docker/compose.yaml run --rm app npm run build`).
+
+### 27/02: [Refino de Formulário e Scanner](./walkthrough/refino_formulario_scanner.md) ??
+*   **Fluxo de Foco Corrigido:** `ModalFormularioProduto` passou a avançar por campos pendentes com base em validade real, evitando salto para preço quando `tamanho` vem parcial da API.
+*   **Validação Coerente de Tamanho:** Regras de `REGEX_UNIDADE` foram alinhadas entre foco, indicação visual e liberação de salvamento.
+*   **Feedback de Erro no Campo:** `Tamanho` inválido agora exibe destaque visual e mensagem contextual com exemplos (`1L`, `500g`, `250ml`).
+*   **Tutorial com Continuidade:** Fluxo do `AUTO PREENCHER` no primeiro uso foi ajustado para seguir direto para seleção/câmera após concluir o tutorial.
+*   **Refino no Scanner:** `ModalScannerBarras` voltou ao centro por padrão e ganhou vinheta para escurecer o entorno da área de leitura.
+*   **Validação Técnica:** Build de produção validado com sucesso via Docker (`docker compose -f .docker/compose.yaml run --rm app npm run build`).

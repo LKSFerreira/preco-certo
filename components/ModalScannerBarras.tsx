@@ -176,7 +176,7 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
   };
 
   return (
-    <div ref={containerRef} className="absolute inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex flex-col justify-end sm:justify-center items-center p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] transition-all duration-300">
+    <div ref={containerRef} className="absolute inset-0 bg-gray-900/60 backdrop-blur-md z-50 flex flex-col justify-center items-center p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] transition-all duration-300">
       <div className={`w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-2xl relative flex flex-col ${isMuitoCompacto ? 'max-h-[calc(100dvh-0.75rem)]' : 'max-h-[calc(100dvh-1.5rem)] sm:max-h-[90vh]'}`}>
         <div className={`bg-slate-900/95 text-white ${isMuitoCompacto ? 'p-2' : 'p-4'} flex justify-between items-center shrink-0 border-b border-slate-800`}>
           <h3 className={`font-bold ${isMuitoCompacto ? 'text-base' : 'text-lg'}`}>
@@ -202,6 +202,10 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
 
         <div className={`bg-slate-950 relative grow flex items-center justify-center overflow-hidden ${isMuitoCompacto ? 'min-h-[140px]' : 'min-h-[260px] sm:min-h-[300px]'}`}>
           <div id="leitor-codigo-barras" className="w-full h-full opacity-90 mix-blend-screen"></div>
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at center, rgba(0,0,0,0) 28%, rgba(0, 0, 0, 0.85) 78%)' }}
+          ></div>
 
           {statusCamera === 'iniciando' && (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 bg-slate-900/80 backdrop-blur-sm">
@@ -308,4 +312,5 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
 };
 
 export default ModalScannerBarras;
+
 
