@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 
 import { useTutorialPrimeiroAcesso, CHAVE_TUTORIAL_VISTO } from '../hooks/useTutorialUso';
+import BotaoConfirmaComShimmer from './buttons/BotaoConfirmaComShimmer';
 
 // Configuração da velocidade da animação (em milissegundos).
 const VELOCIDADE_ANIMACAO_MS = 4500;
@@ -196,10 +197,12 @@ export const ModalTutorialUso = ({ aoFechar }) => {
 
         {/* BOTÃO INFERIOR (Não estica) */}
         <div className={`flex-none mt-auto ${isMuitoCompacto ? 'pt-2' : 'pt-4'}`}>
-          <button onClick={finalizarTutorial} className={`w-full bg-green-600 text-white font-bold shadow-[0_8px_30px_rgba(22,163,74,0.4)] hover:bg-green-700 active:scale-95 transition-all flex items-center justify-center animate-button-pulse-sync ${isCompacto ? 'py-3.5 text-lg rounded-xl gap-2' : 'py-5 text-xl rounded-2xl gap-3'}`}>
-            <span>Entendi, vamos começar!</span>
-            <span className={isCompacto ? 'text-xl' : 'text-2xl'}>🚀</span>
-          </button>
+          <BotaoConfirmaComShimmer
+            aoClicar={finalizarTutorial}
+            texto="Entendi, vamos começar!"
+            icone={'\u{1F680}'}
+            compacto={isCompacto}
+          />
         </div>
       </div>
 

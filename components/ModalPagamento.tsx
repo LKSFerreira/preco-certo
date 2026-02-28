@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StatusPagamento } from '../services/pagamento/tipos';
 import { fabricaPagamento } from '../services/pagamento/fabrica';
+import BotaoConfirmaComShimmer from './buttons/BotaoConfirmaComShimmer';
 
 /**
  * ===================================================================
@@ -334,31 +335,32 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
               <p className="text-xs text-gray-500 mb-4 px-4">
                 O tempo para pagamento via PIX esgotou. Gere um novo código para continuar.
               </p>
-              <button
-                onClick={async () => {
-                  setRecarregando(true);
-                  try {
-                    await aoTentarNovamente();
-                    setStatus('pendente');
-                  } finally {
-                    setRecarregando(false);
-                  }
-                }}
-                disabled={recarregando}
-                className={`bg-verde-700 active:bg-verde-800 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-sm flex items-center gap-2 ${recarregando ? 'opacity-70 cursor-wait' : 'active:scale-95'}`}
-              >
-                {recarregando ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <div className="w-full max-w-[280px]">
+                <BotaoConfirmaComShimmer
+                  aoClicar={async () => {
+                    setRecarregando(true);
+                    try {
+                      await aoTentarNovamente();
+                      setStatus('pendente');
+                    } finally {
+                      setRecarregando(false);
+                    }
+                  }}
+                  texto={recarregando ? 'Gerando novo PIX...' : 'Tentar Novamente'}
+                  iconeSvg={recarregando ? (
+                    <svg className="animate-spin w-full h-full text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Gerando novo PIX...
-                  </>
-                ) : (
-                  'Tentar Novamente'
-                )}
-              </button>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-full h-full">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992V4.356m-.99 5.01A9 9 0 1 0 21 12.75" />
+                    </svg>
+                  )}
+                  compacto={true}
+                  disabled={recarregando}
+                />
+              </div>
             </div>
           ) : (
             <div className="w-full flex flex-col items-center animate-fade-in">
