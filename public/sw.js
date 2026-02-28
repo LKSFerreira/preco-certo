@@ -13,7 +13,7 @@ const NOME_CACHE = 'sem-susto-v1';
 const ASSETS_ESTATICOS = [
   '/',
   '/favicon.png',
-  '/favicon.svg',
+  '/icon-512.png',
 ];
 
 // Instalação: pré-cacheia assets essenciais
