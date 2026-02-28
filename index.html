@@ -54,7 +54,17 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Sem Susto" />
   <meta name="theme-color" content="#3b82f6" />
+  <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="/index.css" />
+
+  <!-- Registro do Service Worker (apenas em produção) -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js');
+      });
+    }
+  </script>
 </head>
 
 <body class="bg-gray-50 text-gray-900 antialiased">

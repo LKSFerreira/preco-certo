@@ -1,0 +1,20 @@
+{
+  "name": "Sem Susto - Controle suas Compras",
+  "short_name": "Sem Susto",
+  "description": "Calculadora de supermercado inteligente. Escaneie produtos, some o total e evite surpresas no caixa.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#22c55e",
+  "background_color": "#f9fafb",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "shopping"]
+}

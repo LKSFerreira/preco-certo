@@ -17,6 +17,7 @@ import { useTutorialPrimeiroAcesso } from './hooks/useTutorialUso';
 import { fabricaPagamento } from './services/pagamento/fabrica';
 import { RespostaCriacaoPagamento, PlanoID } from './services/pagamento/tipos';
 import { useRepositorios } from './contextos/ContextoRepositorios';
+import BannerInstalarApp from './components/BannerInstalarApp';
 
 
 export default function App() {
@@ -846,6 +847,9 @@ export default function App() {
             />
           )}
         </Suspense>
+
+        {/* Banner de Instalação PWA (aparece 1x/mês para mobile) */}
+        <BannerInstalarApp />
 
       </div>
     </div>
