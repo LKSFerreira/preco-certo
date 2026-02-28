@@ -130,33 +130,13 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
     const textoCompleto = `Olá! Meu nome é ${nomeLimpo}.\n\n${mensagemLimpa}`;
     const textoEncoded = encodeURIComponent(textoCompleto);
     const urlWeb = `https://wa.me/${WHATSAPP_DESENVOLVEDOR}?text=${textoEncoded}`;
-    const urlApp = `whatsapp://send?phone=${WHATSAPP_DESENVOLVEDOR}&text=${textoEncoded}`;
 
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(50);
     }
 
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-
-    if (isMobile) {
-      const fallbackTimer = window.setTimeout(() => {
-        limparFallback();
-        if (document.visibilityState === 'visible') {
-          window.location.assign(urlWeb);
-        }
-      }, 900);
-
-      const limparFallback = () => {
-        window.clearTimeout(fallbackTimer);
-        document.removeEventListener('visibilitychange', limparFallback);
-      };
-
-      document.addEventListener('visibilitychange', limparFallback);
-      window.location.assign(urlApp);
-      return;
-    }
-
-    window.location.assign(urlWeb);
+    window.open(urlWeb, '_blank', 'noopener,noreferrer');
+    aoFechar();
   };
 
   const lidarSubmit = (e: React.FormEvent) => {
