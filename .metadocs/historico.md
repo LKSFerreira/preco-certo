@@ -236,3 +236,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Retentativa sem Fechar Modal:** Botão "Tentar Novamente" regenera o PIX para o mesmo plano selecionado, sem fechar e reabrir a modal.
 *   **Efeito Sonoro de Sucesso:** Acorde harmônico (Mi Maior) sintetizado via Web Audio API, sincronizado com as animações visuais de confirmação.
 *   **Polling Seguro:** `useEffect` do polling agora ignora status terminais (`aprovado`, `falha`), evitando requisições desnecessárias.
+### 28/02: [Infraestrutura PWA e Prompt de Instalação](./walkthrough/pwa_install_prompt.md)
+*   **Manifest & Service Worker:** Implementação da base PWA para tornar o app instalável e offline-ready.
+*   **Banner Customizado:** Componente `BannerInstalarApp.tsx` com design premium e animações slide-up.
+*   **Controle de Frequência:** Lógica de exibição 1x por mês via `localStorage` para evitar fadiga do usuário mobile.
+*   **Standalone Detection:** Ocultação automática do banner quando o app já está instalado.
