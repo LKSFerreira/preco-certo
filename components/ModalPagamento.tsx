@@ -85,6 +85,42 @@ interface TemaNucleo {
 
 /** Núcleo Quântico – esfera central animada que reflete o status do pagamento */
 const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) => {
+  useEffect(() => {
+    if (status === 'SUCESSO') {
+      try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContext) return;
+        
+        const ctx = new AudioContext();
+        
+        const playNote = (freq: number, startTime: number, duration: number, type: OscillatorType = 'sine') => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+          
+          gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
+          gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + startTime + 0.05); // volume ameno
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.start(ctx.currentTime + startTime);
+          osc.stop(ctx.currentTime + startTime + duration);
+        };
+        
+        // Acorde mágico em escalada (Mi Maior)
+        playNote(659.25, 0.0, 0.3); // E5
+        playNote(830.61, 0.1, 0.3); // G#5
+        playNote(987.77, 0.2, 0.3); // B5
+        playNote(1318.51, 0.3, 0.8, 'triangle'); // E6
+      } catch (e) {
+        console.warn('Áudio de sucesso não suportado ou bloqueado no navegador', e);
+      }
+    }
+  }, [status]);
+
   const temas: Record<StatusVisualNucleo, TemaNucleo> = {
     IDLE: {
       gradient: 'bg-gradient-to-tr from-slate-500 to-slate-400',
@@ -174,6 +210,7 @@ interface PropsModalPagamento {
   copia_e_cola: string;
   aoFechar: () => void;
   aoSucesso: () => void;
+  aoTentarNovamente: () => Promise<void>;
 }
 
 const ModalPagamento: React.FC<PropsModalPagamento> = ({
@@ -184,6 +221,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
   copia_e_cola: _copia_e_cola_api, // Propriedade original vinda da API (desabilitada temporariamente)
   aoFechar,
   aoSucesso,
+  aoTentarNovamente,
 }) => {
   /**
    * ===================================================================
@@ -201,9 +239,10 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
 
   const [status, setStatus] = useState<StatusPagamento>('pendente');
   const [copiado, setCopiado] = useState(false);
+  const [recarregando, setRecarregando] = useState(false);
 
   useEffect(() => {
-    if (!pagamento_id) return;
+    if (!pagamento_id || status === 'aprovado' || status === 'falha') return;
 
     const timeout_limite = Date.now() + 15 * 60 * 1000; // 15 minutos de expiração PIX
     const servico = fabricaPagamento.obterProvedor();
@@ -296,10 +335,29 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
                 O tempo para pagamento via PIX esgotou. Gere um novo código para continuar.
               </p>
               <button
-                onClick={aoFechar}
-                className="bg-verde-700 active:bg-verde-800 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider active:scale-95 transition-all shadow-sm"
+                onClick={async () => {
+                  setRecarregando(true);
+                  try {
+                    await aoTentarNovamente();
+                    setStatus('pendente');
+                  } finally {
+                    setRecarregando(false);
+                  }
+                }}
+                disabled={recarregando}
+                className={`bg-verde-700 active:bg-verde-800 text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all shadow-sm flex items-center gap-2 ${recarregando ? 'opacity-70 cursor-wait' : 'active:scale-95'}`}
               >
-                Tentar Novamente
+                {recarregando ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Gerando novo PIX...
+                  </>
+                ) : (
+                  'Tentar Novamente'
+                )}
               </button>
             </div>
           ) : (

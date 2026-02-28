@@ -61,6 +61,7 @@ export default function App() {
   const [mostrarModalPlano, setMostrarModalPlano] = useState(false);
   const [mostrarModalPagamento, setMostrarModalPagamento] = useState(false);
   const [dadosPagamento, setDadosPagamento] = useState<RespostaCriacaoPagamento | null>(null);
+  const [planoSelecionado, setPlanoSelecionado] = useState<PlanoID | null>(null);
 
   // Controle de continuidade após tutorial
   const [acaoPendenteTutorial, setAcaoPendenteTutorial] = useState<(() => void) | null>(null);
@@ -715,6 +716,7 @@ export default function App() {
             <ModalPlano
               aoFechar={() => setMostrarModalPlano(false)}
               aoSelecionarPlano={async (plano_id: PlanoID) => {
+                setPlanoSelecionado(plano_id);
                 const servico = fabricaPagamento.obterProvedor();
                 const dados = await servico.gerarPix(plano_id);
                 setDadosPagamento(dados);
@@ -739,6 +741,12 @@ export default function App() {
                 setDadosPagamento(null);
                 // TODO: Notificar serviço de licença local
                 setTelaAtual('DASHBOARD');
+              }}
+              aoTentarNovamente={async () => {
+                if (!planoSelecionado) return;
+                const servico = fabricaPagamento.obterProvedor();
+                const dados = await servico.gerarPix(planoSelecionado);
+                setDadosPagamento(dados);
               }}
             />
           )}

@@ -6,7 +6,8 @@ import { RespostaCriacaoPagamento, PlanoID, StatusPagamento, ProvedorPagamento }
  */
 export class ProvedorMock implements ProvedorPagamento {
     // Simulador de "banco de dados" em memória para o mock
-    private statusSimulado: Record<string, { status: StatusPagamento; tentativas: number }> = {};
+    private statusSimulado: Record<string, { status: StatusPagamento; tentativas: number; deveFalhar: boolean }> = {};
+    private contagemGeracoes = 0; // Controle para que a 1ª vez falhe e a 2ª aprove
 
     async gerarPix(plano_id: PlanoID): Promise<RespostaCriacaoPagamento> {
         console.log(`[MOCK] Gerando PIX para plano: ${plano_id}`);
@@ -15,9 +16,14 @@ export class ProvedorMock implements ProvedorPagamento {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         const pagamento_id = `mock_${Math.random().toString(36).substr(2, 9)}`;
+        this.contagemGeracoes++; // Incrementa a cada nova geração de PIX
 
         // Inicializa o pagamento como pendente
-        this.statusSimulado[pagamento_id] = { status: 'pendente', tentativas: 0 };
+        this.statusSimulado[pagamento_id] = { 
+            status: 'pendente', 
+            tentativas: 0,
+            deveFalhar: this.contagemGeracoes === 1 // A primeira geração vai forçar falha
+        };
 
         return {
             pagamento_id,
@@ -37,8 +43,8 @@ export class ProvedorMock implements ProvedorPagamento {
         registro.tentativas++;
 
         if (registro.tentativas >= 3) {
-            registro.status = 'aprovado';
-            console.log(`[MOCK] Pagamento ${pagamento_id} APROVADO via simulador.`);
+            registro.status = registro.deveFalhar ? 'falha' : 'aprovado';
+            console.log(`[MOCK] Pagamento ${pagamento_id} ${registro.status.toUpperCase()} via simulador.`);
         } else {
             console.log(`[MOCK] Pagamento ${pagamento_id} ainda pendente (Tentativa ${registro.tentativas})...`);
         }
