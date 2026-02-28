@@ -5,6 +5,8 @@ import React, { useState, useEffect, useRef } from 'react';
  * Formato: codigo do pais + DDD + numero (sem espacos ou tracos).
  */
 const WHATSAPP_DESENVOLVEDOR = '5517996510506';
+const MIN_NOME = 3;
+const MIN_MENSAGEM = 25;
 
 interface PropsModalContato {
   aoFechar: () => void;
@@ -15,18 +17,25 @@ interface PropsModalContato {
  *
  * Melhorias aplicadas:
  * - Layout responsivo por ResizeObserver (compacto em telas curtas)
- * - Validacao mais estrita (mensagem com minimo de 30 caracteres)
+ * - Validacao de minimos para nome e mensagem
  * - Feedback visual de envio antes de abrir o WhatsApp
  * - Botao de envio premium com borda dourada e efeito shimmer
  */
 const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
   const [nome, setNome] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [nomeTocado, setNomeTocado] = useState(false);
+  const [mensagemTocada, setMensagemTocada] = useState(false);
+  const [tecladoAtivo, setTecladoAtivo] = useState(false);
   const [modoCompacto, setModoCompacto] = useState(false);
   const [textareaRows, setTextareaRows] = useState(3);
   const [mostrarIcone, setMostrarIcone] = useState(true);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const refNome = useRef<HTMLInputElement>(null);
+  const refMensagem = useRef<HTMLTextAreaElement>(null);
+  const refBotaoEnviar = useRef<HTMLButtonElement>(null);
+  const timerDesfoqueRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!wrapperRef.current) return;
@@ -55,11 +64,62 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
     return () => observer.disconnect();
   }, []);
 
-  const formularioValido = nome.trim().length > 0 && mensagem.trim().length >= 30;
+  useEffect(() => {
+    return () => {
+      if (timerDesfoqueRef.current) {
+        window.clearTimeout(timerDesfoqueRef.current);
+      }
+    };
+  }, []);
+
+  const nomeLimpo = nome.trim();
+  const mensagemLimpa = mensagem.trim();
+  const nomeCurto = nomeLimpo.length > 0 && nomeLimpo.length < MIN_NOME;
+  const mensagemCurta = mensagemLimpa.length > 0 && mensagemLimpa.length < MIN_MENSAGEM;
+  const nomeErroVisivel = nomeTocado && nomeCurto;
+  const mensagemErroVisivel = mensagemTocada && mensagemCurta;
+  const nomeContador = `${Math.min(nomeLimpo.length, MIN_NOME)}/${MIN_NOME}`;
+  const mensagemContador = `${Math.min(mensagemLimpa.length, MIN_MENSAGEM)}/${MIN_MENSAGEM}`;
+  const nomeContadorClasse = nomeLimpo.length >= MIN_NOME
+    ? 'text-emerald-600'
+    : (nomeTocado && nomeLimpo.length > 0 ? 'text-red-600' : 'text-slate-400');
+  const mensagemContadorClasse = mensagemLimpa.length >= MIN_MENSAGEM
+    ? 'text-emerald-600'
+    : (mensagemTocada && mensagemLimpa.length > 0 ? 'text-red-600' : 'text-slate-400');
+  const formularioValido = nomeLimpo.length >= MIN_NOME && mensagemLimpa.length >= MIN_MENSAGEM;
+
+  const focarCampoVisivel = (elemento: HTMLElement | null, alvoSecundario?: HTMLElement | null) => {
+    if (timerDesfoqueRef.current) {
+      window.clearTimeout(timerDesfoqueRef.current);
+      timerDesfoqueRef.current = null;
+    }
+
+    setTecladoAtivo(true);
+
+    window.setTimeout(() => {
+      elemento?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      alvoSecundario?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }, 120);
+  };
+
+  const lidarBlurCampo = () => {
+    if (timerDesfoqueRef.current) {
+      window.clearTimeout(timerDesfoqueRef.current);
+    }
+
+    timerDesfoqueRef.current = window.setTimeout(() => {
+      const ativo = document.activeElement as HTMLElement | null;
+      const aindaEmCampo = !!ativo && (ativo.tagName === 'INPUT' || ativo.tagName === 'TEXTAREA');
+      if (!aindaEmCampo) {
+        setTecladoAtivo(false);
+      }
+    }, 140);
+  };
 
   const lidarMudancaNome = (valor: string) => {
     // Aceita somente letras (incluindo acentos) e espacos.
-    if (/^[a-zA-ZÀ-ÿ\s]*$/.test(valor)) {
+    if (/^[a-zA-Z\u00C0-\u00FF\s]*$/.test(valor)) {
+      setNomeTocado(true);
       setNome(valor);
     }
   };
@@ -67,19 +127,42 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
   const enviarMensagem = () => {
     if (!formularioValido) return;
 
-    const textoCompleto = `Olá! Meu nome é ${nome}.\n\n${mensagem}`;
+    const textoCompleto = `Olá! Meu nome é ${nomeLimpo}.\n\n${mensagemLimpa}`;
     const textoEncoded = encodeURIComponent(textoCompleto);
+    const urlWeb = `https://wa.me/${WHATSAPP_DESENVOLVEDOR}?text=${textoEncoded}`;
+    const urlApp = `whatsapp://send?phone=${WHATSAPP_DESENVOLVEDOR}&text=${textoEncoded}`;
 
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(50);
     }
 
-    window.open(`https://wa.me/${WHATSAPP_DESENVOLVEDOR}?text=${textoEncoded}`, '_blank');
-    aoFechar();
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+
+    if (isMobile) {
+      const fallbackTimer = window.setTimeout(() => {
+        limparFallback();
+        if (document.visibilityState === 'visible') {
+          window.location.assign(urlWeb);
+        }
+      }, 900);
+
+      const limparFallback = () => {
+        window.clearTimeout(fallbackTimer);
+        document.removeEventListener('visibilitychange', limparFallback);
+      };
+
+      document.addEventListener('visibilitychange', limparFallback);
+      window.location.assign(urlApp);
+      return;
+    }
+
+    window.location.assign(urlWeb);
   };
 
   const lidarSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setNomeTocado(true);
+    setMensagemTocada(true);
     enviarMensagem();
   };
 
@@ -112,42 +195,72 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
 
           <h2 className={`font-black tracking-tight ${modoCompacto ? 'text-xl' : 'text-2xl'}`}>Fale Conosco</h2>
           <p className={`text-emerald-50/80 font-medium px-4 mt-1 ${modoCompacto ? 'text-[11px]' : 'text-sm'}`}>
-            Dúvidas ou sugestões? Nossa equipe está pronta para te atender!
+            Duvidas ou sugestoes? Nossa equipe esta pronta para te atender!
           </p>
         </div>
 
         {/* Form Body (Sem Scroll, responsivo na altura) */}
-        <form onSubmit={lidarSubmit} className={`flex-1 overflow-y-auto overscroll-contain flex flex-col ${modoCompacto ? 'gap-3 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]' : 'gap-5 p-6 pb-[calc(env(safe-area-inset-bottom)+1rem)]'}`}>
+        <form onSubmit={lidarSubmit} className={`flex-1 overflow-y-auto overscroll-contain flex flex-col ${modoCompacto ? 'gap-3 p-4' : 'gap-5 p-6'} ${tecladoAtivo ? 'pb-[calc(env(safe-area-inset-bottom)+8rem)]' : 'pb-[calc(env(safe-area-inset-bottom)+1rem)]'}`}>
           <div className={modoCompacto ? 'space-y-3' : 'space-y-4'}>
             <div>
-              <label className="text-[11px] uppercase font-black text-slate-400 tracking-widest mb-1.5 block ml-1">
-                Seu Nome
-              </label>
+              <div className="flex items-center justify-between mb-1.5 ml-1">
+                <label className="text-[11px] uppercase font-black text-slate-400 tracking-widest block">
+                  Seu Nome
+                </label>
+                <p
+                  id="contador-nome"
+                  className={`text-sm font-black tracking-wide leading-none ${nomeContadorClasse}`}
+                  aria-live="polite"
+                >
+                  {nomeContador}
+                </p>
+              </div>
               <input
+                ref={refNome}
                 type="text"
                 value={nome}
                 onChange={(e) => lidarMudancaNome(e.target.value)}
+                onFocus={(e) => focarCampoVisivel(e.currentTarget, refMensagem.current)}
+                onBlur={lidarBlurCampo}
                 placeholder="Como podemos te chamar?"
-                className={`w-full bg-slate-50 text-slate-700 rounded-2xl border-2 border-transparent focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-300 font-bold text-sm ${modoCompacto ? 'p-3' : 'p-4'}`}
+                aria-invalid={nomeErroVisivel}
+                aria-describedby="contador-nome"
+                className={`w-full text-slate-700 rounded-2xl border-2 focus:bg-white focus:ring-4 outline-none transition-all placeholder:text-slate-300 font-bold text-sm ${nomeErroVisivel ? 'bg-red-50/70 border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'bg-slate-50 border-transparent focus:border-emerald-500 focus:ring-emerald-500/10'} ${modoCompacto ? 'p-3' : 'p-4'}`}
               />
             </div>
 
-            <div>
+            <div className="relative">
               <label className="text-[11px] uppercase font-black text-slate-400 tracking-widest mb-1.5 block ml-1">
                 Sua Mensagem
               </label>
               <textarea
+                ref={refMensagem}
                 value={mensagem}
-                onChange={(e) => setMensagem(e.target.value)}
-                placeholder="Escreva aqui (mínimo 30 caracteres)..."
+                onChange={(e) => {
+                  setMensagemTocada(true);
+                  setMensagem(e.target.value);
+                }}
+                onFocus={(e) => focarCampoVisivel(e.currentTarget, refBotaoEnviar.current)}
+                onBlur={lidarBlurCampo}
+                placeholder={`Escreva aqui (minimo ${MIN_MENSAGEM} caracteres)...`}
                 rows={textareaRows}
-                className={`w-full bg-slate-50 text-slate-700 rounded-2xl border-2 border-transparent focus:bg-white focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all resize-none font-bold text-sm placeholder:text-slate-300 ${modoCompacto ? 'p-3' : 'p-4'}`}
+                aria-invalid={mensagemErroVisivel}
+                aria-describedby="contador-mensagem"
+                className={`w-full text-slate-700 rounded-2xl border-2 focus:bg-white focus:ring-4 outline-none transition-all resize-none font-bold text-sm placeholder:text-slate-300 pr-20 ${mensagemErroVisivel ? 'bg-red-50/70 border-red-500 focus:border-red-500 focus:ring-red-500/20' : 'bg-slate-50 border-transparent focus:border-emerald-500 focus:ring-emerald-500/10'} ${modoCompacto ? 'p-3 pb-7' : 'p-4 pb-8'}`}
               />
+              <p
+                id="contador-mensagem"
+                className={`pointer-events-none absolute bottom-3 right-4 text-sm font-black tracking-wide leading-none ${mensagemContadorClasse}`}
+                aria-live="polite"
+              >
+                {mensagemContador}
+              </p>
             </div>
           </div>
 
-          {/* Botão de Envio Premium com Borda Dourada e Efeito Shimmer */}
+          {/* Botao de Envio Premium com Borda Dourada e Efeito Shimmer */}
           <button
+            ref={refBotaoEnviar}
             type="submit"
             disabled={!formularioValido}
             className={`relative w-full rounded-[1.2rem] transition-all
@@ -159,14 +272,14 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
               <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600 rounded-[1.2rem] opacity-100"></div>
             )}
 
-            {/* Conteúdo do Botão */}
+            {/* Conteudo do Botao */}
             <div className={`relative flex items-center justify-center gap-2 m-[2px] py-4 rounded-[calc(1.2rem-2px)] font-black text-sm uppercase tracking-widest overflow-hidden transition-all
               ${formularioValido
                 ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg'
                 : 'bg-slate-100 text-slate-400 border border-slate-200'
               }`}
             >
-              {/* Feixe de luz dinâmico (Shimmer) */}
+              {/* Feixe de luz dinamico (Shimmer) */}
               {formularioValido && (
                 <div className="absolute inset-0 w-full h-full">
                   <div className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg] animate-shimmer"></div>
@@ -192,7 +305,7 @@ const ModalContato: React.FC<PropsModalContato> = ({ aoFechar }) => {
         </div>
       </div>
 
-      {/* Animação do Shimmer */}
+      {/* Animacao do Shimmer */}
       <style>{`
         @keyframes shimmer {
           0% { transform: translateX(-150%); }

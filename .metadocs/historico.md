@@ -224,3 +224,9 @@ Se vocÃª, Agente, estÃ¡ assumindo agora, siga estas regras sagradas:
 *   **Tutorial com Continuidade:** Fluxo do `AUTO PREENCHER` no primeiro uso foi ajustado para seguir direto para seleção/câmera após concluir o tutorial.
 *   **Refino no Scanner:** `ModalScannerBarras` voltou ao centro por padrão e ganhou vinheta para escurecer o entorno da área de leitura.
 *   **Validação Técnica:** Build de produção validado com sucesso via Docker (`docker compose -f .docker/compose.yaml run --rm app npm run build`).
+
+### 28/02: [Contato, Contador e Handoff WhatsApp](./walkthrough/contato_whatsapp_handoff.md) ??
+*   **Feedback Compacto:** ModalContato trocou mensagens longas por contadores dinamicos (nome e mensagem) com progresso visual por cor (cinza, vermelho e verde).
+*   **Responsividade com Teclado:** Contadores foram reposicionados para evitar empurrar o layout e reduzir risco de campos importantes ficarem cobertos no mobile.
+*   **Envio sem Flicker:** Fluxo de abertura do WhatsApp migrou de window.open(..., "_blank") para redirecionamento direto com fallback mobile, eliminando o flash visual antes do handoff.
+*   **Regra de Negocio Preservada:** Botao de envio continua bloqueado enquanto o formulario nao atinge os minimos (MIN_NOME=3, MIN_MENSAGEM=25).
