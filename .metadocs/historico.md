@@ -230,3 +230,9 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 *   **Responsividade com Teclado:** Contadores foram reposicionados para evitar empurrar o layout e reduzir risco de campos importantes ficarem cobertos no mobile.
 *   **Envio sem Flicker:** Fluxo de abertura do WhatsApp migrou de window.open(..., "_blank") para redirecionamento direto com fallback mobile, eliminando o flash visual antes do handoff.
 *   **Regra de Negocio Preservada:** Botao de envio continua bloqueado enquanto o formulario nao atinge os minimos (MIN_NOME=3, MIN_MENSAGEM=25).
+### 28/02: [Mock de Pagamento, Resiliência e Feedback Sonoro](./walkthrough/mock_pagamento_resiliencia.md)
+*   **Diagnóstico PROD vs DEV:** Mapeada a cadeia de erro causada pela ausência de `VITE_USAR_MOCK_PAGAMENTO` no painel da Vercel, que fazia o frontend de produção usar o provedor real (sem chave de API).
+*   **Falha Controlada no Mock:** `ProvedorMock` agora força falha proposital na 1ª geração de PIX para permitir testes completos do fluxo de erro.
+*   **Retentativa sem Fechar Modal:** Botão "Tentar Novamente" regenera o PIX para o mesmo plano selecionado, sem fechar e reabrir a modal.
+*   **Efeito Sonoro de Sucesso:** Acorde harmônico (Mi Maior) sintetizado via Web Audio API, sincronizado com as animações visuais de confirmação.
+*   **Polling Seguro:** `useEffect` do polling agora ignora status terminais (`aprovado`, `falha`), evitando requisições desnecessárias.
