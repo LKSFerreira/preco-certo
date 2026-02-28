@@ -241,3 +241,9 @@ Se vocÃª, Agente, estÃ¡ assumindo agora, siga estas regras sagradas:
 *   **Banner Customizado:** Componente `BannerInstalarApp.tsx` com design premium e animaÃ§Ãµes slide-up.
 *   **Controle de FrequÃªncia:** LÃ³gica de exibiÃ§Ã£o 1x por mÃªs via `localStorage` para evitar fadiga do usuÃ¡rio mobile.
 *   **Standalone Detection:** OcultaÃ§Ã£o automÃ¡tica do banner quando o app jÃ¡ estÃ¡ instalado.
+
+### 28/02: [Normalização Flexível de Unidades](./walkthrough/normalizacao_unidades.md)
+*   **Camada Única de Normalização:** Criada a função `normalizarTamanho` com reuso de `UNIT_MAP`, aplicada antes da validação para aceitar entradas inconsistentes sem travar o fluxo.
+*   **Canônico SI + Comercial:** Padronização para `L`, `mL`, `g`, `kg`, `mg`, `uni`, `cx`, `pct`, `pç`, com separação obrigatória `número + espaço + unidade`.
+*   **Integração Ponta a Ponta:** Normalização aplicada no formulário (`blur`/`submit`) e nos fluxos OFF/Cosmos/IA, removendo `toUpperCase` conflitante no campo `tamanho`.
+*   **Fonte de Verdade Preservada:** `REGEX_UNIDADE` continua derivada de `UNIT_MAP`, sem regra duplicada, com mensagem de erro atualizada para exemplos válidos.

@@ -1,5 +1,5 @@
-import { Produto } from '../../types';
-import { formatarTitulo, extrairTamanho, construirUrlImagemOFF } from '../utilitarios';
+﻿import { Produto } from '../../types';
+import { formatarTitulo, extrairTamanho, construirUrlImagemOFF, normalizarTamanho } from '../utilitarios';
 
 export interface ProdutoOFFResponse {
     code: string;
@@ -29,20 +29,21 @@ export class OpenFoodFactsAdapter {
         const descricao = nomeBruto ? formatarTitulo(nomeBruto) : 'Produto sem nome';
 
         const marcaBruta = p.brands || '';
-        const marca = marcaBruta ? formatarTitulo(marcaBruta) : 'Genérica';
+        const marca = marcaBruta ? formatarTitulo(marcaBruta) : 'GenÃ©rica';
 
-        const tamanho = p.quantity ? extrairTamanho(p.quantity) || p.quantity : extrairTamanho(descricao) || 'Sem Tamanho';
+        const tamanhoBruto = p.quantity ? extrairTamanho(p.quantity) || p.quantity : extrairTamanho(descricao) || 'Sem Tamanho';
+        const tamanho = normalizarTamanho(tamanhoBruto);
 
-        // Preferência por imagem display em pt, ou geral, ou url direta
+        // PreferÃªncia por imagem display em pt, ou geral, ou url direta
         let imagem = p.image_front_url || p.image_url;
 
-        // Se não tem URL direta, tenta construir a partir do objeto selected
+        // Se nÃ£o tem URL direta, tenta construir a partir do objeto selected
         if (!imagem && p.selected_images?.front?.display) {
-            // Tenta "pt" primeiro, senão pega a primeira disponível
+            // Tenta "pt" primeiro, senÃ£o pega a primeira disponÃ­vel
             imagem = p.selected_images.front.display['pt'] || Object.values(p.selected_images.front.display)[0];
         }
 
-        // Último caso: tenta construir a URL baseada no código (tentativa padronizada)
+        // Ãšltimo caso: tenta construir a URL baseada no cÃ³digo (tentativa padronizada)
         if (!imagem) {
             imagem = construirUrlImagemOFF(dados.code) ?? undefined;
         }
@@ -51,7 +52,7 @@ export class OpenFoodFactsAdapter {
             codigo_barras: dados.code,
             descricao,
             marca,
-            tamanho: tamanho.toUpperCase(),
+            tamanho,
             preco_estimado: 0,
             imagem
         };

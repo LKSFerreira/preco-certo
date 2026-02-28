@@ -1,19 +1,19 @@
-/**
- * Serviço de integração com API Bluesoft Cosmos.
+﻿/**
+ * ServiÃ§o de integraÃ§Ã£o com API Bluesoft Cosmos.
  *
- * Documentação: https://cosmos.bluesoft.com.br/api
+ * DocumentaÃ§Ã£o: https://cosmos.bluesoft.com.br/api
  */
 
 import { Produto } from '../types';
 import { padronizarDadosProduto } from './ia';
-import { formatarTitulo, extrairTamanho } from './utilitarios';
+import { formatarTitulo, extrairTamanho, normalizarTamanho } from './utilitarios';
 import { CosmosAdapter } from './adapters/cosmos.adapter';
 
 /**
- * Em desenvolvimento e produção, SEMPRE usa o proxy serverless.
- * O token Cosmos fica no servidor — o frontend NUNCA tem acesso.
+ * Em desenvolvimento e produÃ§Ã£o, SEMPRE usa o proxy serverless.
+ * O token Cosmos fica no servidor â€” o frontend NUNCA tem acesso.
  */
-const COSMOS_API_URL = '/api/cosmos/gtin';
+const URL_API_COSMOS = '/api/cosmos/gtin';
 
 /**
  * Interface exata dos dados retornados pela API Cosmos.
@@ -46,20 +46,20 @@ export interface ProdutoCosmosResponse {
 }
 
 /**
- * Busca informações de um produto pelo código de barras (GTIN) na API Cosmos.
+ * Busca informaÃ§Ãµes de um produto pelo cÃ³digo de barras (GTIN) na API Cosmos.
  *
- * :param gtin: Código de barras do produto
- * :returns: Dados do produto formatados para o nosso app ou null se não encontrado
+ * :param gtin: CÃ³digo de barras do produto
+ * :returns: Dados do produto formatados para o nosso app ou null se nÃ£o encontrado
  */
 export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null> {
   try {
     if (import.meta.env.VITE_USAR_API_COSMOS === 'false') {
-      console.warn('🚫 [Cosmos] Uso da API Cosmos DESATIVADO pelo desenvolvedor.');
+      console.warn('ðŸš« [Cosmos] Uso da API Cosmos DESATIVADO pelo desenvolvedor.');
       return null;
     }
 
-    // Sempre via proxy — token fica no servidor
-    const url = `${COSMOS_API_URL}/${gtin}`;
+    // Sempre via proxy â€” token fica no servidor
+    const url = `${URL_API_COSMOS}/${gtin}`;
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 segundos
@@ -75,7 +75,7 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
     clearTimeout(timeoutId);
 
     if (response.status === 404) {
-      // Produto não encontrado na base
+      // Produto nÃ£o encontrado na base
       return null;
     }
 
@@ -87,10 +87,10 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
     const dados: ProdutoCosmosResponse = await response.json();
     console.log('[Cosmos] Resposta Bruta:', dados);
 
-    // Adapter converte para o modelo de domínio (pt-BR)
+    // Adapter converte para o modelo de domÃ­nio (pt-BR)
     const produto = CosmosAdapter.paraDominio(dados);
 
-    // 2. Padronização via IA (Melhoria de Qualidade de Dados)
+    // 2. PadronizaÃ§Ã£o via IA (Melhoria de Qualidade de Dados)
     if (produto.descricao) {
       // Monta um contexto rico para a IA (igual ao OpenFoodFacts)
       const contexto = `Produto: ${produto.descricao}. Marca: ${produto.marca || '?'}. Tamanho: ${produto.tamanho || '?'}`;
@@ -101,14 +101,14 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
         if (dadosPadronizados) {
           // Atualiza/Limpa os dados com o retorno da IA
           if (dadosPadronizados.descricao) produto.descricao = dadosPadronizados.descricao;
-          if (dadosPadronizados.marca && dadosPadronizados.marca !== 'Genérica') produto.marca = dadosPadronizados.marca;
+          if (dadosPadronizados.marca && dadosPadronizados.marca !== 'GenÃ©rica') produto.marca = dadosPadronizados.marca;
           // Padroniza tamanho conforme SI (kg, g, mg, L, ml, m, cm, mm)
           if (dadosPadronizados.tamanho) {
-            produto.tamanho = extrairTamanho(dadosPadronizados.tamanho) || dadosPadronizados.tamanho;
+            produto.tamanho = normalizarTamanho(extrairTamanho(dadosPadronizados.tamanho) || dadosPadronizados.tamanho);
           }
         }
       } catch (err) {
-        console.warn('[Cosmos] Falha na padronização IA (usando dados originais):', err);
+        console.warn('[Cosmos] Falha na padronizaÃ§Ã£o IA (usando dados originais):', err);
       }
     }
 
@@ -116,11 +116,11 @@ export async function buscarProdutoCosmos(gtin: string): Promise<Produto | null>
   } catch (erro: any) {
     // Trata erros de rede/CORS sem quebrar a app
     if (erro.name === 'AbortError') {
-      console.warn('[Cosmos] ⏱️ Timeout de 7s atingido. API Cosmos demorou muito para responder.');
+      console.warn('[Cosmos] â±ï¸ Timeout de 7s atingido. API Cosmos demorou muito para responder.');
     } else if (erro instanceof TypeError && erro.message.includes('fetch')) {
-      console.warn('[Cosmos] Falha de conexão ou CORS (Verifique Proxy):', erro.message);
+      console.warn('[Cosmos] Falha de conexÃ£o ou CORS (Verifique Proxy):', erro.message);
     } else {
-      console.error('[Cosmos] Erro na requisição:', erro);
+      console.error('[Cosmos] Erro na requisiÃ§Ã£o:', erro);
     }
     return null;
   }

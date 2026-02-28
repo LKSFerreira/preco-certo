@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Produto } from '../types';
 import { REGEX_UNIDADE } from '../constants';
 import { extrairDadosDoRotulo } from '../services/ia';
+import { normalizarTamanho } from '../services/utilitarios';
 import { ModalRecorte } from './ModalRecorte';
 import { ModalTutorialFoto } from './ModalTutorialFoto';
 import { useTutorialFotoPrimeiroUso } from '../hooks/useTutorialFoto';
@@ -26,7 +27,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   const [descricao, setDescricao] = useState('');
   const [marca, setMarca] = useState('');
   const [tamanho, setTamanho] = useState('');
-  const [priceInput, setPriceInput] = useState('');
+  const [precoInput, setPrecoInput] = useState('');
   const [imagem, setImagem] = useState<string | undefined>(undefined);
   const [erro, setErro] = useState<string | null>(null);
   const [campoComErro, setCampoComErro] = useState<string | null>(null);
@@ -84,9 +85,10 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   const faseFormulario = useMemo(() => (imagem ? 'dados' : 'foto'), [imagem]);
   const camposTextoBloqueados = faseFormulario === 'foto' || analisandoIA;
   const tamanhoLimpo = tamanho.trim();
+  const tamanhoNormalizado = useMemo(() => normalizarTamanho(tamanhoLimpo), [tamanhoLimpo]);
   const tamanhoValido = useMemo(() => {
-    return tamanhoLimpo.length > 0 && REGEX_UNIDADE.test(tamanhoLimpo);
-  }, [tamanhoLimpo]);
+    return tamanhoNormalizado.length > 0 && REGEX_UNIDADE.test(tamanhoNormalizado);
+  }, [tamanhoNormalizado]);
   const tamanhoInvalidoVisivel = tamanhoLimpo.length > 0 && !tamanhoValido;
 
   const [mostraTutorialFoto, setMostraTutorialFoto] = useState(false);
@@ -157,10 +159,10 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 
       setDescricao(origem.descricao ?? '');
       setMarca(origem.marca ?? '');
-      setTamanho(origem.tamanho ?? '');
+      setTamanho(normalizarTamanho(origem.tamanho ?? ''));
 
       if ((origem.preco_estimado ?? 0) > 0) {
-        setPriceInput((origem.preco_estimado ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
+        setPrecoInput((origem.preco_estimado ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
       }
 
       setImagem(imagemValidada);
@@ -275,7 +277,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     if (e.target.files && e.target.files[0]) {
       setErro(null);
       try {
-        // Conversão temporária para Base64 para exibir no ModalRecorte
+        // ConversÃ£o temporÃ¡ria para Base64 para exibir no ModalRecorte
         const leitor = new FileReader();
         leitor.onload = (evento) => {
           setImagemParaRecorte(evento.target?.result as string);
@@ -301,10 +303,10 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
         const d = await extrairDadosDoRotulo(fotoRecortadaBase64);
         if (d.descricao) setDescricao(d.descricao);
         if (d.marca) setMarca(d.marca);
-        if (d.tamanho) setTamanho(d.tamanho);
+        if (d.tamanho) setTamanho(normalizarTamanho(d.tamanho));
         if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([50, 50, 50]);
       } catch (err) {
-        setErro(`Não foi possível ler o rótulo automaticamente.`);
+        setErro(`NÃ£o foi possÃ­vel ler o rÃ³tulo automaticamente.`);
       } finally {
         setAnalisandoIA(false);
       }
@@ -319,8 +321,8 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 
   const lidarMudancaPreco = (e: React.ChangeEvent<HTMLInputElement>) => {
     const v = e.target.value.replace(/\D/g, '');
-    if (!v) { setPriceInput(''); return; }
-    setPriceInput((parseInt(v, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    if (!v) { setPrecoInput(''); return; }
+    setPrecoInput((parseInt(v, 10) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
   };
 
   const rolarParaSalvar = () => {
@@ -332,8 +334,8 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   const focarProximoCampoVazio = (campoAtual: 'descricao' | 'marca' | 'tamanho' | 'price') => {
     const valorDescricao = (refDescricao.current?.value ?? descricao).trim();
     const valorMarca = (refMarca.current?.value ?? marca).trim();
-    const valorTamanho = (refTamanho.current?.value ?? tamanho).trim();
-    const valorPrecoTexto = refPrice.current?.value ?? priceInput;
+    const valorTamanho = normalizarTamanho((refTamanho.current?.value ?? tamanho).trim());
+    const valorPrecoTexto = refPrice.current?.value ?? precoInput;
     const valorPreco = parseFloat(valorPrecoTexto.replace(/\./g, '').replace(',', '.'));
 
     const campos = {
@@ -410,28 +412,29 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     e.preventDefault();
     setErro(null);
     setCampoComErro(null);
-    const tamanhoNormalizado = tamanho.trim();
+    const tamanhoFinal = normalizarTamanho(tamanho.trim());
 
     if (!imagem) { setErro('A foto do produto e obrigatoria.'); return; }
     if (!descricao.trim()) { setErro('O nome do produto e obrigatorio.'); setCampoComErro('descricao'); refDescricao.current?.focus(); return; }
     if (!marca.trim()) { setErro('A marca e obrigatoria.'); setCampoComErro('marca'); refMarca.current?.focus(); return; }
-    if (!tamanhoNormalizado) { setErro('O tamanho e obrigatorio.'); setCampoComErro('tamanho'); refTamanho.current?.focus(); return; }
-    if (!REGEX_UNIDADE.test(tamanhoNormalizado)) {
-      setErro('Tamanho invalido. Use unidade, ex: 1L, 500g, 250ml.');
+    if (!tamanhoFinal) { setErro('O tamanho e obrigatorio.'); setCampoComErro('tamanho'); refTamanho.current?.focus(); return; }
+    if (!REGEX_UNIDADE.test(tamanhoFinal)) {
+      setErro('Tamanho invÃ¡lido. Exemplos vÃ¡lidos: 1 L, 500 g, 250 mL, 10 uni, 1 cx.');
       setCampoComErro('tamanho');
       refTamanho.current?.focus();
       return;
     }
 
-    const p = parseFloat(priceInput.replace(/\./g, '').replace(',', '.'));
+    const p = parseFloat(precoInput.replace(/\./g, '').replace(',', '.'));
     if (isNaN(p) || p <= 0) { setErro('O preco e obrigatorio.'); setCampoComErro('price'); refPrice.current?.focus(); return; }
 
-    aoSalvar({ gtinInicial, descricao, marca, tamanho: tamanhoNormalizado, preco_estimado: p, imagem: imagem! } as any);
+    setTamanho(tamanhoFinal);
+    aoSalvar({ gtinInicial, descricao, marca, tamanho: tamanhoFinal, preco_estimado: p, imagem: imagem! } as any);
   };
 
   const precoNumerico = useMemo(() => {
-    return parseFloat(priceInput.replace(/\./g, '').replace(',', '.'));
-  }, [priceInput]);
+    return parseFloat(precoInput.replace(/\./g, '').replace(',', '.'));
+  }, [precoInput]);
 
   const formularioPodeSalvar = useMemo(() => {
     if (!imagem) return false;
@@ -505,7 +508,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                   <div>
                     <div className="flex items-center gap-1.5 mb-1">
                       <div className="bg-blue-100 p-1 rounded-full text-blue-600 shrink-0"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`${isEstreito ? 'w-4 h-4' : 'w-3 h-3'}`}><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" /></svg></div>
-                      <span className={`font-bold text-blue-800 uppercase leading-none ${isEstreito ? 'text-xs tracking-tight' : isMuitoCompacto ? 'text-[10px]' : 'text-xs'}`}>Foto Obrigatória</span>
+                      <span className={`font-bold text-blue-800 uppercase leading-none ${isEstreito ? 'text-xs tracking-tight' : isMuitoCompacto ? 'text-[10px]' : 'text-xs'}`}>Foto ObrigatÃ³ria</span>
                     </div>
                     <p className={`text-blue-800 leading-tight transition-all ${isEstreito ? 'text-[10px] mt-0.5' : isCompacto ? 'text-[10px]' : 'text-[11px]'}`}>
                       Foto para preencher com IA.
@@ -568,8 +571,8 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
               <div className="flex items-start gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-blue-500 mt-0.5 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" /></svg>
                 <div className="flex-1">
-                  <p className={`text-blue-800 font-medium leading-tight ${isCompacto ? 'text-xs' : 'text-sm'}`}>Tire uma foto do rótulo da frente.</p>
-                  <p className={`text-blue-700 mt-0.5 ${isCompacto ? 'text-[10px]' : 'text-xs'}`}>Os campos serão preenchidos com IA após a foto.</p>
+                  <p className={`text-blue-800 font-medium leading-tight ${isCompacto ? 'text-xs' : 'text-sm'}`}>Tire uma foto do rÃ³tulo da frente.</p>
+                  <p className={`text-blue-700 mt-0.5 ${isCompacto ? 'text-[10px]' : 'text-xs'}`}>Os campos serÃ£o preenchidos com IA apÃ³s a foto.</p>
                 </div>
               </div>
               <button type="button" className="mt-2 w-full text-xs text-gray-700 flex items-center justify-center gap-1 py-1.5 rounded border border-gray-300 bg-gray-50 cursor-not-allowed"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-3 h-3"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg> Preencher manualmente</button>
@@ -628,7 +631,13 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                     if (campoComErro === 'tamanho') setCampoComErro(null);
                   }}
                   onFocus={(e) => focarCampoVisivel(e.currentTarget)}
-                  onBlur={lidarBlurCampo}
+                  onBlur={(e) => {
+                    const valorNormalizado = normalizarTamanho(e.currentTarget.value);
+                    if (valorNormalizado !== e.currentTarget.value) {
+                      setTamanho(valorNormalizado);
+                    }
+                    lidarBlurCampo();
+                  }}
                   enterKeyHint="next"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === 'Tab') {
@@ -642,19 +651,19 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                 />
                 {tamanhoInvalidoVisivel && (
                   <p className={`mt-1 font-medium text-red-600 ${isMuitoCompacto ? 'text-[10px]' : 'text-xs'}`}>
-                    Tamanho invalido. Use unidade: 1L, 500g, 250ml.
+                    Tamanho invÃ¡lido. Exemplos vÃ¡lidos: 1 L, 500 g, 250 mL, 10 uni, 1 cx.
                   </p>
                 )}
               </div>
             </div>
             <div className={`bg-gray-50 rounded-lg border border-gray-200 ${isMuitoCompacto ? 'p-1.5' : 'p-2'}`}>
-              <label className={`block font-bold text-green-700 uppercase tracking-wide ${isMuitoCompacto ? 'text-[10px] mb-0.5' : 'text-xs mb-1'}`}>Preço Unitário (R$) *</label>
+              <label className={`block font-bold text-green-700 uppercase tracking-wide ${isMuitoCompacto ? 'text-[10px] mb-0.5' : 'text-xs mb-1'}`}>PreÃ§o UnitÃ¡rio (R$) *</label>
               <input
                 ref={refPrice}
                 type="tel"
                 inputMode="decimal"
                 enterKeyHint="done"
-                value={priceInput}
+                value={precoInput}
                 onChange={lidarMudancaPreco}
                 onFocus={(e) => {
                   focarCampoVisivel(e.currentTarget);

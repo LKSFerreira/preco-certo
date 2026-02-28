@@ -6,11 +6,11 @@ import { UNIT_MAP } from './services/utilitarios';
 // Exemplo: "quilograma" antes de "kg" antes de "k", "ml" antes de "m"
 const unidadesAceitas = Object.keys(UNIT_MAP)
   .sort((a, b) => b.length - a.length)
-  .map(u => u.replace(/[.]/g, '\\.'))
+  .map(u => u.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
   .join('|');
 
 export const REGEX_UNIDADE = new RegExp(
-  `^\\d+([.,]\\d+)?\\s?(${unidadesAceitas})$`, 'i'
+  `^\\d+([.,]\\d+)?\\s?(${unidadesAceitas})$`, 'iu'
 );
 
 // Chave para persistência no LocalStorage
