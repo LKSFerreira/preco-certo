@@ -282,7 +282,7 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
                                     { titulo: 'Auto Preenchimento com IA ilimitado' },
                                     { titulo: 'Sem limite de itens no Carrinho' },
                                     { titulo: 'Historico das suas compras' },
-                                    { titulo: 'Acompanhe variacoes de preco' },
+                                    { titulo: 'Acompanhe variações de preço' },
                                 ].map((item, index) => (
                                     <li key={index} className="flex items-center gap-3">
                                         <div className={`flex-shrink-0 flex items-center justify-center rounded-full bg-gradient-to-b from-emerald-400 to-emerald-600 text-white shadow-[0_3px_8px_rgba(16,185,129,0.3)] ${isMuitoCompacto ? 'w-5 h-5' : 'w-6 h-6'}`}>
