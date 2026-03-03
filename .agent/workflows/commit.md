@@ -1,4 +1,4 @@
----
+﻿---
 description: Diretrizes e padrões para criação de commits no projeto
 ---
 
@@ -6,13 +6,13 @@ Sempre que eu solicitar a criação de um commit, analise as alterações staged
 
 > Probido o uso do git add . ou similares.
 
-## Regras Gerais
+## Regras Gerais:
 
 - **Atomicidade**: Todos os commits devem ser atômicos, mas em caso de alterações muito semelhantes, agrupe-as em um único commit.
 - **Formato dos Emojis**: Use **APENAS** o código do emoji (ex: `:tada:`). Nunca inclua o caractere Unicode/desenho visual do emoji.
 - **Idioma**: A descrição do commit deve ser em [PT-BR/EN - escolha um e mantenha].
 
-## Lista de Referência (Código : Tipo)
+## Lista de Referência (Código : Tipo):
 
 - `:tada:` : Commit inicial
 - `:books: docs` : Atualização de documentação
@@ -29,14 +29,14 @@ Sempre que eu solicitar a criação de um commit, analise as alterações staged
 - `:broom: cleanup` : Limpeza de código morto ou formatação
 - `:wastebasket: remove` : Remoção de arquivos ou diretórios
 
-## Formato da Mensagem
+## Formato da Mensagem:
 
 - Arquivos, diretórios, funções, métodos, variáveis, rotas ou qualquer outra referência específica devem estar encapsuladas por 2 crases (` `).
 
 ### A saída deve conter apenas a mensagem de commit no padrão:
 - ':emoji_code: tipo: Descrição sucinta da mudança referenciando `xpto`'
 
-### **Exemplos de saída:**
+### **Exemplos de saída**:
 - ':broom: cleanup: remove logs de debug da função `validarPagamento()`'
 - ':sparkles: feat: implementa endpoint `GET /api/v1/users` no controller'
 - ':bug: fix: impede loop infinito no método `calculateTotal()` durante o checkout'
@@ -48,3 +48,5 @@ Sempre que eu solicitar a criação de um commit, analise as alterações staged
 - ':lipstick: feat: ajusta margem do botão no componente `UserProfile`'
 - ':wastebasket: remove: deleta diretório legado de imagens em `public/assets/old`'
 - ':card_file_box: raw: insere carga inicial de categorias executando o `seed.ts`'
+
+
