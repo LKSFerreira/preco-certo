@@ -3,3 +3,6 @@
 
 # Force shell scripts to always use LF (Unix) line endings
 *.sh text eol=lf
+
+# Markdown docs must stay normalized and UTF-8 in working tree
+*.md text eol=lf working-tree-encoding=UTF-8
