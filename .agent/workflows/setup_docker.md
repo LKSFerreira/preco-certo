@@ -1,12 +1,12 @@
----
+﻿---
 description: Workflow de Configuração de Ambiente Docker Compose
 ---
 
-# Workflow: Configuração de Ambiente Docker Compose
+# Workflow: Configuração de Ambiente Docker Compose:
 
 Sempre que solicitado para configurar o ambiente Docker, atue como Especialista em DevOps e execute os passos abaixo rigorosamente.
 
-## Filosofia
+## Filosofia:
 
 - **Docker Compose direto**: Sem Dev Containers, sem dependência de servidor remoto.
 - **Simplicidade**: Um script para iniciar e compilar tudo (`dev.sh`).
@@ -15,7 +15,7 @@ Sempre que solicitado para configurar o ambiente Docker, atue como Especialista 
 
 ---
 
-## 1. Fase de Reconhecimento e Preparação
+## 1: Fase de Reconhecimento e Preparação
 
 - Identifique a stack através dos arquivos de manifesto (`package.json`, `requirements.txt`, `go.mod`, etc.).
 - Analise o arquivo `readme_templates.md`.
@@ -34,7 +34,7 @@ Sempre que solicitado para configurar o ambiente Docker, atue como Especialista 
 
 ---
 
-## 2. Implementação da Estrutura (Ação)
+## 2: Implementação da Estrutura (Ação)
 
 Execute as instruções abaixo para estruturar o ambiente:
 
@@ -67,7 +67,7 @@ docker compose -f .docker/compose.yaml up --build
 
 ---
 
-## 3. Estrutura Final Esperada
+## 3: Estrutura Final Esperada
 
 ```text
 projeto/
@@ -82,7 +82,7 @@ projeto/
 
 ---
 
-## 4. Segurança e Limpeza
+## 4: Segurança e Limpeza
 
 1. **Atualizar `.gitignore`**: 
    Adicione as variáveis de ambiente e scripts locais ao `.gitignore`.
@@ -103,7 +103,7 @@ rm -rf .agent/templates/
 
 ---
 
-## 5. Entrega Final e Comandos Úteis
+## 5: Entrega Final e Comandos Úteis
 
 Confirme as configurações validando os itens abaixo:
 
@@ -125,3 +125,4 @@ Execute a partir da raiz (ou acesse a pasta `.docker/`):
 | `docker compose -f .docker/compose.yaml down`    | Para os containers                  |
 | `docker compose -f .docker/compose.yaml down -v` | Para e remove volumes (limpa banco) |
 | `docker compose -f .docker/compose.yaml logs -f` | Mostra logs da aplicação e serviços |
+
