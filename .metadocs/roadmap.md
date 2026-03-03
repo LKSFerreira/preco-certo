@@ -176,7 +176,7 @@
 - [x] **0.8.5.12** Refatorar APIs do Backend (Groq Proxy e etc) para validar consumo Premium através do `token_hash`.
 
 ### Frontend (Premium - UI) ✅
-- [ ] **0.8.5.13** Criar tela de planos de contribuição (Café R$4,90 / Lanche R$6,90 / Apoiador R$12,90)
+- [x] **0.8.5.13** Criar tela de planos de contribuição (Café R$4,90 / Lanche R$6,90 / Apoiador R$12,90)
 - [ ] **0.8.5.14** Criar modal pós-pagamento (exibir token, ativar, salvar via WhatsApp, enviar para alguém)
 - [x] **0.8.5.15** Criar rota `/ativar/:token` para ativação via deep link
 - [x] **0.8.5.16** Implementar funcionalidades gratuito vs premium (limites de IA e carrinho)
@@ -184,9 +184,15 @@
 - [x] **0.8.5.18** Implementar cache de status do token no localStorage (evitar requisições desnecessárias ao `/api/tokens/consultar`)
 
 ### Integração com Pagamento (MVP — última etapa)
-- [ ] **0.8.5.19** Integrar API Mercado Pago para geração de PIX
-- [ ] **0.8.5.20** Implementar polling de status de pagamento (intervalo: 5s)
+- [x] **0.8.5.19** Integrar API Mercado Pago para geração de PIX
+- [x] **0.8.5.20** Implementar polling de status de pagamento (intervalo: 5s)
 - [ ] **0.8.5.21** Gerar token automaticamente após confirmação de pagamento
+
+> [!NOTE]
+> **Status de implementação validado via Git (23/02/2026 a 28/02/2026):**
+> - Backend de pagamentos Mercado Pago e endpoint de status implementados.
+> - Polling de status implementado na `ModalPagamento`.
+> - A UI de QR Code/Copia e Cola segue **mockada temporariamente** no frontend por decisão de produto.
 
 **Critério de sucesso:** Fluxo completo local: escolher plano → pagar PIX → receber token → ativar → funcionalidades premium desbloqueadas.
 
