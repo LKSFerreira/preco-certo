@@ -24,7 +24,7 @@ Implementação do sistema de contribuição voluntária com planos premium, uti
 - **Toggle:** Ativável via `VITE_USAR_MOCK_PAGAMENTO=true` no `.env`.
 
 ### 🛠️ Script de Automação (`premium.sh`)
-- **Wrapper Inteligente:** Criado o script `./premium.sh` que encapsula a execução do gerador Python no container `processor`.
+- **Wrapper Inteligente:** Criado o script `./premium.sh` que encapsula a execução do gerador Python no container `backend`.
 - **Auto-correção:** O script detecta automaticamente se as tabelas do banco de dados estão ausentes e roda o `init_db.py` antes de falhar.
 - **UX Dev:** Gera um link direto de ativação clicável (ex: `http://localhost:5173/ativar/TOKEN`) para agilizar testes.
 
@@ -67,3 +67,4 @@ const TABELA_PRECOS = {
 3. **UX State:** Botões de planos agora possuem estado de "Carregando" durante a geração do pedido.
 4. **Responsividade:** Validado comportamento da `ModalPlano` em simulação de tela mobile reduzida.
 5. **Automação:** Testado o fluxo `./premium.sh` com banco de dados limpo (verificado que a migração é aplicada automaticamente).
+
