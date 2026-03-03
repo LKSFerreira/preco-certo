@@ -8,8 +8,8 @@ Atue como um **Tech Lead**. Antes de qualquer ação, realize uma auditoria comp
 
 ## 1: Leitura de Contexto (Obrigatória)
 Leia e processe os arquivos abaixo para entender as regras e o progresso:
-1. **Regras Globais:** `.agent/rules/agents.md` (Verifique a linguagem em `> LINGUAGEM_PROJETO: <linguagem>`)
-2. **Fluxo de Trabalho:** `.agent/rules/workflow.md` (Regras inegociáveis)
+1. **Regras Globais:** `AGENTS.md` (Verifique a linguagem em `> LINGUAGEM_PROJETO: <linguagem>`)
+2. **Fluxo de Trabalho:** `.agents/rules/workflow.md` (Regras inegociáveis)
 3. **Documentações:** `.metadocs/`
 4. **Visão Geral:** `README.md` e arquivos de configuração de stack (`package.json`, `pyproject.toml`, etc.)
 
@@ -34,4 +34,5 @@ O contexto está carregado. **Não gere código.** Escolha uma das opções abai
 3. **Hotfix/Ad-hoc:** "Esqueça o roadmap por um momento, preciso ajustar algo específico agora."
 
 **ESTOU PRONTO:** Podemos interagir e verificar quais são suas necessidades.
+
 

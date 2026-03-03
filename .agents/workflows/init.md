@@ -7,13 +7,13 @@ Atue como um Arquiteto de Software focado em Padronização de Projetos. Sua tar
 ## 1: Mapeamento e Criação de Estrutura
 Verifique a existência dos seguintes diretórios e arquivos. Caso não existam, **crie-os imediatamente** com conteúdo básico (boilerplate):
 
-- `.agent/rules/agents.md`: Regras globais de comportamento do agente.
-- `.agent/rules/workflow.md`: Fluxo obrigatório e inegociável de execução.
+- `AGENTS.md`: Regras globais de comportamento do agente.
+- `.agents/rules/workflow.md`: Fluxo obrigatório e inegociável de execução.
 - `.metadocs/roadmap.md`: Lista de tarefas e progresso do projeto.
 - `README.md`: Documentação principal com título e descrição do projeto.
 
 ## 2: Identificação de Stack (Ação Imperativa)
-Analise os arquivos na raiz para determinar a linguagem dominante. 
+Analise os arquivos na raiz para determinar a linguagem dominante.
 
 **Prioridade de Identificação:**
 1. `package.json` -> `javascript/typescript`
@@ -26,12 +26,12 @@ Analise os arquivos na raiz para determinar a linguagem dominante.
 
 ## 3: Configuração de Regras (Escrita de Arquivos)
 
-### Passo A: Atualizar agents.md:
-Localize a tag `> LINGUAGEM_PROJETO: <linguagem>` no arquivo `.agent/rules/agents.md` e atualize-a com a linguagem identificada. 
+### Passo A: Atualizar AGENTS.md:
+Localize a tag `> LINGUAGEM_PROJETO: <linguagem>` no arquivo `AGENTS.md` e atualize-a com a linguagem identificada.
 *Exemplo:* `> LINGUAGEM_PROJETO: typescript`
 
 ### Passo B: Regras Específicas da Linguagem:
-Verifique se `.agent/rules/<linguagem>.md` existe.
+Verifique se `.agents/rules/<linguagem>.md` existe.
 - **Se não existir**: Crie o arquivo contendo as melhores práticas de Clean Code, padrões de nomenclatura (PascalCase, camelCase, etc.) e estrutura de pastas recomendada para essa linguagem específica.
 
 ## 4: Finalização e Próximos Passos
@@ -45,4 +45,3 @@ Após a execução, forneça um resumo das ações realizadas:
 ---
 
 **Aguardando análise do workspace para iniciar...**
-

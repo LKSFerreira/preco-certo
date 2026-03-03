@@ -1,35 +1,31 @@
-﻿# Diretrizes do Agente e Padrões de Projeto:
+﻿# Arquitetura de Instruções do Agente
 
-## 1: Perfil e Abordagem Pedagógica
-Você é um Engenheiro de Software Sênior e um educador excepcional. O usuário é falante de português do Brasil (pt-BR).
+Este projeto usa a pasta `.agents/` como fonte oficial de instruções.
 
-- **Pragmatismo**: Evite bajulações, introduções longas e vá direto ao ponto.
-- **Ensino**: Priorize o aprendizado. Inclua comentários explicativos no código apenas nos pontos onde haja maior probabilidade de dúvida ou lógica complexa.
+## Estrutura oficial
+- `/.agents/rules/`: regras estáveis e sempre válidas (políticas).
+- `/.agents/workflows/`: procedimentos acionáveis por comando (runbooks).
 
-## 2: Padrão de Idioma e Código
-Todo o código e comunicação devem seguir estritamente as regras abaixo:
+## Regra de organização
+- Regras respondem: **o que é obrigatório**.
+- Workflows respondem: **como executar** uma tarefa específica.
+- Workflows não podem contradizer regras.
 
-- **Idioma**: Português do Brasil (pt-BR) para variáveis, funções, classes, métodos, comentários e docstrings.
-  > *Exceções:* Palavras-chave da linguagem (if, for), bibliotecas, termos técnicos consolidados (agent, reward, payload) ou quando o termo em inglês for o padrão absoluto de mercado.
-- **Legibilidade**: ZERO abreviações. O código deve ser explícito. Use `usuario_id` e não `uid`, `contador` e não `i` (exceto em loops simples). Nomes devem ser claros e descritivos.
+## Ordem de leitura e precedência
+1. Este `AGENTS.md`.
+2. `/.agents/rules/workflow.md`.
+3. `/.agents/rules/docker.md`.
+4. `/.agents/rules/git.md` (commits e PRs).
+5. `/.agents/rules/<linguagem>.md`, conforme `LINGUAGEM_PROJETO`.
+6. `/.agents/workflows/<comando>.md` somente quando o comando for solicitado.
 
-## 3: Comportamento Operacional (IDE)
-- **Commits**: Ações de versionamento (commits, push) SÓ devem ser executadas caso sejam explicitamente solicitadas pelo usuário.
-- **Escopo de Leitura**: Ao analisar o projeto, ignore completamente arquivos e diretórios listados no `.gitignore`.
-
-## 4: Regras Específicas da Linguagem
-
+## Linguagem do projeto
 > LINGUAGEM_PROJETO: javascript
 
-As regras de ambiente, execução, dependências e documentação são específicas para cada linguagem. Você deve:
+Mapeamento:
+- Python -> `/.agents/rules/python.md`
+- Java -> `/.agents/rules/java.md`
+- JavaScript -> `/.agents/rules/javascript.md`
 
-1. Identificar a linguagem do projeto através do campo `LINGUAGEM_PROJETO` acima.
-2. **Obrigatoriamente**, ler o conteúdo do arquivo `.agent/rules/<linguagem>.md` antes de sugerir ou escrever qualquer código.
-
-**Exemplos de mapeamento:**
-- Python -> `.agent/rules/python.md`
-- Java -> `.agent/rules/java.md`
-- JavaScript -> `.agent/rules/javascript.md`
-
-> **Nota:** O campo `LINGUAGEM_PROJETO` é preenchido automaticamente pelo workflow `/init` durante a inicialização do projeto.
-
+## Diretriz de versionamento
+- Commits, push e ações de versionamento só podem ser executados quando solicitados explicitamente pelo usuário.

@@ -1,4 +1,4 @@
----
+﻿---
 trigger: always_on
 ---
 
@@ -22,7 +22,7 @@ trigger: always_on
 ## 3: Regra para Dependências Python
 - Dependências Python devem ser gerenciadas no container `backend`.
 - Para instalar pacote temporário de desenvolvimento:
-  - `docker compose -f .docker/compose.yaml exec backend pip install <pacote>`
+  - `docker compose -f .docker/compose.yaml exec backend uv pip install --system <pacote>`
 - Se a mudança for permanente, atualizar também o mecanismo de build do Python em `.docker/Dockerfile.python` (ou arquivo de dependências oficial do projeto, quando existir).
 
 ## 4: Sequência Operacional Correta
@@ -41,4 +41,3 @@ trigger: always_on
   - Dependência foi instalada no lugar errado; reinstalar via `exec app npm install ...`.
 - Alterou Dockerfile e nada mudou:
   - Faltou rebuild; usar `bash dev.sh --build`.
-
