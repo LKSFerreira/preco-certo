@@ -98,10 +98,27 @@ export default function App() {
    * durante fase de validação com usuários.
    */
   useEffect(() => {
-    // 🧹 DEBUG: Limpa localStorage para simular novo usuário a cada acesso
-    // TODO: Remover antes do deploy de produção!
-    localStorage.clear();
-    console.log('🧹 localStorage limpo - novo usuário simulado');
+    // DEBUG controlado: simula primeiro acesso no máximo 1x a cada 5 minutos
+    const CHAVE_DEBUG_ULTIMA_LIMPEZA = 'sem_susto_debug_ultima_limpeza_localstorage';
+    const INTERVALO_MINIMO_LIMPEZA_MS = 5 * 60 * 1000;
+
+    try {
+      const agora = Date.now();
+      const ultimaLimpezaTexto = localStorage.getItem(CHAVE_DEBUG_ULTIMA_LIMPEZA);
+      const ultimaLimpeza = ultimaLimpezaTexto ? Number(ultimaLimpezaTexto) : 0;
+      const tempoDesdeUltimaLimpeza = agora - ultimaLimpeza;
+
+      if (!ultimaLimpeza || Number.isNaN(ultimaLimpeza) || tempoDesdeUltimaLimpeza >= INTERVALO_MINIMO_LIMPEZA_MS) {
+        localStorage.clear();
+        localStorage.setItem(CHAVE_DEBUG_ULTIMA_LIMPEZA, String(agora));
+        console.log('🧹 localStorage limpo (debug com throttle de 5 minutos)');
+      } else {
+        const segundosRestantes = Math.ceil((INTERVALO_MINIMO_LIMPEZA_MS - tempoDesdeUltimaLimpeza) / 1000);
+        console.log(`⏱️ limpeza de debug ignorada; nova limpeza disponível em ~${segundosRestantes}s`);
+      }
+    } catch (erroLimpeza) {
+      console.warn('⚠️ Falha ao executar limpeza debug com throttle:', erroLimpeza);
+    }
 
     const carregarDados = async () => {
       try {

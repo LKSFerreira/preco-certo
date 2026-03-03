@@ -1,26 +1,26 @@
-﻿import { ServicoLeituraRotulo, DadosProdutoExtraidos } from "./tipos";
+import { ServicoLeituraRotulo, DadosProdutoExtraidos } from "./tipos";
 import { logger } from "../logger";
 import { formatarTitulo, normalizarTamanho } from "../utilitarios";
 import { RepositorioPremiumLocalStorage } from "../../repositorios/premium";
 
 /**
- * ServiÃ§o de IA via proxy serverless.
+ * Serviço de IA via proxy serverless.
  *
  * A chave Groq fica no servidor (api/ia/analisar.ts).
- * O frontend NUNCA tem acesso Ã  chave â€” apenas envia
+ * O frontend NUNCA tem acesso à chave — apenas envia
  * a imagem/texto para o proxy, que chama a Groq.
  */
 export class ServicoIAGroq implements ServicoLeituraRotulo {
   // Modelos ficam no servidor (api/ia/analisar.ts)
-  // O frontend nÃ£o precisa saber qual modelo Ã© usado
+  // O frontend não precisa saber qual modelo é usado
 
   constructor() {
-    logger.info("âš¡ Inicializando serviÃ§o IA (via proxy serverless)");
+    logger.info("⚡ Inicializando serviço IA (via proxy serverless)");
   }
 
   async extrairDados(imagemBase64: string): Promise<DadosProdutoExtraidos | null> {
     try {
-      logger.info("ðŸ“¤ Enviando imagem para proxy IA...");
+      logger.info("📤 Enviando imagem para proxy IA...");
 
       const premium = new RepositorioPremiumLocalStorage();
       const tokenHash = premium.obterTokenHash();
@@ -39,13 +39,13 @@ export class ServicoIAGroq implements ServicoLeituraRotulo {
 
       if (!resposta.ok) {
         const erro = await resposta.json().catch(() => ({}));
-        logger.error("âŒ Erro no proxy IA", erro);
+        logger.error("❌ Erro no proxy IA", erro);
         throw new Error(erro.erro || `Erro ${resposta.status}`);
       }
 
       const dados = await resposta.json() as DadosProdutoExtraidos;
 
-      // PadronizaÃ§Ã£o Title Case (seguranÃ§a extra, caso o servidor nÃ£o faÃ§a)
+      // Padronização Title Case (segurança extra, caso o servidor não faça)
       if (dados.descricao) dados.descricao = formatarTitulo(dados.descricao);
       if (dados.marca) dados.marca = formatarTitulo(dados.marca);
       if (dados.tamanho) dados.tamanho = normalizarTamanho(dados.tamanho);
@@ -53,14 +53,14 @@ export class ServicoIAGroq implements ServicoLeituraRotulo {
       return dados;
 
     } catch (error: any) {
-      logger.error("âŒ Erro Groq Vision", error);
+      logger.error("❌ Erro Groq Vision", error);
       throw error;
     }
   }
 
   async extrairDadosDeTexto(textoEntrada: string): Promise<DadosProdutoExtraidos | null> {
     try {
-      logger.info("ðŸ“ Padronizando dados via proxy IA...");
+      logger.info("📝 Padronizando dados via proxy IA...");
 
       const premium = new RepositorioPremiumLocalStorage();
       const tokenHash = premium.obterTokenHash();
@@ -85,7 +85,7 @@ export class ServicoIAGroq implements ServicoLeituraRotulo {
 
       const dados = await resposta.json() as DadosProdutoExtraidos;
 
-      // PadronizaÃ§Ã£o final via cÃ³digo (seguranÃ§a)
+      // Padronização final via código (segurança)
       if (dados.descricao) dados.descricao = formatarTitulo(dados.descricao);
       if (dados.marca) dados.marca = formatarTitulo(dados.marca);
       if (dados.tamanho) dados.tamanho = normalizarTamanho(dados.tamanho);

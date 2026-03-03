@@ -1,4 +1,4 @@
-﻿import { Produto } from '../types';
+import { Produto } from '../types';
 import { OpenFoodFactsAdapter, ProdutoOFFResponse } from './adapters/openfoodfacts.adapter';
 import { padronizarDadosProduto } from './ia';
 import { extrairTamanho, normalizarTamanho } from './utilitarios';
@@ -10,7 +10,7 @@ const URL_API_OFF = 'https://world.openfoodfacts.org/api/v2/product';
 export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
     try {
         if (import.meta.env.VITE_USAR_API_OPEN_FOOD_FACTS === 'false') {
-            console.warn('ðŸš« [OFF] Uso da API OpenFoodFacts DESATIVADO pelo desenvolvedor.');
+            console.warn('🚫 [OFF] Uso da API OpenFoodFacts DESATIVADO pelo desenvolvedor.');
             return null;
         }
 
@@ -20,7 +20,7 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
         const response = await fetch(`${URL_API_OFF}/${gtin}.json`, {
             method: 'GET',
             headers: {
-                'User-Agent': 'SemSusto/1.0', // User-Agent Ã© obrigatÃ³rio/recomendado pela OFF
+                'User-Agent': 'SemSusto/1.0', // User-Agent é obrigatório/recomendado pela OFF
             },
             signal: controller.signal
         });
@@ -39,16 +39,16 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
         const dados: ProdutoOFFResponse = await response.json();
 
         if (dados.status !== 1 || !dados.product) {
-            return null; // Produto nÃ£o encontrado ou status invÃ¡lido
+            return null; // Produto não encontrado ou status inválido
         }
 
-        // 1. Converte para DomÃ­nio (Formato Bruto/Original)
+        // 1. Converte para Domínio (Formato Bruto/Original)
         const produto = OpenFoodFactsAdapter.paraDominio(dados);
 
-        // 2. PadronizaÃ§Ã£o via IA (Melhoria de Qualidade de Dados)
+        // 2. Padronização via IA (Melhoria de Qualidade de Dados)
         if (produto.descricao && NOMES_INVALIDOS.has(produto.descricao.toLowerCase().trim())) {
-            console.warn(`[OFF] Nome invÃ¡lido detectado: "${produto.descricao}". Limpando campo.`);
-            produto.descricao = ''; // ForÃ§a o app a tratar como campo vazio
+            console.warn(`[OFF] Nome inválido detectado: "${produto.descricao}". Limpando campo.`);
+            produto.descricao = ''; // Força o app a tratar como campo vazio
         }
 
         if (produto.descricao) {
@@ -56,12 +56,12 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
             const contexto = `Produto: ${produto.descricao}. Marca: ${produto.marca || '?'}. Tamanho: ${produto.tamanho || '?'}`;
 
             try {
-                // Chama o serviÃ§o de IA para limpar/padronizar os textos
+                // Chama o serviço de IA para limpar/padronizar os textos
                 const dadosPadronizados = await padronizarDadosProduto(contexto);
 
                 if (dadosPadronizados) {
                     if (dadosPadronizados.descricao) produto.descricao = dadosPadronizados.descricao;
-                    // SÃ³ substitui a marca se a IA retornou algo Ãºtil e nÃ£o "GenÃ©rica"
+                    // Só substitui a marca se a IA retornou algo útil e não "Genérica"
                     if (dadosPadronizados.marca && !NOMES_INVALIDOS.has(dadosPadronizados.marca.toLowerCase().trim())) {
                         produto.marca = dadosPadronizados.marca;
                     }
@@ -76,11 +76,11 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
                     }
                 }
             } catch (err) {
-                console.warn('[OFF] Falha na padronizaÃ§Ã£o IA (usando dados originais):', err);
+                console.warn('[OFF] Falha na padronização IA (usando dados originais):', err);
             }
         }
 
-        // ValidaÃ§Ã£o Final (PÃ³s IA ou PÃ³s Adapter)
+        // Validação Final (Pós IA ou Pós Adapter)
         // Garante que se o adapter ou a IA retornaram lixo, limpamos.
         if (produto.marca && NOMES_INVALIDOS.has(produto.marca.toLowerCase().trim())) produto.marca = '';
         if (produto.tamanho && NOMES_INVALIDOS.has(produto.tamanho.toLowerCase().trim())) produto.tamanho = '';
@@ -89,9 +89,9 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
 
     } catch (erro: any) {
         if (erro.name === 'AbortError') {
-            console.warn('[OFF] â±ï¸ Timeout de 7s atingido. API OpenFoodFacts demorou muito para responder.');
+            console.warn('[OFF] ⏱️ Timeout de 7s atingido. API OpenFoodFacts demorou muito para responder.');
         } else {
-            console.error('[OFF] Erro na requisiÃ§Ã£o:', erro);
+            console.error('[OFF] Erro na requisição:', erro);
         }
         return null;
     }

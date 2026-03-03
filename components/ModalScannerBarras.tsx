@@ -25,7 +25,7 @@ const ModalScannerBarras: React.FC<PropsScanner> = ({
   const refInputManual = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Controle de Responsividade DinÃ¢mica
+  // Controle de Responsividade Dinâmica
   const [tamanhoTela, setTamanhoTela] = useState<'normal' | 'compacto' | 'muito-compacto'>('normal');
 
   // Monitora o tamanho real do container para ajustar a UI

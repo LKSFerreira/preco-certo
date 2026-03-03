@@ -5,37 +5,41 @@ import { comprimirImagemBase64 } from '../services/utilitarios';
 
 interface Props {
   imagem: string;
-  aoConfirmar: (areaRecorte: any) => void;
+  aoConfirmar: (imagemRecortadaBase64: string) => void;
   aoCancelar: () => void;
 }
 
 export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar }) => {
   const cropperRef = useRef<ReactCropperElement>(null);
   const [processando, setProcessando] = useState(false);
+  const [erroRecorte, setErroRecorte] = useState<string | null>(null);
 
   const finalizarRecorte = async () => {
     const cropper = cropperRef.current?.cropper;
-    if (cropper) {
-      setProcessando(true);
+    if (!cropper) return;
 
-      // Obtém o canvas recortado diretamente do CropperJS
-      // Limitamos a resolução para não pesar na compressão
+    setProcessando(true);
+    setErroRecorte(null);
+
+    try {
+      // Mantemos limite de resolucao para reduzir picos de memoria em celulares.
       const canvas = cropper.getCroppedCanvas({
         maxWidth: 1024,
         maxHeight: 1024,
         imageSmoothingQuality: 'high',
       });
 
-      if (canvas) {
-        // Converte para Base64 (qualidade alta inicial)
-        const base64Bruto = canvas.toDataURL('image/jpeg', 0.9);
-
-        // Comprime para reduzir tamanho antes de salvar no banco
-        // Usa qualidade 0.7 e largura máxima de 400px (ideal para thumbnails)
-        const base64Comprimido = await comprimirImagemBase64(base64Bruto, 0.7, 400);
-
-        aoConfirmar(base64Comprimido);
+      if (!canvas) {
+        throw new Error('Falha ao gerar canvas do recorte');
       }
+
+      const base64Bruto = canvas.toDataURL('image/jpeg', 0.9);
+      const base64Comprimido = await comprimirImagemBase64(base64Bruto, 0.7, 400);
+      aoConfirmar(base64Comprimido);
+    } catch (erroProcessamento) {
+      console.error('Erro ao processar recorte da imagem:', erroProcessamento);
+      setErroRecorte('Nao foi possivel processar a foto neste dispositivo. Tente novamente com outra imagem.');
+    } finally {
       setProcessando(false);
     }
   };
@@ -46,13 +50,13 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
         <Cropper
           src={imagem}
           style={{ height: '100%', width: '100%' }}
-          initialAspectRatio={0} // 0 = Livre (Free)
-          aspectRatio={NaN} // Permite mudar a proporção livremente
+          initialAspectRatio={0}
+          aspectRatio={NaN}
           guides={true}
-          viewMode={1} // Restringe o crop para dentro da imagem
-          dragMode="move" // Permite mover a imagem
+          viewMode={1}
+          dragMode="move"
           responsive={true}
-          autoCropArea={0.8} // Começa selecionando 80% da imagem
+          autoCropArea={0.8}
           checkOrientation={false}
           ref={cropperRef}
           background={false}
@@ -62,6 +66,12 @@ export const ModalRecorte: React.FC<Props> = ({ imagem, aoConfirmar, aoCancelar 
 
       <div className="bg-white p-4 pb-8 rounded-t-2xl shadow-2xl flex flex-col gap-3 animate-slide-up shrink-0 relative z-[70]">
         <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto" />
+
+        {erroRecorte && (
+          <div className="bg-red-50 text-red-700 border border-red-200 rounded-lg px-3 py-2 text-xs font-medium">
+            {erroRecorte}
+          </div>
+        )}
 
         <div className="flex gap-3 pt-1">
           <button

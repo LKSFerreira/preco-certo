@@ -1,5 +1,5 @@
-﻿/**
- * Formata um nÃºmero para moeda BRL
+/**
+ * Formata um número para moeda BRL
  */
 export const formatarMoeda = (valor: number): string => {
   return new Intl.NumberFormat('pt-BR', {
@@ -9,8 +9,8 @@ export const formatarMoeda = (valor: number): string => {
 };
 
 /**
- * Formata texto para Title Case (Primeira Letra MaiÃºscula), ignorando preposiÃ§Ãµes.
- * Ex: "LEITE EM PÃ“ INTEGRAL" -> "Leite em PÃ³ Integral"
+ * Formata texto para Title Case (Primeira Letra Maiúscula), ignorando preposições.
+ * Ex: "LEITE EM PÓ INTEGRAL" -> "Leite em Pó Integral"
  */
 export const formatarTitulo = (texto: string): string => {
   if (!texto) return '';
@@ -18,7 +18,7 @@ export const formatarTitulo = (texto: string): string => {
     'de', 'da', 'do', 'dos', 'das', 'com', 'e', 'em', 'para', 'por', 'sem',
     'a', 'o', 'as', 'os', 'um', 'uns', 'uma', 'umas',
     'no', 'na', 'nos', 'nas', 'pelo', 'pela', 'pelos', 'pelas',
-    'atÃ©', 'sob', 'sobre', 'ante', 'apÃ³s', 'desde', 'entre'
+    'até', 'sob', 'sobre', 'ante', 'após', 'desde', 'entre'
   ];
 
   return texto
@@ -69,7 +69,7 @@ export async function obterImagemRecortada(imagemSrc: string, pixelCrop: any): P
 /**
  * Simula a biblioteca 'browser-image-compression' usando Canvas nativo.
  * Isso permite reduzir o tamanho da imagem antes de salvar no LocalStorage
- * para nÃ£o estourar a cota de armazenamento do navegador.
+ * para não estourar a cota de armazenamento do navegador.
  */
 export const comprimirImagem = async (arquivo: File, qualidade: number = 0.7, larguraMax: number = 300): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -82,7 +82,7 @@ export const comprimirImagem = async (arquivo: File, qualidade: number = 0.7, la
         const elementoCanvas = document.createElement('canvas');
         const proporcao = larguraMax / img.width;
 
-        // Se a imagem for menor que o mÃ¡ximo, mantÃ©m o tamanho
+        // Se a imagem for menor que o máximo, mantém o tamanho
         const novaLargura = img.width > larguraMax ? larguraMax : img.width;
         const novaAltura = img.width > larguraMax ? img.height * proporcao : img.height;
 
@@ -118,7 +118,7 @@ export const comprimirImagem = async (arquivo: File, qualidade: number = 0.7, la
  *
  * :param base64: String base64 da imagem (com prefixo data:image/...)
  * :param qualidade: Qualidade JPEG de 0 a 1 (default: 0.7)
- * :param larguraMaxima: Largura mÃ¡xima em pixels (default: 400)
+ * :param larguraMaxima: Largura máxima em pixels (default: 400)
  * :returns: String base64 comprimida
  */
 export const comprimirImagemBase64 = async (
@@ -133,7 +133,7 @@ export const comprimirImagemBase64 = async (
     imagem.onload = () => {
       const canvas = document.createElement('canvas');
 
-      // Calcula nova dimensÃ£o mantendo proporÃ§Ã£o
+      // Calcula nova dimensão mantendo proporção
       const proporcao = larguraMaxima / imagem.width;
       const novaLargura = imagem.width > larguraMaxima ? larguraMaxima : imagem.width;
       const novaAltura = imagem.width > larguraMaxima ? imagem.height * proporcao : imagem.height;
@@ -148,10 +148,10 @@ export const comprimirImagemBase64 = async (
         // Retorna base64 comprimido em JPEG
         const resultado = canvas.toDataURL('image/jpeg', qualidade);
 
-        // Log para debug (Ãºtil durante desenvolvimento)
+        // Log para debug (útil durante desenvolvimento)
         const tamanhoOriginal = Math.round(base64.length / 1024);
         const tamanhoFinal = Math.round(resultado.length / 1024);
-        console.log(`ðŸ“· CompressÃ£o: ${tamanhoOriginal}KB â†’ ${tamanhoFinal}KB (${Math.round((1 - tamanhoFinal / tamanhoOriginal) * 100)}% reduÃ§Ã£o)`);
+        console.log(`📷 Compressão: ${tamanhoOriginal}KB → ${tamanhoFinal}KB (${Math.round((1 - tamanhoFinal / tamanhoOriginal) * 100)}% redução)`);
 
         resolve(resultado);
       } else {
@@ -163,12 +163,12 @@ export const comprimirImagemBase64 = async (
   });
 };
 
-// Mapa de normalizaÃ§Ã£o de unidades â€” FONTE ÃšNICA DE VERDADE
-// A REGEX_UNIDADE em constants.ts Ã© derivada automaticamente das chaves deste mapa.
-// Ao adicionar uma nova unidade aqui, a validaÃ§Ã£o do formulÃ¡rio a aceita automaticamente.
+// Mapa de normalização de unidades — FONTE ÚNICA DE VERDADE
+// A REGEX_UNIDADE em constants.ts é derivada automaticamente das chaves deste mapa.
+// Ao adicionar uma nova unidade aqui, a validação do formulário a aceita automaticamente.
 export const UNIT_MAP: Record<string, string> = {
   // --- VOLUME ---
-  // Litros (L maiÃºsculo por padrÃ£o SI)
+  // Litros (L maiúsculo por padrão SI)
   'l': 'L', 'lt': 'L', 'lts': 'L', 'litro': 'L', 'litros': 'L',
   'L': 'L', 'LT': 'L', 'LTS': 'L',
   // Mililitros
@@ -182,7 +182,7 @@ export const UNIT_MAP: Record<string, string> = {
   // Gramas
   'g': 'g', 'gr': 'g', 'grs': 'g', 'grama': 'g', 'gramas': 'g', 'g.': 'g',
   'G': 'g', 'GR': 'g',
-  // Miligramas (comum em farmÃ¡cia/suplementos)
+  // Miligramas (comum em farmácia/suplementos)
   'mg': 'mg', 'mgs': 'mg', 'miligrama': 'mg', 'miligramas': 'mg',
 
   // --- UNIDADES / CONTAGEM ---
@@ -190,13 +190,13 @@ export const UNIT_MAP: Record<string, string> = {
   'u': 'uni', 'un': 'uni', 'und': 'uni', 'uni': 'uni', 'unid': 'uni',
   'unidade': 'uni', 'unidades': 'uni', 'unis': 'uni',
   'U': 'uni', 'UN': 'uni',
-  // PeÃ§as â€” variaÃ§Ãµes pt-BR (pÃºblico-alvo principal)
-  'pÃ§': 'pÃ§', 'pÃ§a': 'pÃ§', 'pÃ§as': 'pÃ§', 'pÃ§s': 'pÃ§',
-  'pca': 'pÃ§', 'peca': 'pÃ§', 'peÃ§a': 'pÃ§', 'peÃ§as': 'pÃ§', 'pecas': 'pÃ§',
-  // PeÃ§as â€” variaÃ§Ãµes en (APIs externas como Cosmos retornam "PCS")
-  'pcs': 'pÃ§', 'pc': 'pÃ§', 'piece': 'pÃ§', 'pieces': 'pÃ§',
-  // DÃºzia
-  'dz': 'dz', 'duzia': 'dz', 'dÃºzia': 'dz',
+  // Peças — variações pt-BR (público-alvo principal)
+  'pç': 'pç', 'pça': 'pç', 'pças': 'pç', 'pçs': 'pç',
+  'pca': 'pç', 'peca': 'pç', 'peça': 'pç', 'peças': 'pç', 'pecas': 'pç',
+  // Peças — variações en (APIs externas como Cosmos retornam "PCS")
+  'pcs': 'pç', 'pc': 'pç', 'piece': 'pç', 'pieces': 'pç',
+  // Dúzia
+  'dz': 'dz', 'duzia': 'dz', 'dúzia': 'dz',
 
   // --- EMBALAGENS ---
   // Caixa
@@ -213,9 +213,9 @@ export const UNIT_MAP: Record<string, string> = {
   // --- COMPRIMENTO (Papelaria, Higiene) ---
   // Metros
   'm': 'm', 'mt': 'm', 'mts': 'm', 'metro': 'm', 'metros': 'm',
-  // CentÃ­metros
+  // Centímetros
   'cm': 'cm', 'cms': 'cm', 'centimetro': 'cm',
-  // MilÃ­metros
+  // Milímetros
   'mm': 'mm', 'mms': 'mm'
 };
 
@@ -249,7 +249,7 @@ export function normalizarUnidade(valorBruto: string, unidadeBruta: string): str
 }
 
 /**
- * Tenta extrair o tamanho/peso da string de descriÃ§Ã£o ou normalizar string bruta.
+ * Tenta extrair o tamanho/peso da string de descrição ou normalizar string bruta.
  * Ex: "... 1KG" -> "1kg"
  */
 export function extrairTamanho(texto: string): string | null {
@@ -263,8 +263,8 @@ export function extrairTamanho(texto: string): string | null {
 }
 
 /**
- * ConstrÃ³i a URL da imagem pÃºblica do OpenFoodFacts a partir do cÃ³digo de barras.
- * LÃ³gica de split para cÃ³digos > 8 dÃ­gitos.
+ * Constrói a URL da imagem pública do OpenFoodFacts a partir do código de barras.
+ * Lógica de split para códigos > 8 dígitos.
  */
 export function construirUrlImagemOFF(codigo: string): string | null {
   if (!codigo) return null;
@@ -281,11 +281,11 @@ export function construirUrlImagemOFF(codigo: string): string | null {
     }
   }
 
-  // Tenta estimar a revisÃ£o? NÃ£o temos como saber a revisÃ£o sem consultar a API.
+  // Tenta estimar a revisão? Não temos como saber a revisão sem consultar a API.
   // Porem, se tivermos o objeto de imagens da API, podemos passar rev.
-  // Sem rev, essa URL genÃ©rica pode falhar ou precisar de redirect.
+  // Sem rev, essa URL genérica pode falhar ou precisar de redirect.
   // Mas a API de imagens suporta: .../front_pt.jpg (sem rev, pega a ultima)?
-  // Testes indicam que sim, as vezes. Mas o padrÃ£o oficial pede rev.
-  // Vamos assumir que essa funÃ§Ã£o serve para quando NÃƒO TEMOS url, entÃ£o tentamos a sorte.
+  // Testes indicam que sim, as vezes. Mas o padrão oficial pede rev.
+  // Vamos assumir que essa função serve para quando NÃO TEMOS url, então tentamos a sorte.
   return `https://images.openfoodfacts.org/images/products/${path}/front_pt.400.jpg`;
 }
