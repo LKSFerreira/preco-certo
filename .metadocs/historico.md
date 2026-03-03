@@ -209,27 +209,26 @@ Se voc√™, Agente, est√° assumindo agora, siga estas regras sagradas:
 *   **Upgrade Est√©tico:** Aplica√ß√£o de Glassmorphism (`backdrop-blur`) e anima√ß√µes sequenciais de erro, elevando o componente ao n√≠vel de curadoria premium.
 *   **Status de Curadoria:** Atualiza√ß√£o do mapeamento oficial do projeto, removendo o scanner da lista de pend√™ncias e promovendo-o ao "Padr√£o Ouro".
 
-### 27/02: [Curadoria Responsiva (ProduÁ„o)](./walkthrough/curadoria_responsiva.md) ??
-*   **Escopo Preservado:** Ajustes restritos a responsividade (tamanho, espaÁamento, limites e rolagem), sem alterar core, estilo, brilho ou efeitos.
-*   **Layout Base Est·vel:** `App.tsx` migrado para `100dvh` com rolagem no `main`, mantendo o rodapÈ sempre acessÌvel em telas pequenas.
+### 27/02: [Curadoria Responsiva (Produ√ß√£o)](./walkthrough/curadoria_responsiva.md) üì±
+*   **Escopo Preservado:** Ajustes restritos a responsividade (tamanho, espa√ßamento, limites e rolagem), sem alterar core, estilo, brilho ou efeitos.
+*   **Layout Base Est√°vel:** `App.tsx` migrado para `100dvh` com rolagem no `main`, mantendo o rodap√© sempre acess√≠vel em telas pequenas.
 *   **Modais com Teclado Virtual:** `ModalScannerBarras`, `ModalContato` e `ModalPlano` receberam limites por viewport, ancoragem mobile e overflow interno para evitar corte de campos e CTAs.
-*   **Fluxo de Formul·rio Aprimorado:** `ModalFormularioProduto` ganhou progress„o de foco por Enter, visibilidade de aÁıes com teclado aberto e acessibilidade de teclado no "Auto Preencher".
-*   **Curadoria Aplicada:** `ModalTutorialUso` e `ModalTutorialFoto` tiveram remoÁ„o dos Ìcones superiores e suporte melhor de rolagem vertical em alturas reduzidas.
-*   **ValidaÁ„o TÈcnica:** Build de produÁ„o validado com sucesso no fluxo Docker oficial (`docker compose -f .docker/compose.yaml run --rm app npm run build`).
+*   **Fluxo de Formul√°rio Aprimorado:** `ModalFormularioProduto` ganhou progress√£o de foco por Enter, visibilidade de a√ß√µes com teclado aberto e acessibilidade de teclado no "Auto Preencher".
+*   **Curadoria Aplicada:** `ModalTutorialUso` e `ModalTutorialFoto` tiveram remo√ß√£o dos √≠cones superiores e suporte melhor de rolagem vertical em alturas reduzidas.
+*   **Valida√ß√£o T√©cnica:** Build de produ√ß√£o validado com sucesso no fluxo Docker oficial (`docker compose -f .docker/compose.yaml run --rm app npm run build`).
 
-### 27/02: [Refino de Formul·rio e Scanner](./walkthrough/refino_formulario_scanner.md) ??
-*   **Fluxo de Foco Corrigido:** `ModalFormularioProduto` passou a avanÁar por campos pendentes com base em validade real, evitando salto para preÁo quando `tamanho` vem parcial da API.
-*   **ValidaÁ„o Coerente de Tamanho:** Regras de `REGEX_UNIDADE` foram alinhadas entre foco, indicaÁ„o visual e liberaÁ„o de salvamento.
-*   **Feedback de Erro no Campo:** `Tamanho` inv·lido agora exibe destaque visual e mensagem contextual com exemplos (`1L`, `500g`, `250ml`).
-*   **Tutorial com Continuidade:** Fluxo do `AUTO PREENCHER` no primeiro uso foi ajustado para seguir direto para seleÁ„o/c‚mera apÛs concluir o tutorial.
-*   **Refino no Scanner:** `ModalScannerBarras` voltou ao centro por padr„o e ganhou vinheta para escurecer o entorno da ·rea de leitura.
-*   **ValidaÁ„o TÈcnica:** Build de produÁ„o validado com sucesso via Docker (`docker compose -f .docker/compose.yaml run --rm app npm run build`).
-
-### 28/02: [Contato, Contador e Handoff WhatsApp](./walkthrough/contato_whatsapp_handoff.md) ??
-*   **Feedback Compacto:** ModalContato trocou mensagens longas por contadores dinamicos (nome e mensagem) com progresso visual por cor (cinza, vermelho e verde).
+### 27/02: [Refino de Formul√°rio e Scanner](./walkthrough/refino_formulario_scanner.md) üß™
+*   **Fluxo de Foco Corrigido:** `ModalFormularioProduto` passou a avan√ßar por campos pendentes com base em validade real, evitando salto para pre√ßo quando `tamanho` vem parcial da API.
+*   **Valida√ß√£o Coerente de Tamanho:** Regras de `REGEX_UNIDADE` foram alinhadas entre foco, indica√ß√£o visual e libera√ß√£o de salvamento.
+*   **Feedback de Erro no Campo:** `Tamanho` inv√°lido agora exibe destaque visual e mensagem contextual com exemplos (`1L`, `500g`, `250ml`).
+*   **Tutorial com Continuidade:** Fluxo do `AUTO PREENCHER` no primeiro uso foi ajustado para seguir direto para sele√ß√£o/c√¢mera ap√≥s concluir o tutorial.
+*   **Refino no Scanner:** `ModalScannerBarras` voltou ao centro por padr√£o e ganhou vinheta para escurecer o entorno da √°rea de leitura.
+*   **Valida√ß√£o T√©cnica:** Build de produ√ß√£o validado com sucesso via Docker (`docker compose -f .docker/compose.yaml run --rm app npm run build`).
+### 28/02: [Contato, Contador e Handoff WhatsApp](./walkthrough/contato_whatsapp_handoff.md) üí¨
+*   **Feedback Compacto:** ModalContato trocou mensagens longas por contadores din√¢micos (nome e mensagem) com progresso visual por cor (cinza, vermelho e verde).
 *   **Responsividade com Teclado:** Contadores foram reposicionados para evitar empurrar o layout e reduzir risco de campos importantes ficarem cobertos no mobile.
 *   **Envio sem Flicker:** Fluxo de abertura do WhatsApp migrou de window.open(..., "_blank") para redirecionamento direto com fallback mobile, eliminando o flash visual antes do handoff.
-*   **Regra de Negocio Preservada:** Botao de envio continua bloqueado enquanto o formulario nao atinge os minimos (MIN_NOME=3, MIN_MENSAGEM=25).
+*   **Regra de Neg√≥cio Preservada:** Bot√£o de envio continua bloqueado enquanto o formul√°rio n√£o atinge os m√≠nimos (MIN_NOME=3, MIN_MENSAGEM=25).
 ### 28/02: [Mock de Pagamento, Resili√™ncia e Feedback Sonoro](./walkthrough/mock_pagamento_resiliencia.md)
 *   **Diagn√≥stico PROD vs DEV:** Mapeada a cadeia de erro causada pela aus√™ncia de `VITE_USAR_MOCK_PAGAMENTO` no painel da Vercel, que fazia o frontend de produ√ß√£o usar o provedor real (sem chave de API).
 *   **Falha Controlada no Mock:** `ProvedorMock` agora for√ßa falha proposital na 1¬™ gera√ß√£o de PIX para permitir testes completos do fluxo de erro.
@@ -242,8 +241,15 @@ Se voc√™, Agente, est√° assumindo agora, siga estas regras sagradas:
 *   **Controle de Frequ√™ncia:** L√≥gica de exibi√ß√£o 1x por m√™s via `localStorage` para evitar fadiga do usu√°rio mobile.
 *   **Standalone Detection:** Oculta√ß√£o autom√°tica do banner quando o app j√° est√° instalado.
 
-### 28/02: [NormalizaÁ„o FlexÌvel de Unidades](./walkthrough/normalizacao_unidades.md)
-*   **Camada ⁄nica de NormalizaÁ„o:** Criada a funÁ„o `normalizarTamanho` com reuso de `UNIT_MAP`, aplicada antes da validaÁ„o para aceitar entradas inconsistentes sem travar o fluxo.
-*   **CanÙnico SI + Comercial:** PadronizaÁ„o para `L`, `mL`, `g`, `kg`, `mg`, `uni`, `cx`, `pct`, `pÁ`, com separaÁ„o obrigatÛria `n˙mero + espaÁo + unidade`.
-*   **IntegraÁ„o Ponta a Ponta:** NormalizaÁ„o aplicada no formul·rio (`blur`/`submit`) e nos fluxos OFF/Cosmos/IA, removendo `toUpperCase` conflitante no campo `tamanho`.
-*   **Fonte de Verdade Preservada:** `REGEX_UNIDADE` continua derivada de `UNIT_MAP`, sem regra duplicada, com mensagem de erro atualizada para exemplos v·lidos.
+### 28/02: [Normaliza√ß√£o Flex√≠vel de Unidades](./walkthrough/normalizacao_unidades.md)
+*   **Camada √önica de Normaliza√ß√£o:** Criada a fun√ß√£o `normalizarTamanho` no arquivo `services/utilitarios.ts` que centraliza toda a l√≥gica de tratamento de strings de tamanho/unidade.
+*   **Suporte a Unidades Comuns:** A fun√ß√£o agora aceita e converte padr√µes comuns para um formato can√¥nico (ex: "l", "litro", "LTS" -> "L"; "g", "gr", "gramas" -> "g").
+*   **Tratamento de Espa√ßos e Case:** Remove espa√ßos extras e converte para o padr√£o de mercado (ex: "500ml" -> "500 mL").
+*   **Integra√ß√£o Ponta a Ponta:** Normaliza√ß√£o aplicada no formul√°rio (`blur`/`submit`) e nos fluxos OFF/Cosmos/IA, removendo `toUpperCase` conflitante no campo `tamanho`.
+*   **Fonte de Verdade Preservada:** `REGEX_UNIDADE` continua derivada de `UNIT_MAP`, sem regra duplicada, com mensagem de erro atualizada para exemplos v√°lidos.
+### 03/03: [Estabilidade de Mem√≥ria no Fluxo de Foto e Recorte](./walkthrough/memoria_foto_recorte.md) üì∑
+*   **Mitiga√ß√£o do Incidente em Produ√ß√£o:** Fluxo de foto migrado de `readAsDataURL` para `createObjectURL`, reduzindo picos de mem√≥ria no Android durante captura e recorte.
+*   **Higiene de Recursos Tempor√°rios:** Implementada limpeza expl√≠cita com `URL.revokeObjectURL` em confirma√ß√£o, cancelamento e desmontagem do formul√°rio.
+*   **Recorte Resiliente:** `ModalRecorte` recebeu `try/catch` com feedback de erro amig√°vel, evitando quebra silenciosa em dispositivos com baixa RAM.
+*   **Robustez P√≥s-Recorte:** Blindagem no retorno da IA para cen√°rios `null`, mantendo continuidade do fluxo de edi√ß√£o.
+*   **Debug Controlado:** `localStorage.clear()` mantido por necessidade de valida√ß√£o, agora com throttle de 5 minutos para evitar reset destrutivo em todo reload.

@@ -1,50 +1,50 @@
-# Walkthrough: Refino de Formul·rio e Scanner
+# Walkthrough: Refino de Formul√°rio e Scanner
 
 ## Contexto
-Esta rodada tratou dois pontos principais de UX em produÁ„o:
+Esta rodada tratou dois pontos principais de UX em produ√ß√£o:
 
-- comportamento de foco/validaÁ„o no `ModalFormularioProduto` com dados parciais vindos de API;
+- comportamento de foco/valida√ß√£o no `ModalFormularioProduto` com dados parciais vindos de API;
 - ajustes visuais e de posicionamento no `ModalScannerBarras`.
 
-As mudanÁas foram focadas em fluxo, responsividade e feedback visual, sem alteraÁ„o de core de negÛcio.
+As mudan√ßas foram focadas em fluxo, responsividade e feedback visual, sem altera√ß√£o de core de neg√≥cio.
 
 ## Escopo Aplicado
 
 ### 1) ModalFormularioProduto: foco orientado por validade real
 Arquivo: `components/ModalFormularioProduto.tsx`
 
-- Foi unificada a regra de "campo concluÌdo" para `tamanho` usando a validaÁ„o oficial (`REGEX_UNIDADE`).
-- NavegaÁ„o por teclado (`Enter`/`Next`) passou a considerar `tamanho` inv·lido como pendÍncia, evitando salto incorreto para preÁo.
-- Fluxo de avanÁo agora ignora apenas campos realmente v·lidos na sequÍncia.
+- Foi unificada a regra de "campo conclu√≠do" para `tamanho` usando a valida√ß√£o oficial (`REGEX_UNIDADE`).
+- Navega√ß√£o por teclado (`Enter`/`Next`) passou a considerar `tamanho` inv√°lido como pend√™ncia, evitando salto incorreto para pre√ßo.
+- Fluxo de avan√ßo agora ignora apenas campos realmente v√°lidos na sequ√™ncia.
 
-Resultado: quando API retorna `tamanho` parcial (ex.: `1`), o fluxo mantÈm foco em `Tamanho` atÈ correÁ„o para formato v·lido (ex.: `1L`, `500g`, `250ml`).
+Resultado: quando API retorna `tamanho` parcial (ex.: `1`), o fluxo mant√©m foco em `Tamanho` at√© corre√ß√£o para formato v√°lido (ex.: `1L`, `500g`, `250ml`).
 
-### 2) ModalFormularioProduto: feedback visual de tamanho inv·lido
+### 2) ModalFormularioProduto: feedback visual de tamanho inv√°lido
 Arquivo: `components/ModalFormularioProduto.tsx`
 
-- Campo `Tamanho` recebe borda de erro quando preenchido mas fora do padr„o.
+- Campo `Tamanho` recebe borda de erro quando preenchido mas fora do padr√£o.
 - Mensagem contextual foi adicionada abaixo do campo com exemplo de unidade aceita.
-- Bot„o de salvar continua bloqueado atÈ validaÁ„o completa, agora com indicaÁ„o clara do motivo.
+- Bot√£o de salvar continua bloqueado at√© valida√ß√£o completa, agora com indica√ß√£o clara do motivo.
 
-Resultado: elimina cen·rio de "parece preenchido, mas n„o salva" sem explicaÁ„o.
+Resultado: elimina cen√°rio de "parece preenchido, mas n√£o salva" sem explica√ß√£o.
 
-### 3) ModalFormularioProduto: continuidade de tutorial e foco mÛvel
+### 3) ModalFormularioProduto: continuidade de tutorial e foco m√≥vel
 Arquivo: `components/ModalFormularioProduto.tsx`
 
-- Ajustado fluxo de tutorial do `AUTO PREENCHER` para continuar diretamente para seleÁ„o/c‚mera apÛs concluir tutorial.
-- Melhorias de foco para teclado mobile (`enterKeyHint`) e rolagem para manter aÁ„o visÌvel.
+- Ajustado fluxo de tutorial do `AUTO PREENCHER` para continuar diretamente para sele√ß√£o/c√¢mera ap√≥s concluir tutorial.
+- Melhorias de foco para teclado mobile (`enterKeyHint`) e rolagem para manter a√ß√£o vis√≠vel.
 
-Resultado: fluxo mais direto no primeiro uso e menos fricÁ„o em dispositivos mÛveis.
+Resultado: fluxo mais direto no primeiro uso e menos fric√ß√£o em dispositivos m√≥veis.
 
-### 4) ModalScannerBarras: refinamento de apresentaÁ„o
+### 4) ModalScannerBarras: refinamento de apresenta√ß√£o
 Arquivo: `components/ModalScannerBarras.tsx`
 
-- Modal voltou a abrir centralizada por padr„o.
-- Foi aplicada vinheta para escurecer mais o entorno da ·rea de leitura.
+- Modal voltou a abrir centralizada por padr√£o.
+- Foi aplicada vinheta para escurecer mais o entorno da √°rea de leitura.
 
-Resultado: leitura com destaque visual melhor e abertura menos agressiva para o usu·rio.
+Resultado: leitura com destaque visual melhor e abertura menos agressiva para o usu√°rio.
 
-## ValidaÁ„o
+## Valida√ß√£o
 
 Build validado via Docker:
 
@@ -52,4 +52,4 @@ Build validado via Docker:
 docker compose -f .docker/compose.yaml run --rm app npm run build
 ```
 
-Status: sucesso (`vite build` concluÌdo sem erros).
+Status: sucesso (`vite build` conclu√≠do sem erros).

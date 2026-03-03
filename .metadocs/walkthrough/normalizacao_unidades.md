@@ -1,11 +1,10 @@
-# Walkthrough: Normalização de Unidades e Tamanho
+# Walkthrough: Normalização Flexível de Unidades e Tamanho
 
 ## Objetivo
-Implementar uma camada única de normalização de `tamanho` antes da validação, aceitando entradas inconsistentes de usuário/API e mantendo a regex central como fonte de verdade.
+Este documento descreve a implementação da lógica de normalização de unidades de medida (peso, volume, quantidade) no projeto Sem Susto.
 
 ## Escopo aplicado
-- Criação da função `normalizarTamanho` em `services/utilitarios.ts`.
-- Reuso de `UNIT_MAP` para canônicos de SI e comerciais.
+- A função `normalizarTamanho(entrada: string): string` foi criada para resolver inconsistências na entrada de dados do usuário e de APIs externas.
 - Normalização aplicada no formulário antes de validar e antes de salvar.
 - Normalização aplicada nos fluxos de OFF/Cosmos/IA.
 - Remoção de transformações conflitantes (`toUpperCase`) no fluxo de tamanho.
