@@ -25,9 +25,9 @@ services:
       - PG_ENV=development
 
   # ---------------------------------------------------------------------------
-  # PROCESSOR - Python Worker para scripts pesados (Data Engineering)
+  # backend - Python Worker para scripts pesados (Data Engineering)
   # ---------------------------------------------------------------------------
-  processor:
+  backend:
     build:
       context: ../
       dockerfile: .docker/Dockerfile.python
@@ -69,3 +69,4 @@ services:
 
 volumes:
   postgres-data:
+

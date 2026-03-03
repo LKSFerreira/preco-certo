@@ -1,7 +1,7 @@
 """
 Script CLI para gerar tokens trial manualmente.
 
-Uso dentro do container processor:
+Uso dentro do container backend:
 
     python scripts/gerar_token.py --plano trial --duracao 7
 
@@ -136,3 +136,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
