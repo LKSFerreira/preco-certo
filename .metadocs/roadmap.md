@@ -177,7 +177,7 @@
 
 ### Frontend (Premium - UI) ✅
 - [x] **0.8.5.13** Criar tela de planos de contribuição (Café R$4,90 / Lanche R$6,90 / Apoiador R$12,90)
-- [ ] **0.8.5.14** Criar modal pós-pagamento (exibir token, ativar, salvar via WhatsApp, enviar para alguém)
+- [ ] **0.8.5.14** Criar modal de pagamento aprovado (exibir token, ativar, salvar via WhatsApp, screenshot para salvar na galeria)
 - [x] **0.8.5.15** Criar rota `/ativar/:token` para ativação via deep link
 - [x] **0.8.5.16** Implementar funcionalidades gratuito vs premium (limites de IA e carrinho)
 - [x] **0.8.5.17** Criar modal de status do token (plano, dias restantes, expiração) com dados do localStorage
