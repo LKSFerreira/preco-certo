@@ -6,7 +6,7 @@ const ScannerCodigo = lazy(() => import('./components/ModalScannerBarras'));
 import ModalLoadingCarrinho from './components/ModalLoadingCarrinho';
 const ModalFormularioProduto = lazy(() => import('./components/ModalFormularioProduto'));
 import DebugConsole from './components/DebugConsole';
-const ModalDoacao = lazy(() => import('./components/ModalDoacao'));
+
 const ModalContato = lazy(() => import('./components/ModalContato'));
 const ModalConfirmacao = lazy(() => import('./components/ModalConfirmacao'));
 const ModalTutorialUso = lazy(() => import('./components/ModalTutorialUso'));
@@ -46,7 +46,7 @@ export default function App() {
   // Flag para diferenciar Novo Produto (soma +1) de Edição (atualiza dados)
   const [modoEdicao, setModoEdicao] = useState(false);
 
-  const [mostrarDoacao, setMostrarDoacao] = useState(false);
+
   const [mostrarContato, setMostrarContato] = useState(false);
   const [mostrarConfirmacaoEsvaziar, setMostrarConfirmacaoEsvaziar] = useState(false);
   const [mostrarConfirmacaoFinalizar, setMostrarConfirmacaoFinalizar] = useState(false);
@@ -93,8 +93,8 @@ export default function App() {
 
   /**
    * Carrega dados do repositório ao iniciar o app.
-   * 
-   * Limpa localStorage para garantir experiência de "primeiro acesso" 
+   *
+   * Limpa localStorage para garantir experiência de "primeiro acesso"
    * durante fase de validação com usuários.
    */
   useEffect(() => {
@@ -178,7 +178,7 @@ export default function App() {
   /**
    * Adiciona um produto ao carrinho (apenas referência).
    * O produto já deve estar no catálogo.
-   * 
+   *
    * IMPORTANTE: Calcula a quantidade final ANTES de atualizar.
    * Isso garante que estado React e localStorage fiquem sincronizados.
    */
@@ -251,7 +251,7 @@ export default function App() {
 
   /**
    * Callback quando um código de barras é lido.
-   * 
+   *
    * Ordem de Busca:
    * 1. Catálogo LocalStorage (Cache do usuário)
    * 2. TODO: Banco de Dados PostgreSQL
@@ -514,7 +514,7 @@ export default function App() {
             </div>
 
             <div className="flex items-center gap-2">
-              {/* 
+              {/*
               BOTÃO WHATSAPP - Linhas 429-435
               Classes para ajustar:
               - p-3        → padding (p-1, p-2, p-3, p-4, p-5...)
@@ -531,7 +531,7 @@ export default function App() {
                 </svg>
               </button>
 
-              {/* 
+              {/*
               BOTÃO DOAÇÃO - Linhas 437-444
               Classes para ajustar:
               - p-3        → padding (p-1, p-2, p-3, p-4, p-5...)
@@ -769,10 +769,7 @@ export default function App() {
             />
           )}
 
-          {/* Modal de Doação (Inativa no fluxo, mantida por segurança) */}
-          {mostrarDoacao && (
-            <ModalDoacao aoFechar={() => setMostrarDoacao(false)} />
-          )}
+
 
           {/* Modal de Contato WhatsApp */}
           {mostrarContato && (
