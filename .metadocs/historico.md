@@ -307,3 +307,14 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Padrão de Depreciação:** Criada pasta `components/_deprecated/` com header `@deprecated` documentando data, motivo e instruções de restauração.
 - **Limpeza de Código Morto:** Removidos import lazy, estado `mostrarDoacao` e bloco de renderização da `ModalDoacao` no `App.tsx`.
 - **Curadoria Atualizada:** `ModalPagamento` promovida para 🟢 Padrão Ouro (9 componentes). Nova seção ⚫ Deprecados criada no `status_curadoria.md`.
+
+### 04/03: [Confirmação de Pagamento e Geração Automática de Token](./walkthrough/confirmacao_token_pagamento.md) 🔐
+
+- **Endpoint de Confirmação:** Criado `POST /api/pagamentos/confirmar` que verifica pagamento no Mercado Pago server-side e gera token automaticamente, separando responsabilidade do endpoint admin `gerar.ts`.
+- **Idempotência:** Migration `008` adiciona coluna `pagamento_id` com índice único parcial à tabela `tokens`, impedindo geração duplicada para o mesmo pagamento.
+- **Integração ModalPagamentoAprovado:** Componente pré-existente (241 linhas, UI premium) agora conectado ao fluxo real via `App.tsx` — exibe token, permite ativação direta, compartilhamento WhatsApp e screenshot.
+- **Refatoração aoSucesso:** Callback de `ModalPagamento` passou de `() => void` para `(pagamento_id: string) => void`, permitindo rastreabilidade do pagamento aprovado.
+- **Fix ModalPagamentoAprovado:** Removidos números de linha corrompidos (`580:`–`621:`) embutidos no conteúdo real do arquivo, que impediam compilação.
+- **Correção de Preços:** `monetizacao.md` alinhada com `pix.ts` (fonte de verdade server-side): Café R$ 2,90, Lanche R$ 4,90, Apoiador R$ 9,90.
+- **Dependência:** `html-to-image@^1.11.13` adicionada ao `package.json` para funcionalidade de screenshot do cartão premium.
+- **Guia Conceitual:** Criado `integracao_pagamento_learning.md` com 10 seções sobre integração com gateways (transferível para qualquer linguagem/framework/gateway).

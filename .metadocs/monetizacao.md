@@ -20,11 +20,11 @@ O Sem Susto é um ambiente **seguro, saudável e confiável**. A monetização r
 
 ## 2. Planos de Contribuição
 
-| Plano | Valor | Duração | Custo/dia |
-|---|---|---|---|
-| ☕ Café | R$ 4,90 | 15 dias | R$ 0,33 |
-| 🥤 Lanche | R$ 6,90 | 30 dias | R$ 0,23 |
-| 🎁 Apoiador | R$ 12,90 | 60 dias | R$ 0,21 |
+| Plano       | Valor   | Duração | Custo/dia |
+| ----------- | ------- | ------- | --------- |
+| ☕ Café     | R$ 2,90 | 15 dias | R$ 0,19   |
+| 🥤 Lanche   | R$ 4,90 | 30 dias | R$ 0,16   |
+| 🎁 Apoiador | R$ 9,90 | 60 dias | R$ 0,17   |
 
 **Estratégia de precificação:** O plano "Lanche" oferece o melhor custo-benefício relativo (30 dias por apenas R$2 a mais que o Café), induzindo o usuário a escolhê-lo. Isso gera uma receita mensal previsível.
 
@@ -32,14 +32,14 @@ O Sem Susto é um ambiente **seguro, saudável e confiável**. A monetização r
 
 ## 3. Funcionalidades: Gratuito vs Premium
 
-| Funcionalidade | Gratuito | Premium |
-|---|---|---|
-| Scanner de código de barras | ✅ | ✅ |
-| IA para leitura de rótulos | ✅ (limite: 10/dia) | ✅ Ilimitado |
-| Carrinho | ✅ (máx 15 itens) | ✅ Ilimitado |
-| Histórico de compras | ❌ | ✅ |
-| Acompanhamento de preços | ❌ | ✅ |
-| Exportar lista (PDF) | ❌ | ✅ |
+| Funcionalidade              | Gratuito            | Premium      |
+| --------------------------- | ------------------- | ------------ |
+| Scanner de código de barras | ✅                  | ✅           |
+| IA para leitura de rótulos  | ✅ (limite: 10/dia) | ✅ Ilimitado |
+| Carrinho                    | ✅ (máx 15 itens)   | ✅ Ilimitado |
+| Histórico de compras        | ❌                  | ✅           |
+| Acompanhamento de preços    | ❌                  | ✅           |
+| Exportar lista (PDF)        | ❌                  | ✅           |
 
 ---
 
@@ -47,14 +47,14 @@ O Sem Susto é um ambiente **seguro, saudável e confiável**. A monetização r
 
 ### 4.1 Especificação do Token
 
-| Aspecto | Valor |
-|---|---|
-| **Formato** | `SEM-SUSTO-XXXXXXX` (7 caracteres) |
-| **Charset** | Alfanumérico, sem ambíguos (excluídos: `0`, `O`, `1`, `I`, `L`) |
-| **Base** | 30 caracteres (A-Z filtrado + 2-9) |
-| **Combinações** | ~21,8 bilhões |
+| Aspecto                  | Valor                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| **Formato**              | `SEM-SUSTO-XXXXXXX` (7 caracteres)                                                 |
+| **Charset**              | Alfanumérico, sem ambíguos (excluídos: `0`, `O`, `1`, `I`, `L`)                    |
+| **Base**                 | 30 caracteres (A-Z filtrado + 2-9)                                                 |
+| **Combinações**          | ~21,8 bilhões                                                                      |
 | **Caracteres especiais** | ❌ Proibidos (conflitam com URLs: `#` = fragment, `&` = separador, `%` = encoding) |
-| **Exemplo** | `SEM-SUSTO-A7X9K2B` |
+| **Exemplo**              | `SEM-SUSTO-A7X9K2B`                                                                |
 
 > **Segurança:** O token só é gerado após confirmação de pagamento. Não existe no banco até esse momento — impossível adivinhar algo que não existe.
 
@@ -70,16 +70,17 @@ O Sem Susto é um ambiente **seguro, saudável e confiável**. A monetização r
 
 ### 4.3 Limite de Dispositivos
 
-| Regra | Valor |
-|---|---|
-| **Máximo de dispositivos** | 2 por token |
-| **Cooldown entre ativações** | 24 horas entre dispositivos diferentes |
-| **Fingerprint** | Hash de: tela + user-agent + timezone + idioma |
-| **3º dispositivo** | ❌ Bloqueado com mensagem: `"Limite de dispositivos atingido."` |
+| Regra                        | Valor                                                           |
+| ---------------------------- | --------------------------------------------------------------- |
+| **Máximo de dispositivos**   | 2 por token                                                     |
+| **Cooldown entre ativações** | 24 horas entre dispositivos diferentes                          |
+| **Fingerprint**              | Hash de: tela + user-agent + timezone + idioma                  |
+| **3º dispositivo**           | ❌ Bloqueado com mensagem: `"Limite de dispositivos atingido."` |
 
 ### 4.4 Anti-Abuso e Métricas
 
 **A cada tentativa de ativação, coletar:**
+
 - Timestamp
 - Hash do IP (não o IP em si — LGPD)
 - Hash do User-Agent
@@ -87,6 +88,7 @@ O Sem Susto é um ambiente **seguro, saudável e confiável**. A monetização r
 - Resultado (sucesso/falha/motivo)
 
 **Regras de proteção:**
+
 - Máximo de **5 tentativas de ativação** por IP por hora
 - Se >10 tentativas em tokens inexistentes → bloqueio temporário do IP (1h)
 - Log de ativações para análise futura de padrões anômalos
@@ -123,11 +125,11 @@ O frontend consulta o status do pagamento a cada 5 segundos até confirmação. 
 
 ### 6.2 Gateway: Mercado Pago
 
-| Aspecto | Detalhe |
-|---|---|
-| **Custo** | ~0,33% por transação PIX |
-| **Webhook** | Disponível (futuro) |
-| **QR Code** | Gerado via API |
+| Aspecto     | Detalhe                  |
+| ----------- | ------------------------ |
+| **Custo**   | ~0,33% por transação PIX |
+| **Webhook** | Disponível (futuro)      |
+| **QR Code** | Gerado via API           |
 
 ### 6.3 Modal Pós-Pagamento
 
@@ -156,16 +158,17 @@ O frontend consulta o status do pagamento a cada 5 segundos até confirmação. 
 
 **Frases assertivas por contexto:**
 
-| Ação | Frase |
-|---|---|
-| Token gerado | `"Este código é seu acesso premium. Guarde-o."` |
-| Ativar agora | `"Premium ativado! Válido por X dias."` |
-| Salvar WhatsApp | `"Token enviado para seu WhatsApp."` |
-| Enviar para alguém | `"Quem receber poderá ativar o premium."` |
-| Token expirado | `"Token expirado. Contribua novamente para renovar."` |
-| Limite de dispositivos | `"Limite de 2 dispositivos atingido."` |
+| Ação                   | Frase                                                 |
+| ---------------------- | ----------------------------------------------------- |
+| Token gerado           | `"Este código é seu acesso premium. Guarde-o."`       |
+| Ativar agora           | `"Premium ativado! Válido por X dias."`               |
+| Salvar WhatsApp        | `"Token enviado para seu WhatsApp."`                  |
+| Enviar para alguém     | `"Quem receber poderá ativar o premium."`             |
+| Token expirado         | `"Token expirado. Contribua novamente para renovar."` |
+| Limite de dispositivos | `"Limite de 2 dispositivos atingido."`                |
 
 **WhatsApp deep link (custo zero):**
+
 ```
 https://wa.me/?text=🔑 Meu token Sem Susto: SEM-SUSTO-A7X9K2B — Ative em https://semsusto.app/ativar/SEM-SUSTO-A7X9K2B
 ```
@@ -174,15 +177,15 @@ https://wa.me/?text=🔑 Meu token Sem Susto: SEM-SUSTO-A7X9K2B — Ative em htt
 
 ## 7. Privacidade e LGPD
 
-| Dado | Armazenamos? | Observação |
-|---|---|---|
-| Nome | ❌ | Nunca |
-| E-mail | ❌ | Apenas futuro, se o usuário fornecer voluntariamente |
-| CPF | ❌ | Nunca |
-| Telefone | ❌ | Usado apenas para gerar deep link WhatsApp (não armazenado) |
-| Token | ✅ | Hash do token, não o token em si |
-| Dados de compra | ✅ | Vinculados ao token, não a uma pessoa |
-| IP | ❌ | Apenas hash para rate limiting (não o IP em si) |
+| Dado            | Armazenamos? | Observação                                                  |
+| --------------- | ------------ | ----------------------------------------------------------- |
+| Nome            | ❌           | Nunca                                                       |
+| E-mail          | ❌           | Apenas futuro, se o usuário fornecer voluntariamente        |
+| CPF             | ❌           | Nunca                                                       |
+| Telefone        | ❌           | Usado apenas para gerar deep link WhatsApp (não armazenado) |
+| Token           | ✅           | Hash do token, não o token em si                            |
+| Dados de compra | ✅           | Vinculados ao token, não a uma pessoa                       |
+| IP              | ❌           | Apenas hash para rate limiting (não o IP em si)             |
 
 **Resultado:** LGPD-compliant by design. Sem dados pessoais, sem preocupação.
 
@@ -190,10 +193,10 @@ https://wa.me/?text=🔑 Meu token Sem Susto: SEM-SUSTO-A7X9K2B — Ative em htt
 
 ## 8. Envio de Token por E-mail (Futuro)
 
-| Serviço | Free Tier | Status |
-|---|---|---|
-| **Resend** | 3.000 e-mails/mês (100/dia) | 📋 Documentado, não implementado |
-| ~~SendGrid~~ | ~~Descontinuado em maio/2025~~ | ❌ Descartado |
+| Serviço      | Free Tier                      | Status                           |
+| ------------ | ------------------------------ | -------------------------------- |
+| **Resend**   | 3.000 e-mails/mês (100/dia)    | 📋 Documentado, não implementado |
+| ~~SendGrid~~ | ~~Descontinuado em maio/2025~~ | ❌ Descartado                    |
 
 > Reservado como canal alternativo caso necessário. Não faz parte do MVP.
 
