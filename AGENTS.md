@@ -20,12 +20,12 @@ Este projeto usa a pasta `.agents/` como fonte oficial de instruções.
 6. `/.agents/workflows/<comando>.md` somente quando o comando for solicitado.
 
 ## Linguagem do projeto
-> LINGUAGEM_PROJETO: javascript
+> LINGUAGEM_PROJETO: <linguagem>
 
 Mapeamento:
-- Python -> `/.agents/rules/python.md`
 - Java -> `/.agents/rules/java.md`
 - JavaScript -> `/.agents/rules/javascript.md`
+- Python -> `/.agents/rules/python.md`
 
 ## Diretriz de versionamento
 - Commits, push e ações de versionamento só podem ser executados quando solicitados explicitamente pelo usuário.
