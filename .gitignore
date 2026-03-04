@@ -15,7 +15,8 @@ dist-ssr
 .env.homologacao
 
 # Editor directories and files
-!.vscode/extensions.json
+.vscode/*
+!.vscode/settings.json
 .idea
 .DS_Store
 *.suo
@@ -27,3 +28,4 @@ produtos_brasil_v1.csv
 openfoodfacts-products.jsonl.gz
 codex_learning*
 aplicar_*
+test*.md
