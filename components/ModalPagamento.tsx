@@ -91,26 +91,26 @@ const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) =>
       try {
         const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
         if (!AudioContext) return;
-        
+
         const ctx = new AudioContext();
-        
+
         const playNote = (freq: number, startTime: number, duration: number, type: OscillatorType = 'sine') => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = type;
           osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
-          
+
           gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
           gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + startTime + 0.05); // volume ameno
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
-          
+
           osc.connect(gain);
           gain.connect(ctx.destination);
-          
+
           osc.start(ctx.currentTime + startTime);
           osc.stop(ctx.currentTime + startTime + duration);
         };
-        
+
         // Acorde mágico em escalada (Mi Maior)
         playNote(659.25, 0.0, 0.3); // E5
         playNote(830.61, 0.1, 0.3); // G#5
@@ -210,7 +210,7 @@ interface PropsModalPagamento {
   qr_code: string;
   copia_e_cola: string;
   aoFechar: () => void;
-  aoSucesso: () => void;
+  aoSucesso: (pagamento_id: string) => void;
   aoTentarNovamente: () => Promise<void>;
 }
 
@@ -261,7 +261,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
         if (novo_status === 'aprovado') {
           clearInterval(interval_id);
           setStatus('aprovado');
-          setTimeout(aoSucesso, TEMPO_ANIMACAO);
+          setTimeout(() => aoSucesso(pagamento_id), TEMPO_ANIMACAO);
         } else if (novo_status === 'falha') {
           clearInterval(interval_id);
           setStatus('falha');

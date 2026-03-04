@@ -13,6 +13,7 @@ const ModalTutorialUso = lazy(() => import('./components/ModalTutorialUso'));
 const ModalAtivarToken = lazy(() => import('./components/ModalAtivarToken'));
 const ModalPlano = lazy(() => import('./components/ModalPlano'));
 const ModalPagamento = lazy(() => import('./components/ModalPagamento'));
+const ModalPagamentoAprovado = lazy(() => import('./components/ModalPagamentoAprovado'));
 import { useTutorialPrimeiroAcesso } from './hooks/useTutorialUso';
 import { fabricaPagamento } from './services/pagamento/fabrica';
 import { RespostaCriacaoPagamento, PlanoID } from './services/pagamento/tipos';
@@ -63,6 +64,12 @@ export default function App() {
   const [mostrarModalPagamento, setMostrarModalPagamento] = useState(false);
   const [dadosPagamento, setDadosPagamento] = useState<RespostaCriacaoPagamento | null>(null);
   const [planoSelecionado, setPlanoSelecionado] = useState<PlanoID | null>(null);
+
+  // Estados de Pagamento Aprovado (Token gerado)
+  const [mostrarModalAprovado, setMostrarModalAprovado] = useState(false);
+  const [tokenGerado, setTokenGerado] = useState<string | null>(null);
+  const [diasAtivadosGerado, setDiasAtivadosGerado] = useState(0);
+  const [nomePlanoGerado, setNomePlanoGerado] = useState('');
 
   // Controle de continuidade após tutorial
   const [acaoPendenteTutorial, setAcaoPendenteTutorial] = useState<(() => void) | null>(null);
@@ -754,17 +761,70 @@ export default function App() {
                 setMostrarModalPagamento(false);
                 setDadosPagamento(null);
               }}
-              aoSucesso={() => {
+              aoSucesso={async (pagamentoIdAprovado: string) => {
                 setMostrarModalPagamento(false);
                 setDadosPagamento(null);
-                // TODO: Notificar serviço de licença local
-                setTelaAtual('DASHBOARD');
+
+                try {
+                  const resposta = await fetch('/api/pagamentos/confirmar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      pagamento_id: pagamentoIdAprovado,
+                      plano_id: planoSelecionado,
+                    }),
+                  });
+
+                  if (!resposta.ok) {
+                    const erro = await resposta.json().catch(() => ({}));
+                    console.error('🚨 [Confirmar] Falha:', erro);
+                    setTelaAtual('DASHBOARD');
+                    return;
+                  }
+
+                  const dados = await resposta.json();
+
+                  if (dados.token_ja_existente) {
+                    // Token já gerado anteriormente — abre tela de ativação
+                    console.warn('♻️ Token já existente para este pagamento');
+                    setMostrarAtivarToken(true);
+                    return;
+                  }
+
+                  // Token novo gerado com sucesso — abre modal de aprovação
+                  setTokenGerado(dados.token);
+                  setDiasAtivadosGerado(dados.duracao_dias);
+                  setNomePlanoGerado(planoSelecionado || '');
+                  setMostrarModalAprovado(true);
+                } catch (erroRede) {
+                  console.error('🚨 [Confirmar] Erro de rede:', erroRede);
+                  setTelaAtual('DASHBOARD');
+                }
               }}
               aoTentarNovamente={async () => {
                 if (!planoSelecionado) return;
                 const servico = fabricaPagamento.obterProvedor();
                 const dados = await servico.gerarPix(planoSelecionado);
                 setDadosPagamento(dados);
+              }}
+            />
+          )}
+
+          {/* Modal de Pagamento Aprovado (Token Gerado) */}
+          {mostrarModalAprovado && tokenGerado && (
+            <ModalPagamentoAprovado
+              token={tokenGerado}
+              diasAtivados={diasAtivadosGerado}
+              plano={nomePlanoGerado}
+              aoAtivarCallback={() => {
+                setMostrarModalAprovado(false);
+                setTokenGerado(null);
+                setTelaAtual('DASHBOARD');
+              }}
+              aoFechar={() => {
+                setMostrarModalAprovado(false);
+                setTokenGerado(null);
+                setTelaAtual('DASHBOARD');
               }}
             />
           )}
