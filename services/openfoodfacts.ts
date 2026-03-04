@@ -89,7 +89,7 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
 
     } catch (erro: any) {
         if (erro.name === 'AbortError') {
-            console.warn('[OFF] ⏱️ Timeout de 7s atingido. API OpenFoodFacts demorou muito para responder.');
+            console.warn('[OFF] ⏱️ Timeout de 10s atingido. API OpenFoodFacts demorou muito para responder.');
         } else {
             console.error('[OFF] Erro na requisição:', erro);
         }
