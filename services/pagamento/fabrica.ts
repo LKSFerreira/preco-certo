@@ -1,19 +1,33 @@
 import { ProvedorMercadoPago } from './mercado-pago';
+import { ProvedorPagBank } from './pagbank';
 import { ProvedorMock } from './mock';
 import { ProvedorPagamento } from './tipos';
+
 
 class FabricaPagamento {
     private instancia: ProvedorPagamento | null = null;
 
     obterProvedor(): ProvedorPagamento {
-        if (!this.instancia) {
-            const usarMock = import.meta.env.VITE_USAR_MOCK_PAGAMENTO === 'true';
 
-            if (usarMock) {
-                console.warn('⚠️ [PAGAMENTO] Usando PROVEDOR MOCK (Simulação)');
-                this.instancia = new ProvedorMock();
-            } else {
-                this.instancia = new ProvedorMercadoPago();
+        if (!this.instancia) {
+
+            const gatewayPagamento = import.meta.env.VITE_GATEWAY_PAGAMENTO;
+
+            switch (gatewayPagamento) {
+                case 'mockado':
+                    console.warn('⚠️ [PAGAMENTO] Usando PROVEDOR MOCK (Simulação)');
+                    this.instancia = new ProvedorMock();
+                    break;
+
+                case 'mercado_pago':
+                    this.instancia = new ProvedorMercadoPago();
+                    break;
+
+                case 'pagbank':
+                    this.instancia = new ProvedorPagBank();
+                    break;
+                default:
+                    throw new Error('Nenhum provedor de pagamento instânciado');
             }
         }
         return this.instancia;

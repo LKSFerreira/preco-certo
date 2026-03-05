@@ -1,6 +1,7 @@
-import { ProvedorPagamento, RespostaCriacaoPagamento, StatusPagamento, PlanoID } from './tipos';
+import { ProvedorPagamento, RespostaCriacaoPagamento, StatusPagamento, PlanoID } from './tipos'
 
-export class ProvedorMercadoPago implements ProvedorPagamento {
+export class ProvedorPagBank implements ProvedorPagamento {
+    // O front end NUNCA conversa diretamente com o gateway de pagamento
     private base_url = '/api/pagamentos'; // Proxy Vercel para segurança
 
     async gerarPix(plano_id: PlanoID): Promise<RespostaCriacaoPagamento> {
@@ -10,9 +11,10 @@ export class ProvedorMercadoPago implements ProvedorPagamento {
             body: JSON.stringify({ plano_id }),
         });
 
-        if (!resposta.ok) throw new Error('Falha ao gerar pagamento PIX');
+        if (!resposta.ok) throw new Error("Falha ao gerar pagamento PIX");
 
         const dados = await resposta.json();
+
         return {
             pagamento_id: dados.id,
             qr_code_base64: dados.qr_code_base64,
@@ -29,18 +31,17 @@ export class ProvedorMercadoPago implements ProvedorPagamento {
         return this.mapearStatus(dados.status);
     }
 
-    private mapearStatus(status_mercado_pago: string): StatusPagamento {
+    private mapearStatus(status_pagbank: string): StatusPagamento {
         const mapa: Record<string, StatusPagamento> = {
-            'pending': 'pendente',
-            'approved': 'aprovado',
-            'authorized': 'aprovado',
-            'in_process': 'pendente',
-            'in_mediation': 'pendente',
-            'rejected': 'falha',
-            'refunded': 'falha',
-            'cancelled': 'falha',
-            'charged_back': 'falha'
+            'PAID': 'aprovado',
+            'AUTHORIZED': 'pendente',
+            'IN_ANALYSIS': 'pendente',
+            'WAITING': 'pendente',
+            'DECLINED': 'falha',
+            'CANCELED': 'falha'
         };
-        return mapa[status_mercado_pago] || 'pendente';
+        return mapa[status_pagbank] || 'pendente';
+
     }
+
 }

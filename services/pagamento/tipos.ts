@@ -2,8 +2,8 @@ export type StatusPagamento = 'pendente' | 'aprovado' | 'falha' | 'expirado';
 
 export interface RespostaCriacaoPagamento {
     pagamento_id: string;
-    codigo_qr: string;
-    codigo_copia_e_cola: string;
+    qr_code_base64: string;
+    qr_code_copia_e_cola: string;
     status: StatusPagamento;
 }
 
