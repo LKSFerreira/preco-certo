@@ -1,17 +1,19 @@
-import { GatewayPagamento, RespostaGatewayPagamento } from "./tipos";
+import { GatewayPagamento, RespostaGatewayPagamento, RespostaGatewayStatus } from "./tipos";
 
 
 export class GatewayMercadoPago implements GatewayPagamento {
-    private base_url = 'https://api.mercadopago.com/v1';
+    private base_url = 'https://api.mercadopago.com/v1/payments/';
+    // O sandbox do Mercado Pago é implementado via ACCESS_TOKEN
+    private access_token = process.env.MP_ACCESS_TOKEN;
 
     async criarPix(valor: number, descricao: string): Promise<RespostaGatewayPagamento> {
         try {
-            const resposta = await fetch(`${this.base_url}/payments`, {
+            const resposta = await fetch(`${this.base_url}`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+                    'Authorization': `Bearer ${this.access_token}`,
                     'Content-Type': 'application/json',
-                    'X-Idempotency-Key': `pix-${Date.now()}-sem-susto`
+                    'X-Idempotency-Key': `PIX_${Date.now()}_SEM-SUSTO`
                 },
                 body: JSON.stringify({
                     description: descricao,
@@ -26,6 +28,11 @@ export class GatewayMercadoPago implements GatewayPagamento {
 
             const dados = await resposta.json();
 
+            if (!resposta.ok) {
+                console.error('Erro Mercado Pago (Criar PIX) Detalhes:', JSON.stringify(dados, null, 2));
+                throw new Error(`Falha no Mercado Pago: ${resposta.status}`);
+            }
+
             return {
                 pagamento_id: dados.id,
                 status: dados.status,
@@ -35,7 +42,33 @@ export class GatewayMercadoPago implements GatewayPagamento {
 
         } catch (erro) {
             console.error('Erro Mercado Pago:', erro);
-            return { erro: 'Falha na comunicação com o gateway' };
+            throw new Error('Falha na comunicação com o gateway Mercado Pago');
+        }
+    }
+
+    async consultarStatus(pagamento_id: string): Promise<RespostaGatewayStatus> {
+        try {
+            const resposta = await fetch(`${this.base_url}${pagamento_id}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${this.access_token}`,
+                }
+            });
+
+            if (!resposta.ok) {
+                console.error('Erro Mercado Pago (Consultar Status)', resposta.status);
+                throw new Error(`Falha no Mercado Pago: ${resposta.status}`);
+            }
+
+            const dados = await resposta.json();
+
+            return {
+                pagamento_id: dados.id,
+                status: dados.status, // Retorna status original (pending, approved, etc)
+            };
+        } catch (erro) {
+            console.error('Erro ao consultar status:', erro);
+            throw new Error('Falha na comunicação com o gateway Mercado Pago');
         }
     }
 }

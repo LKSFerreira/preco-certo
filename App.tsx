@@ -15,7 +15,7 @@ const ModalPlano = lazy(() => import('./components/ModalPlano'));
 const ModalPagamento = lazy(() => import('./components/ModalPagamento'));
 const ModalPagamentoAprovado = lazy(() => import('./components/ModalPagamentoAprovado'));
 import { useTutorialPrimeiroAcesso } from './hooks/useTutorialUso';
-import { fabricaPagamento } from './services/pagamento/fabrica';
+import { apiGerarPix } from './services/api-pagamento';
 import { RespostaCriacaoPagamento, PlanoID } from './services/pagamento/tipos';
 import { useRepositorios } from './contextos/ContextoRepositorios';
 import BannerInstalarApp from './components/BannerInstalarApp';
@@ -742,8 +742,7 @@ export default function App() {
               aoFechar={() => setMostrarModalPlano(false)}
               aoSelecionarPlano={async (plano_id: PlanoID) => {
                 setPlanoSelecionado(plano_id);
-                const servico = fabricaPagamento.obterGateway();
-                const dados = await servico.gerarPix(plano_id);
+                const dados = await apiGerarPix(plano_id);
                 setDadosPagamento(dados);
                 setMostrarModalPlano(false);
                 setMostrarModalPagamento(true);

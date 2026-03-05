@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { fabricaGatewayPagamento } from '../_lib/gateways/fabrica';
 
 // Fonte da verdade para preços (Backend Only)
 const TABELA_PRECOS = {
@@ -16,36 +17,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!plano) return res.status(400).json({ erro: 'Plano inválido' });
 
     try {
-        // Integração real com Mercado Pago via fetch (Server-side)
-        // Nota: Usando fetch nativo da Vercel para evitar dependências extras no MVP
-        const resposta = await fetch('https://api.mercadopago.com/v1/payments', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}`,
-                'Content-Type': 'application/json',
-                'X-Idempotency-Key': `pix-${Date.now()}-${plano_id}`
-            },
-            body: JSON.stringify({
-                transaction_amount: plano.valor,
-                description: plano.descricao,
-                payment_method_id: 'pix',
-                payer: {
-                    email: 'anonimo@semsusto.app', // Mantendo o anonimato conforme monetizacao.md
-                }
-            })
-        });
+        const gateway = fabricaGatewayPagamento.obterGateway();
 
-        const dados = await resposta.json();
+        // O Gateway se vira pra saber se a API dele quer centavos (PagBank) ou real (Mercado Pago)
+        const resposta = await gateway.criarPix(plano.valor, plano.descricao);
 
-        // Retorna apenas o necessário para o frontend
-        return res.status(200).json({
-            id: dados.id,
-            status: dados.status,
-            qr_code: dados.point_of_interaction.transaction_data.qr_code,
-            qr_code_base64: `data:image/png;base64,${dados.point_of_interaction.transaction_data.qr_code_base64}`
-        });
+        // Retorna apenas os dados padronizados pela nossa interface RespostaGatewayPagamento
+        return res.status(200).json(resposta);
     } catch (erro) {
-        console.error('Erro Mercado Pago:', erro);
+        console.error('🔴 [ERRO] Erro na geração do PIX pelo Gateway:', erro);
         return res.status(500).json({ erro: 'Falha na comunicação com o gateway' });
     }
 }

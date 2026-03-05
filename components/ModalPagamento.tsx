@@ -1,19 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StatusPagamento } from '../services/pagamento/tipos';
-import { fabricaPagamento } from '../services/pagamento/fabrica';
+import { apiConsultarStatus } from '../services/api-pagamento';
 import BotaoConfirmaComShimmer from './buttons/BotaoConfirmaComShimmer';
-
-/**
- * ===================================================================
- * TEMPORÁRIO: Dados mockados de PIX para exibição na modal.
- * Substituir pela resposta real da API do Mercado Pago quando a
- * integração estiver concluída.
- * ===================================================================
- */
-import dadosMockPix from '../chave_pix/chave_pix.json';
-// Os campos utilizados do mock são:
-//   dadosMockPix.qrcode_base64      -> imagem base64 do QR Code
-//   dadosMockPix.copia_e_cola_pix   -> código PIX copia e cola
 
 // --- COMPONENTES DE EFEITO (Dopamina UX) ---
 
@@ -216,28 +204,12 @@ interface PropsModalPagamento {
 
 const ModalPagamento: React.FC<PropsModalPagamento> = ({
   pagamento_id,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  qr_code: _qr_code_api, // Propriedade original vinda da API (desabilitada temporariamente)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  copia_e_cola: _copia_e_cola_api, // Propriedade original vinda da API (desabilitada temporariamente)
+  qr_code,
+  copia_e_cola,
   aoFechar,
   aoSucesso,
   aoTentarNovamente,
 }) => {
-  /**
-   * ===================================================================
-   * TEMPORÁRIO: Usar dados mockados do chave_pix.json enquanto a
-   * integração com a API do Mercado Pago não estiver concluída.
-   *
-   * Quando a integração estiver pronta, remover estas duas linhas e
-   * reativar as props `qr_code` e `copia_e_cola` na desestruturação acima:
-   *   qr_code,        (ao invés de _qr_code_api)
-   *   copia_e_cola,   (ao invés de _copia_e_cola_api)
-   * ===================================================================
-   */
-  const qr_code = dadosMockPix.qrcode_base64;
-  const copia_e_cola = dadosMockPix.copia_e_cola_pix;
-
   const [status, setStatus] = useState<StatusPagamento>('pendente');
   const [copiado, setCopiado] = useState(false);
   const [recarregando, setRecarregando] = useState(false);
@@ -246,7 +218,6 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
     if (!pagamento_id || status === 'aprovado' || status === 'falha') return;
 
     const timeout_limite = Date.now() + 15 * 60 * 1000; // 15 minutos de expiração PIX
-    const servico = fabricaPagamento.obterGateway();
 
     const interval_id = setInterval(async () => {
       if (Date.now() > timeout_limite) {
@@ -256,7 +227,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
       }
 
       try {
-        const novo_status = await servico.consultarStatus(pagamento_id);
+        const novo_status = await apiConsultarStatus(pagamento_id);
 
         if (novo_status === 'aprovado') {
           clearInterval(interval_id);

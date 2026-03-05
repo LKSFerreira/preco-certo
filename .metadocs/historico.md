@@ -318,3 +318,8 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Correção de Preços:** `monetizacao.md` alinhada com `pix.ts` (fonte de verdade server-side): Café R$ 2,90, Lanche R$ 4,90, Apoiador R$ 9,90.
 - **Dependência:** `html-to-image@^1.11.13` adicionada ao `package.json` para funcionalidade de screenshot do cartão premium.
 - **Guia Conceitual:** Criado `integracao_pagamento_learning.md` com 10 seções sobre integração com gateways (transferível para qualquer linguagem/framework/gateway).
+
+### 05/03: [Emojis nos Console Logs](./walkthrough/emojis_console_logs.md) 💬
+
+- **Padronização Visual:** Implementação da padronização de tags e emojis (`🔴 [ERRO]`, `✅ [SUCESSO]`, `⚠️ [AVISO]`, `🔄 [INFO]`, `🧪 [MOCK]`) em todos os logs do fluxo de pagamento (gateway e factory).
+- **Visibilidade de Debug:** Atualizados `api/pagamentos/pix.ts`, `api/pagamentos/status.ts`, `api/_lib/gateways/fabrica.ts` e `api/_lib/gateways/mockado.ts` para facilitar a identificação de comportamentos durante o desenvolvimento.
