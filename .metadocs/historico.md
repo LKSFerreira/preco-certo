@@ -323,3 +323,9 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 
 - **Padronização Visual:** Implementação da padronização de tags e emojis (`🔴 [ERRO]`, `✅ [SUCESSO]`, `⚠️ [AVISO]`, `🔄 [INFO]`, `🧪 [MOCK]`) em todos os logs do fluxo de pagamento (gateway e factory).
 - **Visibilidade de Debug:** Atualizados `api/pagamentos/pix.ts`, `api/pagamentos/status.ts`, `api/_lib/gateways/fabrica.ts` e `api/_lib/gateways/mockado.ts` para facilitar a identificação de comportamentos durante o desenvolvimento.
+
+### 05/03: [Refatoração do Fluxo de Pagamento](./walkthrough/refatoracao_fluxo_pagamento.md) 💸
+
+- **Centralização:** Lógica de pagamento (Mercado Pago, PagBank, Mock) movida inteiramente do frontend para o backend (API routes).
+- **Abstração Frontend:** Serviços e factories do frontend (`fabrica.ts`, `mock.ts`, etc.) foram substituídos por um cliente unificado (`api-pagamento.ts`).
+- **Simplificação de Modais:** `ModalPagamento` e `Premium` atualizados para consumir a nova API backend para geração e consulta de status, reduzindo dependências pesadas no client-side.
