@@ -246,7 +246,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
     if (!pagamento_id || status === 'aprovado' || status === 'falha') return;
 
     const timeout_limite = Date.now() + 15 * 60 * 1000; // 15 minutos de expiração PIX
-    const servico = fabricaPagamento.obterProvedor();
+    const servico = fabricaPagamento.obterGateway();
 
     const interval_id = setInterval(async () => {
       if (Date.now() > timeout_limite) {

@@ -1,6 +1,6 @@
-import { ProvedorPagamento, RespostaCriacaoPagamento, StatusPagamento, PlanoID } from './tipos';
+import { GatewayPagamento, RespostaCriacaoPagamento, StatusPagamento, PlanoID } from './tipos';
 
-export class ProvedorMercadoPago implements ProvedorPagamento {
+export class GatewayMercadoPago implements GatewayPagamento {
     private base_url = '/api/pagamentos'; // Proxy Vercel para segurança
 
     async gerarPix(plano_id: PlanoID): Promise<RespostaCriacaoPagamento> {
@@ -37,8 +37,8 @@ export class ProvedorMercadoPago implements ProvedorPagamento {
             'in_process': 'pendente',
             'in_mediation': 'pendente',
             'rejected': 'falha',
-            'refunded': 'falha',
             'cancelled': 'falha',
+            'refunded': 'falha',
             'charged_back': 'falha'
         };
         return mapa[status_mercado_pago] || 'pendente';

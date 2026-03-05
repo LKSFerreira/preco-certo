@@ -1,13 +1,13 @@
-import { ProvedorMercadoPago } from './mercado-pago';
-import { ProvedorPagBank } from './pagbank';
-import { ProvedorMock } from './mock';
-import { ProvedorPagamento } from './tipos';
+import { GatewayMercadoPago } from './mercado-pago';
+import { GatewayPagBank } from './pagbank';
+import { GatewayMock } from './mock';
+import { GatewayPagamento } from './tipos';
 
 
 class FabricaPagamento {
-    private instancia: ProvedorPagamento | null = null;
+    private instancia: GatewayPagamento | null = null;
 
-    obterProvedor(): ProvedorPagamento {
+    obterGateway(): GatewayPagamento {
 
         if (!this.instancia) {
 
@@ -15,19 +15,19 @@ class FabricaPagamento {
 
             switch (gatewayPagamento) {
                 case 'mockado':
-                    console.warn('⚠️ [PAGAMENTO] Usando PROVEDOR MOCK (Simulação)');
-                    this.instancia = new ProvedorMock();
+                    console.warn('⚠️ [PAGAMENTO] Usando GATEWAY MOCK (Simulação)');
+                    this.instancia = new GatewayMock();
                     break;
 
                 case 'mercado_pago':
-                    this.instancia = new ProvedorMercadoPago();
+                    this.instancia = new GatewayMercadoPago();
                     break;
 
                 case 'pagbank':
-                    this.instancia = new ProvedorPagBank();
+                    this.instancia = new GatewayPagBank();
                     break;
                 default:
-                    throw new Error('Nenhum provedor de pagamento instânciado');
+                    throw new Error('Nenhum gateway de pagamento instanciado');
             }
         }
         return this.instancia;

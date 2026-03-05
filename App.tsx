@@ -742,7 +742,7 @@ export default function App() {
               aoFechar={() => setMostrarModalPlano(false)}
               aoSelecionarPlano={async (plano_id: PlanoID) => {
                 setPlanoSelecionado(plano_id);
-                const servico = fabricaPagamento.obterProvedor();
+                const servico = fabricaPagamento.obterGateway();
                 const dados = await servico.gerarPix(plano_id);
                 setDadosPagamento(dados);
                 setMostrarModalPlano(false);
@@ -803,7 +803,7 @@ export default function App() {
               }}
               aoTentarNovamente={async () => {
                 if (!planoSelecionado) return;
-                const servico = fabricaPagamento.obterProvedor();
+                const servico = fabricaPagamento.obterGateway();
                 const dados = await servico.gerarPix(planoSelecionado);
                 setDadosPagamento(dados);
               }}

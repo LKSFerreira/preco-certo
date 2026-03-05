@@ -1,6 +1,6 @@
-import { ProvedorPagamento, RespostaCriacaoPagamento, StatusPagamento, PlanoID } from './tipos'
+import { GatewayPagamento, RespostaCriacaoPagamento, StatusPagamento, PlanoID } from './tipos'
 
-export class ProvedorPagBank implements ProvedorPagamento {
+export class GatewayPagBank implements GatewayPagamento {
     // O front end NUNCA conversa diretamente com o gateway de pagamento
     private base_url = '/api/pagamentos'; // Proxy Vercel para segurança
 

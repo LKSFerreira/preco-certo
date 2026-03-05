@@ -1,10 +1,10 @@
-import { RespostaCriacaoPagamento, PlanoID, StatusPagamento, ProvedorPagamento } from './tipos';
+import { RespostaCriacaoPagamento, PlanoID, StatusPagamento, GatewayPagamento } from './tipos';
 
 /**
- * Provedor de Mock para desenvolvimento e testes de UI.
+ * Gateway Mock para desenvolvimento e testes de UI.
  * Simula o comportamento do Mercado Pago sem chamadas de rede.
  */
-export class ProvedorMock implements ProvedorPagamento {
+export class GatewayMock implements GatewayPagamento {
     // Simulador de "banco de dados" em memória para o mock
     private statusSimulado: Record<string, { status: StatusPagamento; tentativas: number; deveFalhar: boolean }> = {};
     private contagemGeracoes = 0; // Controle para que a 1ª vez falhe e a 2ª aprove
@@ -19,8 +19,8 @@ export class ProvedorMock implements ProvedorPagamento {
         this.contagemGeracoes++; // Incrementa a cada nova geração de PIX
 
         // Inicializa o pagamento como pendente
-        this.statusSimulado[pagamento_id] = { 
-            status: 'pendente', 
+        this.statusSimulado[pagamento_id] = {
+            status: 'pendente',
             tentativas: 0,
             deveFalhar: this.contagemGeracoes === 1 // A primeira geração vai forçar falha
         };

@@ -9,7 +9,7 @@ export interface RespostaCriacaoPagamento {
 
 export type PlanoID = 'plano_cafe' | 'plano_lanche' | 'plano_apoiador';
 
-export interface ProvedorPagamento {
+export interface GatewayPagamento {
     gerarPix(plano_id: PlanoID): Promise<RespostaCriacaoPagamento>;
     consultarStatus(pagamento_id: string): Promise<StatusPagamento>;
 }
