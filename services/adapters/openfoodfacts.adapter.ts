@@ -26,13 +26,13 @@ export class OpenFoodFactsAdapter {
         const p = dados.product || {};
 
         const nomeBruto = p.product_name_pt || p.product_name || '';
-        const descricao = nomeBruto ? formatarTitulo(nomeBruto) : 'Produto sem nome';
+        const descricao = nomeBruto ? formatarTitulo(nomeBruto) : '';
 
         const marcaBruta = p.brands || '';
-        const marca = marcaBruta ? formatarTitulo(marcaBruta) : 'Genérica';
+        const marca = marcaBruta ? formatarTitulo(marcaBruta) : '';
 
-        const tamanhoBruto = p.quantity ? extrairTamanho(p.quantity) || p.quantity : extrairTamanho(descricao) || 'Sem Tamanho';
-        const tamanho = normalizarTamanho(tamanhoBruto);
+        const tamanhoBruto = p.quantity ? extrairTamanho(p.quantity) || p.quantity : extrairTamanho(descricao) || '';
+        const tamanho = tamanhoBruto ? normalizarTamanho(tamanhoBruto) : '';
 
         // Preferência por imagem display em pt, ou geral, ou url direta
         let imagem = p.image_front_url || p.image_url;

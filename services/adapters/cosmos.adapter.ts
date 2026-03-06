@@ -10,9 +10,9 @@ export class CosmosAdapter {
     static paraDominio(cosmosData: ProdutoCosmosResponse): Produto {
         return {
             codigo_barras: String(cosmosData.gtin),
-            descricao: formatarTitulo(cosmosData.description),
-            marca: formatarTitulo(cosmosData.brand?.name || ''),
-            tamanho: extrairTamanho(cosmosData.description) || '',
+            descricao: cosmosData.description ? formatarTitulo(cosmosData.description) : '',
+            marca: cosmosData.brand?.name ? formatarTitulo(cosmosData.brand.name) : '',
+            tamanho: cosmosData.description ? (extrairTamanho(cosmosData.description) || '') : '',
             preco_estimado: cosmosData.avg_price || 0,
             imagem: cosmosData.thumbnail || undefined
         };
