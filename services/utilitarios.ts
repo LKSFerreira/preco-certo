@@ -241,7 +241,7 @@ export function normalizarTamanho(entrada: string): string {
 
   const valorNumerico = parseFloat(valor);
   const valorFinal = Number.isInteger(valorNumerico) ? valorNumerico.toString() : valor;
-  return `${valorFinal} ${unidadeCanonica}`;
+  return `${valorFinal}${unidadeCanonica}`;
 }
 
 export function normalizarUnidade(valorBruto: string, unidadeBruta: string): string {
