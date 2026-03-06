@@ -329,3 +329,9 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Centralização:** Lógica de pagamento (Mercado Pago, PagBank, Mock) movida inteiramente do frontend para o backend (API routes).
 - **Abstração Frontend:** Serviços e factories do frontend (`fabrica.ts`, `mock.ts`, etc.) foram substituídos por um cliente unificado (`api-pagamento.ts`).
 - **Simplificação de Modais:** `ModalPagamento` e `Premium` atualizados para consumir a nova API backend para geração e consulta de status, reduzindo dependências pesadas no client-side.
+
+### 05/03: [Remoção de Strings Genéricas e Correções de UI](./walkthrough/remocao_strings_genericas.md) 🧹
+
+- **Limpeza de Adapters:** Removidos os _fallbacks_ _hardcoded_ (`'Produto sem nome'`, `'Genérica'`) nos adapters de API (Cosmos e OpenFoodFacts), que causavam ambiguidades indesejadas na UI. Agora os dados nulos retornam de fato strings vazias.
+- **Correção da IA Analisadora:** Removida a mesma instrução contraditória do prompt Groq (Llama), que estimulava a preencher com resíduos dados desconhecidos.
+- **Adequação do React DOM:** Fornecido o manipulador de eventos `onChange` necessário para evitar o aviso de 'You provided a `value` prop to a form field' no Input numérico de Preços (`ModalFormularioProduto.tsx`).
