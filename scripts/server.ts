@@ -19,9 +19,14 @@ import produtosHandler from '../api/produtos/[codigo]';
 import pixHandler from '../api/pagamentos/pix';
 // @ts-ignore
 import pixStatusHandler from '../api/pagamentos/status';
+// @ts-ignore
+import confirmarPagamentoHandler from '../api/pagamentos/confirmar';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const contadorPollingStatus = new Map<string, number>();
+const ultimoLogPollingStatus = new Map<string, number>();
+const JANELA_LOG_POLLING_MS = 5000;
 
 // Middleware para parse do JSON
 app.use(express.json({ limit: '10mb' }));
@@ -62,7 +67,38 @@ app.use((req, res, next) => {
 
 // Middleware de Log
 app.use((req, res, next) => {
-    console.log(`[API Local] ${req.method} ${req.url} | Origin: ${req.headers.origin || 'N/A'}`);
+    const origin = req.headers.origin || 'N/A';
+
+    if (req.method === 'GET' && req.path === '/api/pagamentos/status') {
+        const idQuery = typeof req.query.id === 'string' ? req.query.id : '';
+        let pagamentoId = idQuery;
+
+        if (!pagamentoId) {
+            try {
+                const parsed = new URL(req.url, 'http://localhost');
+                pagamentoId = parsed.searchParams.get('id') || 'sem-id';
+            } catch {
+                pagamentoId = 'sem-id';
+            }
+        }
+
+        const chave = pagamentoId || 'sem-id';
+        const total = (contadorPollingStatus.get(chave) || 0) + 1;
+        contadorPollingStatus.set(chave, total);
+
+        const agora = Date.now();
+        const ultimo = ultimoLogPollingStatus.get(chave) || 0;
+        const deveLogar = total === 1 || agora - ultimo >= JANELA_LOG_POLLING_MS;
+
+        if (deveLogar) {
+            console.log(`[API Local] GET /api/pagamentos/status?id=${chave} | polling x${total} | Origin: ${origin}`);
+            ultimoLogPollingStatus.set(chave, agora);
+        }
+
+        return next();
+    }
+
+    console.log(`[API Local] ${req.method} ${req.url} | Origin: ${origin}`);
     next();
 });
 
@@ -107,6 +143,7 @@ app.all('/api/produtos/:codigo', (req, res) => {
 // Pagamentos
 app.post('/api/pagamentos/pix', adapter(pixHandler));
 app.get('/api/pagamentos/status', adapter(pixStatusHandler));
+app.post('/api/pagamentos/confirmar', adapter(confirmarPagamentoHandler));
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -176,6 +213,7 @@ app.listen(PORT, '0.0.0.0', () => {
         console.log('        - GET  /api/tokens/consultar');
         console.log('        - ALL  /api/produtos/:codigo');
         console.log('        - POST /api/pagamentos/pix');
-        console.log('        - GET  /api/pagamentos/status\n');
+        console.log('        - GET  /api/pagamentos/status');
+        console.log('        - POST /api/pagamentos/confirmar\n');
     }, 500);
 });

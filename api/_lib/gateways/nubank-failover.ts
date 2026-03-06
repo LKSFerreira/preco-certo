@@ -11,18 +11,10 @@ interface ChavePix {
     };
 }
 
-type RegistroStatus = {
-    status: 'pendente' | 'aprovado' | 'falha';
-    deveFalhar: boolean;
-};
-
-export class GatewayMockado implements GatewayPagamento {
-    private statusSimulado: Record<string, RegistroStatus> = {};
-    private proximaTentativaDeveFalhar = true;
-
+export class GatewayNubankFailover implements GatewayPagamento {
     async criarPix(valor: number, descricao: string): Promise<RespostaGatewayPagamento> {
         try {
-            console.info(`🔄 [INFO] Gerando pagamento PIX Mockado: {valor: ${valor}, descricao: ${descricao}}`);
+            console.info(`🔄 [INFO] Gerando PIX via failover manual Nubank: {valor: ${valor}, descricao: ${descricao}}`);
 
             let planoNomeArquivo = 'doacao';
             if (valor === 2.90) planoNomeArquivo = 'plano_cafe';
@@ -32,19 +24,10 @@ export class GatewayMockado implements GatewayPagamento {
             const dadosPixEstatico = chavesPixEstaticas.find((chavePix: ChavePix) => chavePix.plano === planoNomeArquivo);
 
             if (!dadosPixEstatico) {
-                throw new Error(`QR Code estatico para valor ${valor} nao encontrado no JSON mockado.`);
+                throw new Error(`QR Code estatico para valor ${valor} nao encontrado no JSON de failover.`);
             }
 
-            await new Promise(resolve => setTimeout(resolve, 800));
-
-            const idPagamento = `PIX-MOCKADO_${Date.now()}_SEM-SUSTO`;
-            this.statusSimulado[idPagamento] = {
-                status: 'pendente',
-                // Regra de negocio: falha -> aprova -> falha -> aprova.
-                deveFalhar: this.proximaTentativaDeveFalhar
-            };
-            this.proximaTentativaDeveFalhar = !this.proximaTentativaDeveFalhar;
-
+            const idPagamento = `PIX-NUBANK-FAILOVER_${Date.now()}_SEM-SUSTO`;
             const qrCodeBase64 = dadosPixEstatico.dados_doacao?.qr_code_base64 ?? dadosPixEstatico.qr_code_base64;
             const qrCodeCopiaECola = dadosPixEstatico.dados_doacao?.qr_code_copia_e_cola ?? dadosPixEstatico.qr_code_copia_e_cola;
 
@@ -53,28 +36,20 @@ export class GatewayMockado implements GatewayPagamento {
                 status: 'pendente',
                 qr_code_base64: qrCodeBase64 || '',
                 qr_code_copia_e_cola: qrCodeCopiaECola || '',
-                modo_confirmacao: 'automatico'
+                modo_confirmacao: 'manual'
             };
         } catch (erro) {
-            console.error('🔴 [ERRO] Erro ao carregar PIX Mockado:', erro);
-            throw new Error('Falha na comunicacao com o gateway Mockado');
+            console.error('🔴 [ERRO] Erro ao carregar PIX Nubank Failover:', erro);
+            throw new Error('Falha na comunicacao com o failover manual Nubank');
         }
     }
 
     async consultarStatus(idPagamento: string): Promise<RespostaGatewayStatus> {
-        const registro = this.statusSimulado[idPagamento];
-
-        if (!registro) {
-            return { pagamento_id: idPagamento, status: 'falha' };
-        }
-
-        if (registro.status === 'pendente') {
-            registro.status = registro.deveFalhar ? 'falha' : 'aprovado';
-        }
+        console.info(`🔄 [INFO] Status Pagamento (Nubank Failover) ${idPagamento} permanece pendente ate confirmacao manual.`);
 
         return {
             pagamento_id: idPagamento,
-            status: registro.status
+            status: 'pendente'
         };
     }
 }

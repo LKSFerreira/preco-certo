@@ -49,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     try {
         // --- Modo Mock: retorna token fake sem tocar no banco ---
-        const usarMock = process.env.VITE_USAR_MOCK_PAGAMENTO === 'true';
+        const usarMock = process.env.GATEWAY_PAGAMENTO_BACKEND === 'mockado';
 
         if (usarMock) {
             const duracaoDias = obterDuracaoPorPlano(planoBanco);
@@ -138,4 +138,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(500).json({ erro: 'Erro interno ao confirmar pagamento' });
     }
 }
-

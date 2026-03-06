@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { StatusPagamento } from '../services/pagamento/tipos';
+import { ModoConfirmacaoPagamento, PlanoID, StatusPagamento } from '../services/pagamento/tipos';
 import { apiConsultarStatus } from '../services/api-pagamento';
 import BotaoConfirmaComShimmer from './buttons/BotaoConfirmaComShimmer';
+
+const WHATSAPP_SUPORTE = import.meta.env.VITE_WHATSAPP_SUPORTE || '5517996510506';
+
+const formatarNomePlano = (planoId?: PlanoID | null) => {
+  if (planoId === 'plano_cafe') return 'Cafe';
+  if (planoId === 'plano_lanche') return 'Lanche';
+  if (planoId === 'plano_apoiador') return 'Apoiador';
+  return 'selecionado';
+};
 
 // --- COMPONENTES DE EFEITO (Dopamina UX) ---
 
@@ -15,7 +24,7 @@ const OndaDeChoque = () => (
   </div>
 );
 
-/** Explosão de partículas (confetes dinâmicos) no sucesso */
+/** Explosao de particulas (confetes dinamicos) no sucesso */
 const ExplosaoDeParticulas = () => {
   const cores = [
     'bg-rose-400', 'bg-amber-400', 'bg-emerald-400',
@@ -59,7 +68,7 @@ const ExplosaoDeParticulas = () => {
   );
 };
 
-/** Tipos visuais para o tema do Núcleo Quântico */
+/** Tipos visuais para o tema do Nucleo Quantico */
 type StatusVisualNucleo = 'IDLE' | 'CARREGANDO' | 'SUCESSO' | 'ERRO';
 
 interface TemaNucleo {
@@ -72,7 +81,7 @@ interface TemaNucleo {
   pulseClass: string;
 }
 
-/** Núcleo Quântico – esfera central animada que reflete o status do pagamento */
+/** Nucleo Quantico - esfera central animada que reflete o status do pagamento */
 const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) => {
   useEffect(() => {
     if (status === 'SUCESSO') {
@@ -89,7 +98,7 @@ const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) =>
           osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
 
           gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
-          gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + startTime + 0.05); // volume ameno
+          gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + startTime + 0.05);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
 
           osc.connect(gain);
@@ -99,13 +108,12 @@ const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) =>
           osc.stop(ctx.currentTime + startTime + duration);
         };
 
-        // Acorde mágico em escalada (Mi Maior)
-        playNote(659.25, 0.0, 0.3); // E5
-        playNote(830.61, 0.1, 0.3); // G#5
-        playNote(987.77, 0.2, 0.3); // B5
-        playNote(1318.51, 0.3, 0.8, 'triangle'); // E6
+        playNote(659.25, 0.0, 0.3);
+        playNote(830.61, 0.1, 0.3);
+        playNote(987.77, 0.2, 0.3);
+        playNote(1318.51, 0.3, 0.8, 'triangle');
       } catch (e) {
-        console.warn('Áudio de sucesso não suportado ou bloqueado no navegador', e);
+        console.warn('Audio de sucesso nao suportado ou bloqueado no navegador', e);
       }
     }
   }, [status]);
@@ -145,7 +153,7 @@ const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) =>
       scale: 'scale-90',
       speed: '4s',
       icon: 'CROSS',
-      pulseClass: 'animate-pulse-error', // Efeito contínuo de pulsar de alerta
+      pulseClass: 'animate-pulse-error',
     },
   };
 
@@ -156,21 +164,17 @@ const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) =>
       {status === 'SUCESSO' && <OndaDeChoque />}
       {status === 'SUCESSO' && <ExplosaoDeParticulas />}
 
-      {/* Anéis SVG Orbitais */}
       <div className={`absolute inset-0 transition-transform duration-1000 ease-in-out ${tema.scale}`}>
         <svg className="w-full h-full animate-spin-slow" viewBox="0 0 160 160" style={{ animationDuration: tema.speed }}>
           <circle cx="80" cy="80" r="75" fill="none" className={`transition-colors duration-700 ${tema.ringColor}`} strokeWidth="1" strokeDasharray="4 8" opacity="0.6" />
-          {/* Dois arcos opostos em equilíbrio simétrico (Circ. = 2*PI*60 ≈ 377 → 94 + 94.5 formam 2 arcos) */}
           <circle cx="80" cy="80" r="60" fill="none" className={`transition-colors duration-700 ${tema.ringColor}`} strokeWidth="2" strokeDasharray="94 94.5" strokeLinecap="round" />
         </svg>
       </div>
 
-      {/* Núcleo Central */}
       <div
         className={`relative flex items-center justify-center w-20 h-20 rounded-full ${tema.gradient} transition-all duration-700 ease-out z-10 ${tema.scale} ${tema.pulseClass}`}
         style={{ boxShadow: `0 0 30px ${tema.glow}, inset 0 0 15px rgba(255,255,255,0.4)` }}
       >
-        {/* Ícones com animação de desenho (Stroke) */}
         <div className="z-20 text-white">
           {tema.icon === 'CHECK' && (
             <svg className="w-10 h-10 drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
@@ -188,15 +192,14 @@ const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) =>
   );
 };
 
-// --- COMPONENTE MODAL PAGAMENTO ---
-
-/** Tempo (ms) para aguardar a animação de sucesso antes de chamar o callback aoSucesso */
 const TEMPO_ANIMACAO = 5000;
 
 interface PropsModalPagamento {
   pagamento_id: string;
   qr_code: string;
   copia_e_cola: string;
+  modo_confirmacao?: ModoConfirmacaoPagamento;
+  plano_id?: PlanoID | null;
   aoFechar: () => void;
   aoSucesso: (pagamento_id: string) => void;
   aoTentarNovamente: () => Promise<void>;
@@ -206,6 +209,8 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
   pagamento_id,
   qr_code,
   copia_e_cola,
+  modo_confirmacao = 'automatico',
+  plano_id,
   aoFechar,
   aoSucesso,
   aoTentarNovamente,
@@ -213,11 +218,13 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
   const [status, setStatus] = useState<StatusPagamento>('pendente');
   const [copiado, setCopiado] = useState(false);
   const [recarregando, setRecarregando] = useState(false);
+  const [nomeContato, setNomeContato] = useState('');
 
   useEffect(() => {
+    if (modo_confirmacao === 'manual') return;
     if (!pagamento_id || status === 'aprovado' || status === 'falha') return;
 
-    const timeout_limite = Date.now() + 15 * 60 * 1000; // 15 minutos de expiração PIX
+    const timeout_limite = Date.now() + 15 * 60 * 1000;
 
     const interval_id = setInterval(async () => {
       if (Date.now() > timeout_limite) {
@@ -243,10 +250,10 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
       } catch (erro_polling) {
         console.error('Erro ao consultar polling:', erro_polling);
       }
-    }, 2000); // Polling a cada 2 segundos
+    }, 2000);
 
     return () => clearInterval(interval_id);
-  }, [pagamento_id, aoSucesso]);
+  }, [pagamento_id, aoSucesso, modo_confirmacao, status]);
 
   const copiarPix = () => {
     navigator.clipboard.writeText(copia_e_cola);
@@ -255,12 +262,30 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
     setTimeout(() => setCopiado(false), 2000);
   };
 
+  const enviarComprovante = () => {
+    const nome = nomeContato.trim();
+    if (nome.length < 3) return;
+
+    const agora = new Date();
+    const data = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' }).format(agora);
+    const hora = new Intl.DateTimeFormat('pt-BR', { timeStyle: 'short' }).format(agora);
+    const nomePlano = formatarNomePlano(plano_id);
+    const mensagem = [
+      `Ola, meu nome e ${nome}.`,
+      '',
+      `Realizei o pagamento do plano ${nomePlano} na data de ${data} as ${hora}.`,
+      `ID de referencia: ${pagamento_id}.`,
+      '',
+      'Segue meu comprovante para liberacao manual do acesso premium.'
+    ].join('\n');
+
+    const urlWeb = `https://wa.me/${WHATSAPP_SUPORTE}?text=${encodeURIComponent(mensagem)}`;
+    window.open(urlWeb, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div className="absolute inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 animate-fade-in backdrop-blur-sm">
-      {/* Container modal com limite vertical de 85vh para nunca ocupar 100% da tela */}
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm max-h-[85vh] overflow-y-auto overflow-x-hidden animate-slide-up flex flex-col">
-
-        {/* Header */}
         <div className="p-5 text-center bg-gray-50 border-b border-gray-100 relative shrink-0">
           <button
             onClick={aoFechar}
@@ -277,34 +302,28 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
             </svg>
           </div>
           <h2 className="font-black text-gray-900 leading-tight">Pagamento PIX</h2>
-          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-widest mt-1">Aguardando confirmação</p>
+          <p className="text-[11px] text-gray-500 font-medium uppercase tracking-widest mt-1">
+            {modo_confirmacao === 'manual' ? 'Liberacao manual' : 'Aguardando confirmacao'}
+          </p>
         </div>
 
-        {/* Status Area */}
         <div className="p-6 flex flex-col items-center relative grow">
           {status === 'aprovado' ? (
             <div className="w-full flex flex-col items-center justify-center py-6 relative min-h-[260px]">
               <NucleoQuantico status="SUCESSO" />
-
-              <div
-                className="animate-text-reveal text-center relative z-10 w-full mt-6"
-                style={{ animationFillMode: 'both', animationDelay: '1s' }}
-              >
+              <div className="animate-text-reveal text-center relative z-10 w-full mt-6" style={{ animationFillMode: 'both', animationDelay: '1s' }}>
                 <h3 className="font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-verde-600 to-emerald-500 mb-1 leading-tight">
                   PAGAMENTO<br />APROVADO!
                 </h3>
-                <p className="text-[13px] font-bold text-gray-500 mt-2">
-                  Tudo certo, liberação concluída.
-                </p>
+                <p className="text-[13px] font-bold text-gray-500 mt-2">Tudo certo, liberacao concluida.</p>
               </div>
             </div>
           ) : status === 'expirado' || status === 'falha' ? (
             <div className="text-center py-8 animate-fade-in flex flex-col items-center">
               <NucleoQuantico status="ERRO" />
-
               <p className="text-red-500 font-bold mb-2 mt-6">PAGAMENTO EXPIRADO</p>
               <p className="text-xs text-gray-500 mb-4 px-4">
-                O tempo para pagamento via PIX esgotou. Gere um novo código para continuar.
+                O tempo para pagamento via PIX esgotou. Gere um novo codigo para continuar.
               </p>
               <div className="w-full max-w-[280px]">
                 <BotaoConfirmaComShimmer
@@ -333,57 +352,91 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
                 />
               </div>
             </div>
-          ) : (
+          ) : modo_confirmacao === 'manual' ? (
             <div className="w-full flex flex-col items-center animate-fade-in">
-              {/* Container do QR Code */}
               <div className="bg-gray-50 p-3 rounded-2xl border-2 border-dashed border-gray-200 mb-6 relative group w-48 h-48 flex items-center justify-center shrink-0">
-                <img
-                  src={qr_code}
-                  alt="QR Code PIX"
-                  className={`w-full h-full mix-blend-multiply transition-opacity duration-300 ${status === 'pendente' ? 'opacity-100' : 'opacity-20'}`}
-                />
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-active:opacity-100 transition-opacity">
-                  <div className="bg-black/80 text-white text-[10px] px-3 py-1 rounded-full font-black">QR CODE VÁLIDO</div>
-                </div>
+                <img src={qr_code} alt="QR Code PIX" className="w-full h-full mix-blend-multiply transition-opacity duration-300 opacity-100" />
               </div>
 
-              {/* Botão Copiar PIX – estilo premium com borda dourada e shimmer */}
               <div className={`w-full ${!copiado ? 'animate-breathe' : ''}`}>
-                <button
-                  onClick={copiarPix}
-                  className="relative w-full rounded-[1.2rem] transition-all active:scale-95"
-                >
-                  {/* Borda dourada (visível apenas quando NÃO copiado) */}
+                <button onClick={copiarPix} className="relative w-full rounded-[1.2rem] transition-all active:scale-95">
                   {!copiado && (
                     <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600 rounded-[1.2rem] opacity-100" />
                   )}
-
-                  <div
-                    className={`relative flex items-center justify-center gap-2 m-[2px] py-4 rounded-[calc(1.2rem-2px)] font-black text-sm uppercase tracking-widest overflow-hidden transition-all
-                      ${copiado
-                        ? 'bg-green-100 text-green-700 shadow-inner'
-                        : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg border border-amber-400'
-                      }`}
-                  >
-                    {/* Feixe de luz animado (shimmer) */}
+                  <div className={`relative flex items-center justify-center gap-2 m-[2px] py-4 rounded-[calc(1.2rem-2px)] font-black text-sm uppercase tracking-widest overflow-hidden transition-all ${
+                    copiado
+                      ? 'bg-green-100 text-green-700 shadow-inner'
+                      : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg border border-amber-400'
+                  }`}>
                     {!copiado && (
                       <div className="absolute inset-0 w-full h-full pointer-events-none">
                         <div className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg] animate-shimmer" />
                       </div>
                     )}
+                    <span className="relative z-10">{copiado ? 'CODIGO COPIADO!' : 'PIX COPIA E COLA'}</span>
+                  </div>
+                </button>
+              </div>
 
+              <div className="w-full rounded-2xl bg-emerald-50 border border-emerald-100 p-4 mt-4">
+                <p className="text-xs text-emerald-900 font-semibold">
+                  Depois do pagamento, envie o comprovante para liberar o plano {formatarNomePlano(plano_id)}.
+                </p>
+              </div>
+
+              <div className="w-full mt-4">
+                <label className="block text-[11px] uppercase font-black text-slate-400 tracking-widest mb-1.5 ml-1">
+                  Seu nome
+                </label>
+                <input
+                  type="text"
+                  value={nomeContato}
+                  onChange={(e) => setNomeContato(e.target.value)}
+                  placeholder="Como podemos te identificar?"
+                  className="w-full text-slate-700 rounded-2xl border-2 bg-slate-50 border-transparent focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-300 font-bold text-sm p-4"
+                />
+              </div>
+
+              <div className="w-full mt-4">
+                <BotaoConfirmaComShimmer
+                  aoClicar={async () => enviarComprovante()}
+                  texto="Enviar comprovante no WhatsApp"
+                  iconeSvg={
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347" />
+                    </svg>
+                  }
+                  compacto={true}
+                  disabled={nomeContato.trim().length < 3}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="w-full flex flex-col items-center animate-fade-in">
+              <div className="bg-gray-50 p-3 rounded-2xl border-2 border-dashed border-gray-200 mb-6 relative group w-48 h-48 flex items-center justify-center shrink-0">
+                <img src={qr_code} alt="QR Code PIX" className={`w-full h-full mix-blend-multiply transition-opacity duration-300 ${status === 'pendente' ? 'opacity-100' : 'opacity-20'}`} />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-active:opacity-100 transition-opacity">
+                  <div className="bg-black/80 text-white text-[10px] px-3 py-1 rounded-full font-black">QR CODE VALIDO</div>
+                </div>
+              </div>
+
+              <div className={`w-full ${!copiado ? 'animate-breathe' : ''}`}>
+                <button onClick={copiarPix} className="relative w-full rounded-[1.2rem] transition-all active:scale-95">
+                  {!copiado && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600 rounded-[1.2rem] opacity-100" />
+                  )}
+                  <div className={`relative flex items-center justify-center gap-2 m-[2px] py-4 rounded-[calc(1.2rem-2px)] font-black text-sm uppercase tracking-widest overflow-hidden transition-all ${
+                    copiado
+                      ? 'bg-green-100 text-green-700 shadow-inner'
+                      : 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg border border-amber-400'
+                  }`}>
+                    {!copiado && (
+                      <div className="absolute inset-0 w-full h-full pointer-events-none">
+                        <div className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg] animate-shimmer" />
+                      </div>
+                    )}
                     <span className="relative z-10 flex items-center gap-2">
-                      {copiado ? (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" /></svg>
-                          CÓDIGO COPIADO!
-                        </>
-                      ) : (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" /></svg>
-                          PIX COPIA E COLA
-                        </>
-                      )}
+                      {copiado ? 'CODIGO COPIADO!' : 'PIX COPIA E COLA'}
                     </span>
                   </div>
                 </button>
@@ -392,39 +445,27 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 bg-gray-50 text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center border-t border-gray-100 shrink-0">
-          Liberação instantânea pelo sistema
+          {modo_confirmacao === 'manual' ? 'Liberacao manual por comprovante' : 'Liberacao instantanea pelo sistema'}
         </div>
       </div>
 
-      {/* Keyframes – animações da modal e do NúcleoQuântico */}
       <style>{`
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slide-up { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes bounce-in { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes shimmer { 0% { transform: translateX(-150%); } 40%, 100% { transform: translateX(250%); } }
         @keyframes text-reveal { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-
-        /* Respiração contínua do botão principal */
-        @keyframes breathe {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.025); }
-        }
-
-        /* Animações do NúcleoQuântico */
+        @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
         @keyframes draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
         @keyframes shockwave-anim { 0% { transform: scale(1); opacity: 0.8; border-width: 8px; } 100% { transform: scale(3.5); opacity: 0; border-width: 0px; } }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
         @keyframes spin-linear { 100% { transform: rotate(360deg); } }
-
-        /* Pulsar contínuo para estado de erro */
         @keyframes pulse-error {
           0%, 100% { transform: scale(0.9); box-shadow: 0 0 20px rgba(225, 29, 72, 0.4), inset 0 0 15px rgba(255,255,255,0.4); }
           50% { transform: scale(0.95); box-shadow: 0 0 35px rgba(225, 29, 72, 0.8), inset 0 0 15px rgba(255,255,255,0.6); }
         }
 
-        /* Classes utilitárias de animação */
         .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
         .animate-slide-up { animation: slide-up 0.4s ease-out forwards; }
         .animate-bounce-in { animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -434,7 +475,6 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
 
         .animate-draw-check { stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 0.2s; }
         .animate-draw-cross { stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 0.4s ease-out forwards; animation-delay: 0.1s; }
-
         .animate-shake { animation: shake 0.4s ease-in-out; }
         .animate-spin-slow { animation: spin-linear infinite linear; }
         .animate-pulse-error { animation: pulse-error 2s infinite ease-in-out; }

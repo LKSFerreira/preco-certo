@@ -754,8 +754,10 @@ export default function App() {
           {mostrarModalPagamento && dadosPagamento && (
             <ModalPagamento
               pagamento_id={dadosPagamento.pagamento_id}
-              qr_code={dadosPagamento.codigo_qr}
-              copia_e_cola={dadosPagamento.codigo_copia_e_cola}
+              qr_code={dadosPagamento.qr_code_base64}
+              copia_e_cola={dadosPagamento.qr_code_copia_e_cola}
+              modo_confirmacao={dadosPagamento.modo_confirmacao}
+              plano_id={planoSelecionado}
               aoFechar={() => {
                 setMostrarModalPagamento(false);
                 setDadosPagamento(null);
@@ -802,8 +804,7 @@ export default function App() {
               }}
               aoTentarNovamente={async () => {
                 if (!planoSelecionado) return;
-                const servico = fabricaPagamento.obterGateway();
-                const dados = await servico.gerarPix(planoSelecionado);
+                const dados = await apiGerarPix(planoSelecionado);
                 setDadosPagamento(dados);
               }}
             />

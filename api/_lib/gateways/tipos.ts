@@ -4,6 +4,7 @@ export interface RespostaGatewayPagamento {
     status: string;
     qr_code_base64: string;
     qr_code_copia_e_cola: string;
+    modo_confirmacao?: 'automatico' | 'manual';
 }
 
 export interface RespostaGatewayStatus {
