@@ -106,18 +106,18 @@ REGRAS CRÍTICAS:
    - NÃO inclua o nome do produto na marca.
    - Se houver vírgula, pegue apenas a primeira parte que é a marca real.
    - Se não encontrar marca, retorne string vazia "".
-3. tamanho: Peso/Volume padronizado (ex: 2 L, 500 g, 350 mL, 1 kg, 3 uni, 2 cx, 5 pct, 7 pç).
+3. tamanho: Peso/Volume padronizado (ex: 2L, 500g, 350mL, 1kg, 3uni, 2cx, 5pct, 7pç).
 
 IMPORTANTE: Se não encontrar a informação, retorne string vazia "". NÃO invente, NÃO coloque "Não informado", "N/A" ou "Sem nome".
 
 EXEMPLOS:
 - "NESCAU 2.0 CEREAL MATINAL NESTLE 400G" → { "descricao": "Nescau 2.0 Cereal Matinal", "marca": "Nestlé", "tamanho": "400g" }
-- "COCA COLA LT 350ML" → { "descricao": "Coca Cola Lata", "marca": "Coca-Cola", "tamanho": "350ml" }
-- "CERVEJA SKOL LATA 350ML FARDO 12 UN" → { "descricao": "Cerveja Skol Lata", "marca": "Skol", "tamanho": "12 uni" }
-- "SABONETE DOVE ORIGINAL 90G LEVE 6 PAGUE 5" → { "descricao": "Sabonete Original", "marca": "Dove", "tamanho": "6 uni" }
-- "PAPEL HIGIENICO NEVE FOLHA DUPLA 30M 12 UNIDADES" → { "descricao": "Papel Higiênico Folha Dupla", "marca": "Neve", "tamanho": "12 uni" }
-- "CAIXA DE BOMBOM GAROTO 250G" → { "descricao": "Caixa de Bombom", "marca": "Garoto", "tamanho": "250 g" }
-- "ARROZ TIO JOAO TIPO 1 PACOTE 5KG" → { "descricao": "Arroz Tipo 1", "marca": "Tio João", "tamanho": "5 kg" }
+- "COCA COLA LT 350ML" → { "descricao": "Coca Cola Lata", "marca": "Coca-Cola", "tamanho": "350mL" }
+- "CERVEJA SKOL LATA 350ML FARDO 12 UN" → { "descricao": "Cerveja Skol Lata", "marca": "Skol", "tamanho": "12uni" }
+- "SABONETE DOVE ORIGINAL 90G LEVE 6 PAGUE 5" → { "descricao": "Sabonete Original", "marca": "Dove", "tamanho": "6uni" }
+- "PAPEL HIGIENICO NEVE FOLHA DUPLA 30M 12 UNIDADES" → { "descricao": "Papel Higiênico Folha Dupla", "marca": "Neve", "tamanho": "12uni" }
+- "CAIXA DE BOMBOM GAROTO 250G" → { "descricao": "Caixa de Bombom", "marca": "Garoto", "tamanho": "250g" }
+- "ARROZ TIO JOAO TIPO 1 PACOTE 5KG" → { "descricao": "Arroz Tipo 1", "marca": "Tio João", "tamanho": "5kg" }
 
 SEM PREAMBULO. APENAS JSON:
 { "descricao": "...", "marca": "...", "tamanho": "..." }`,

@@ -444,7 +444,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     if (!marca.trim()) { setErro('A marca é obrigatória.'); setCampoComErro('marca'); refMarca.current?.focus(); return; }
     if (!tamanhoFinal) { setErro('O tamanho é obrigatório.'); setCampoComErro('tamanho'); refTamanho.current?.focus(); return; }
     if (!REGEX_UNIDADE.test(tamanhoFinal)) {
-      setErro('Tamanho inválido. Exemplos válidos: 1 L, 500 g, 250 mL, 10 uni, 1 cx.');
+      setErro('Tamanho inválido. Exemplos válidos: 1L, 500g, 250mL, 10uni, 1cx.');
       setCampoComErro('tamanho');
       refTamanho.current?.focus();
       return;
@@ -676,7 +676,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                 />
                 {tamanhoInvalidoVisivel && (
                   <p className={`mt-1 font-medium text-red-600 ${isMuitoCompacto ? 'text-[10px]' : 'text-xs'}`}>
-                    Tamanho inválido. Exemplos válidos: 1 L, 500 g, 250 mL, 10 uni, 1 cx.
+                    Tamanho inválido. Exemplos válidos: 1L, 500g, 250mL, 10uni, 1cx.
                   </p>
                 )}
               </div>
