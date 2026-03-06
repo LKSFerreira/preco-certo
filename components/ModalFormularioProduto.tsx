@@ -689,6 +689,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
                 inputMode="decimal"
                 enterKeyHint="done"
                 value={precoInput}
+                onChange={lidarMudancaPreco}
                 onFocus={(e) => {
                   focarCampoVisivel(e.currentTarget);
                   rolarParaSalvar();
