@@ -42,8 +42,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(403).json({ erro: 'Token Premium inválido ou expirado.' });
         }
     }
-    // Obs: Usuários Free (tokenHash undefined) passam direto pois o bloqueio de cota de 10 chamadas 
-    // está atualmente implementado de forma Statefull no cliente/localstorage. 
+    // Obs: Usuários Free (tokenHash undefined) passam direto pois o bloqueio de cota de 10 chamadas
+    // está atualmente implementado de forma Statefull no cliente/localstorage.
     // Em produção estrita, o ideal é o Tracking por IP aqui mesmo no Backend.
 
     // Modelos Groq (Free Tier)
@@ -94,25 +94,30 @@ IMPORTANTE: Se não encontrar a informação, retorne string vazia "". NÃO inve
                 {
                     role: 'user',
                     content: `Analise o seguinte texto de produto: "${conteudo}".
-      
+
 Tarefa: Padronizar e extrair Nome Completo, Marca e Tamanho.
 
 REGRAS CRÍTICAS:
-1. descricao: Nome COMPLETO do produto (ex: "Nescau 2.0", não apenas "2.0"). 
+1. descricao: Nome COMPLETO do produto (ex: "Nescau 2.0", não apenas "2.0").
    - Sempre inclua o nome comercial completo.
    - Remova códigos estranhos e caracteres especiais.
    - Use Title Case.
 2. marca: APENAS a marca do fabricante (ex: "Nestlé", "Coca-Cola").
    - NÃO inclua o nome do produto na marca.
    - Se houver vírgula, pegue apenas a primeira parte que é a marca real.
-   - Se não encontrar marca, use "Genérica".
-3. tamanho: Peso/Volume padronizado (ex: 2L, 500g, 350ml).
+   - Se não encontrar marca, retorne string vazia "".
+3. tamanho: Peso/Volume padronizado (ex: 2 L, 500 g, 350 mL, 1 kg, 3 uni, 2 cx, 5 pct, 7 pç).
 
 IMPORTANTE: Se não encontrar a informação, retorne string vazia "". NÃO invente, NÃO coloque "Não informado", "N/A" ou "Sem nome".
 
 EXEMPLOS:
 - "NESCAU 2.0 CEREAL MATINAL NESTLE 400G" → { "descricao": "Nescau 2.0 Cereal Matinal", "marca": "Nestlé", "tamanho": "400g" }
 - "COCA COLA LT 350ML" → { "descricao": "Coca Cola Lata", "marca": "Coca-Cola", "tamanho": "350ml" }
+- "CERVEJA SKOL LATA 350ML FARDO 12 UN" → { "descricao": "Cerveja Skol Lata", "marca": "Skol", "tamanho": "12 uni" }
+- "SABONETE DOVE ORIGINAL 90G LEVE 6 PAGUE 5" → { "descricao": "Sabonete Original", "marca": "Dove", "tamanho": "6 uni" }
+- "PAPEL HIGIENICO NEVE FOLHA DUPLA 30M 12 UNIDADES" → { "descricao": "Papel Higiênico Folha Dupla", "marca": "Neve", "tamanho": "12 uni" }
+- "CAIXA DE BOMBOM GAROTO 250G" → { "descricao": "Caixa de Bombom", "marca": "Garoto", "tamanho": "250 g" }
+- "ARROZ TIO JOAO TIPO 1 PACOTE 5KG" → { "descricao": "Arroz Tipo 1", "marca": "Tio João", "tamanho": "5 kg" }
 
 SEM PREAMBULO. APENAS JSON:
 { "descricao": "...", "marca": "...", "tamanho": "..." }`,
