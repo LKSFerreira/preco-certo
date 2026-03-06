@@ -1,8 +1,8 @@
 export interface Produto {
   codigo_barras: string;
   descricao: string;
-  marca: string;
-  tamanho: string;
+  marca: string | null;
+  tamanho: string | null;
   preco_estimado?: number;
   /**
    * Pode ser uma URL remota (http...) ou Base64 local (data:image...)
@@ -14,7 +14,7 @@ export interface Produto {
 /**
  * Item do carrinho armazena apenas referência ao produto.
  * Os dados completos do produto ficam no catálogo (sem duplicação).
- * 
+ *
  * Para exibir na UI, faz join com o catálogo usando `codigo_barras`.
  */
 export interface ItemCarrinho {

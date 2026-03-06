@@ -7,19 +7,19 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 CREATE TABLE IF NOT EXISTS produtos (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    
+
     -- Identificação
     codigo_barras VARCHAR(50) NOT NULL UNIQUE, -- GTIN/EAN como chave única de negócio
-    
+
     -- Dados Descritivos
     descricao TEXT NOT NULL,
-    marca VARCHAR(50) NOT NULL,
-    tamanho VARCHAR(50) NOT NULL, -- Padronizado (ex: '2L', '500g')
-    
+    marca VARCHAR(50),
+    tamanho VARCHAR(50), -- Padronizado (ex: '2L', '500g')
+
     -- Multimídia e Preço
     imagem TEXT, -- URL ou Base64 (híbrido)
     preco_estimado NUMERIC(10,2) DEFAULT 0,
-    
+
     -- Metadados
     criado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -31,8 +31,8 @@ CREATE INDEX IF NOT EXISTS idx_produtos_codigo_barras ON produtos(codigo_barras)
 
 -- 2. Busca textual por nome (para o campo de pesquisa)
 -- Utiliza índice GIN para Full Text Search performático em PT-BR
-CREATE INDEX IF NOT EXISTS idx_produtos_descricao_fts 
-ON produtos 
+CREATE INDEX IF NOT EXISTS idx_produtos_descricao_fts
+ON produtos
 USING GIN (to_tsvector('portuguese', descricao));
 
 -- Comentários para documentação (opcional, mas boa prática)
