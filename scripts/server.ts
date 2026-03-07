@@ -21,6 +21,10 @@ import pixHandler from '../api/pagamentos/pix';
 import pixStatusHandler from '../api/pagamentos/status';
 // @ts-ignore
 import confirmarPagamentoHandler from '../api/pagamentos/confirmar';
+// @ts-ignore
+import solicitarAprovacaoManualHandler from '../api/pagamentos/manual/solicitar';
+// @ts-ignore
+import aprovarPagamentoManualHandler from '../api/pagamentos/manual/aprovar';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -122,7 +126,7 @@ app.post('/api/ia/analisar', adapter(analisarHandler));
 
 // Cosmos (Dynamic Route: /api/cosmos/gtin/:codigo)
 app.get('/api/cosmos/gtin/:codigo', (req, res) => {
-    // Injeta o query param 'codigo' na query string também, 
+    // Injeta o query param 'codigo' na query string também,
     // pois alguns handlers podem ler de req.query ou req.params
     req.query.codigo = req.params.codigo;
     return adapter(cosmosHandler)(req, res);
@@ -144,6 +148,8 @@ app.all('/api/produtos/:codigo', (req, res) => {
 app.post('/api/pagamentos/pix', adapter(pixHandler));
 app.get('/api/pagamentos/status', adapter(pixStatusHandler));
 app.post('/api/pagamentos/confirmar', adapter(confirmarPagamentoHandler));
+app.post('/api/pagamentos/manual/solicitar', adapter(solicitarAprovacaoManualHandler));
+app.post('/api/pagamentos/manual/aprovar', adapter(aprovarPagamentoManualHandler));
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -214,6 +220,8 @@ app.listen(PORT, '0.0.0.0', () => {
         console.log('        - ALL  /api/produtos/:codigo');
         console.log('        - POST /api/pagamentos/pix');
         console.log('        - GET  /api/pagamentos/status');
-        console.log('        - POST /api/pagamentos/confirmar\n');
+        console.log('        - POST /api/pagamentos/confirmar');
+        console.log('        - POST /api/pagamentos/manual/solicitar');
+        console.log('        - POST /api/pagamentos/manual/aprovar\n');
     }, 500);
 });

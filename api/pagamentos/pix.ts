@@ -1,31 +1,29 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { fabricaGatewayPagamento } from '../_lib/gateways/fabrica';
-
-// Fonte da verdade para preços (Backend Only)
-const TABELA_PRECOS = {
-    plano_cafe: { valor: 2.90, descricao: 'Plano Café - 15 dias' },
-    plano_lanche: { valor: 4.90, descricao: 'Plano Lanche - 30 dias' },
-    plano_apoiador: { valor: 9.90, descricao: 'Plano Apoiador - 60 dias' },
-};
+import { orquestradorPagamento } from '../_lib/pagamentos/orquestrador.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-    if (req.method !== 'POST') return res.status(405).json({ erro: 'Método não permitido' });
+    if (req.method !== 'POST') {
+        return res.status(405).json({ erro: 'Metodo nao permitido' });
+    }
 
-    const { plano_id } = req.body;
-    const plano = TABELA_PRECOS[plano_id as keyof typeof TABELA_PRECOS];
+    const { plano_id: planoId } = req.body || {};
 
-    if (!plano) return res.status(400).json({ erro: 'Plano inválido' });
+    if (!planoId || typeof planoId !== 'string') {
+        return res.status(400).json({ erro: 'Campo "plano_id" e obrigatorio' });
+    }
 
     try {
-        const gateway = fabricaGatewayPagamento.obterGateway();
-
-        // O Gateway se vira pra saber se a API dele quer centavos (PagBank) ou real (Mercado Pago)
-        const resposta = await gateway.criarPix(plano.valor, plano.descricao);
-
-        // Retorna apenas os dados padronizados pela nossa interface RespostaGatewayPagamento
+        const resposta = await orquestradorPagamento.gerarPix(planoId);
         return res.status(200).json(resposta);
-    } catch (erro) {
-        console.error('🔴 [ERRO] Erro na geração do PIX pelo Gateway:', erro);
-        return res.status(500).json({ erro: 'Falha na comunicação com o gateway' });
+    } catch (erro: unknown) {
+        const mensagemErro = erro instanceof Error ? erro.message : 'Erro desconhecido';
+        const erroPlanoInvalido = mensagemErro.toLowerCase().includes('plano invalido');
+
+        if (erroPlanoInvalido) {
+            return res.status(400).json({ erro: mensagemErro });
+        }
+
+        console.error('🔴 [Pagamentos/Pix] Erro:', erro);
+        return res.status(500).json({ erro: 'Falha na comunicacao com o gateway' });
     }
 }
