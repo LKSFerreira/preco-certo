@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ModoConfirmacaoPagamento, PlanoID, StatusPagamento } from '../services/pagamento/tipos';
-import { apiConsultarStatus } from '../services/api-pagamento';
+import { apiConsultarStatus, apiSolicitarAprovacaoManual } from '../services/api-pagamento';
 import BotaoConfirmaComShimmer from './buttons/BotaoConfirmaComShimmer';
 
 const WHATSAPP_SUPORTE = import.meta.env.VITE_WHATSAPP_SUPORTE || '5517996510506';
@@ -219,6 +219,8 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
   const [copiado, setCopiado] = useState(false);
   const [recarregando, setRecarregando] = useState(false);
   const [nomeContato, setNomeContato] = useState('');
+  const [enviandoComprovante, setEnviandoComprovante] = useState(false);
+  const [erroSolicitacaoManual, setErroSolicitacaoManual] = useState<string | null>(null);
 
   useEffect(() => {
     if (modo_confirmacao === 'manual') return;
@@ -262,7 +264,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
     setTimeout(() => setCopiado(false), 2000);
   };
 
-  const enviarComprovante = () => {
+  const enviarComprovante = async () => {
     const nome = nomeContato.trim();
     if (nome.length < 3) return;
 
@@ -279,8 +281,28 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
       'Segue meu comprovante para liberacao manual do acesso premium.'
     ].join('\n');
 
+    setEnviandoComprovante(true);
+    setErroSolicitacaoManual(null);
+
+    if (!plano_id) {
+      setErroSolicitacaoManual('Nao foi possivel identificar o plano para registrar a fila manual.');
+    } else {
+      try {
+        await apiSolicitarAprovacaoManual({
+          pagamento_id,
+          plano_id,
+          nome_contato: nome,
+          mensagem,
+        });
+      } catch (erroSolicitacao) {
+        console.error('Erro ao registrar solicitacao manual:', erroSolicitacao);
+        setErroSolicitacaoManual('Nao foi possivel registrar na fila interna. Envie o comprovante no WhatsApp.');
+      }
+    }
+
     const urlWeb = `https://wa.me/${WHATSAPP_SUPORTE}?text=${encodeURIComponent(mensagem)}`;
     window.open(urlWeb, '_blank', 'noopener,noreferrer');
+    setEnviandoComprovante(false);
   };
 
   return (
@@ -391,7 +413,12 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
                 <input
                   type="text"
                   value={nomeContato}
-                  onChange={(e) => setNomeContato(e.target.value)}
+                  onChange={(evento) => {
+                    setNomeContato(evento.target.value);
+                    if (erroSolicitacaoManual) {
+                      setErroSolicitacaoManual(null);
+                    }
+                  }}
                   placeholder="Como podemos te identificar?"
                   className="w-full text-slate-700 rounded-2xl border-2 bg-slate-50 border-transparent focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all placeholder:text-slate-300 font-bold text-sm p-4"
                 />
@@ -400,15 +427,18 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
               <div className="w-full mt-4">
                 <BotaoConfirmaComShimmer
                   aoClicar={async () => enviarComprovante()}
-                  texto="Enviar comprovante no WhatsApp"
+                  texto={enviandoComprovante ? 'Registrando solicitacao...' : 'Enviar comprovante no WhatsApp'}
                   iconeSvg={
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347" />
                     </svg>
                   }
                   compacto={true}
-                  disabled={nomeContato.trim().length < 3}
+                  disabled={nomeContato.trim().length < 3 || enviandoComprovante}
                 />
+                {erroSolicitacaoManual && (
+                  <p className="mt-2 text-[11px] font-semibold text-amber-700">{erroSolicitacaoManual}</p>
+                )}
               </div>
             </div>
           ) : (
