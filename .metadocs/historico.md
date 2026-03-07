@@ -335,3 +335,12 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Limpeza de Adapters:** Removidos os _fallbacks_ _hardcoded_ (`'Produto sem nome'`, `'Genérica'`) nos adapters de API (Cosmos e OpenFoodFacts), que causavam ambiguidades indesejadas na UI. Agora os dados nulos retornam de fato strings vazias.
 - **Correção da IA Analisadora:** Removida a mesma instrução contraditória do prompt Groq (Llama), que estimulava a preencher com resíduos dados desconhecidos.
 - **Adequação do React DOM:** Fornecido o manipulador de eventos `onChange` necessário para evitar o aviso de 'You provided a `value` prop to a form field' no Input numérico de Preços (`ModalFormularioProduto.tsx`).
+
+### 07/03: [Orquestrador Manual de Pagamentos](./walkthrough/orquestrador_manual_pagamentos.md) 💳
+
+- **Desacoplamento de Provedor:** Rotas `pix`, `status` e `confirmar` passaram a delegar decisão para o orquestrador de pagamentos, removendo acoplamento direto com host específico de gateway.
+- **Estados de Domínio:** Fluxo consolidado com status padronizados (`pendente`, `aprovado`, `falha`, `expirado`, `pendente_manual`), impedindo divergência entre backend e UI.
+- **Fila Manual Persistida:** Implementados endpoints `manual/solicitar` e `manual/aprovar` com migration `009_cria_tabela_pagamentos_manuais.sql`, habilitando operação humana com rastreabilidade.
+- **Segurança Operacional:** `manual/aprovar` protegido por `X-API-Secret`/`API_SECRET`, com validações de entrada e respostas explícitas para cenários de erro.
+- **Integração Frontend:** `ModalPagamento` em modo manual agora registra solicitação interna antes do handoff para WhatsApp, preservando experiência visual premium existente.
+- **QA Mockado:** Regra de alternância (falha/sucesso) mantida no mock para permitir validação previsível de ambas as telas no fluxo de pagamento.
