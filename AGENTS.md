@@ -12,12 +12,11 @@ Este projeto usa a pasta `.agents/` como fonte oficial de instruções.
 - Workflows não podem contradizer regras.
 
 ## Ordem de leitura e precedência
-1. Este `AGENTS.md`.
-2. `/.agents/rules/workflow.md`.
-3. `/.agents/rules/docker.md`.
-4. `/.agents/rules/git.md` (commits e PRs).
-5. `/.agents/rules/<linguagem>.md`, conforme `LINGUAGEM_PROJETO`.
-6. `/.agents/workflows/<comando>.md` somente quando o comando for solicitado.
+1. `/.agents/rules/workflow.md`.
+2. `/.agents/rules/docker.md`.
+3. `/.agents/rules/git.md` (commits e PRs).
+4. `/.agents/rules/<linguagem>.md`, conforme `LINGUAGEM_PROJETO`.
+5. `/.agents/workflows/<comando>.md` somente quando o comando for solicitado.
 
 ## Linguagem do projeto
 > LINGUAGEM_PROJETO: javascript
