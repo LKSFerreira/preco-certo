@@ -365,3 +365,8 @@
   - [x] **Sem Rótulo:** Produto sem informações legíveis.
   - [x] **A Granel/Feira:** Produtos pesados na hora sem código de barras.
   - [x] **Agilidade:** Usuário quer apenas somar o preço sem cadastrar detalhes.
+- [ ] **5.2** Mock de QA para ativação Premium (`/api/tokens/ativar`) com comportamento controlado:
+  - [ ] Habilitar via flag de ambiente (`MOCK_ATIVACAO_TOKEN=true`) somente para testes.
+  - [ ] Usar tabela `tentativas_ativacao` para controlar tentativas por `token_hash_tentado + fingerprint_hash`.
+  - [ ] Regra de simulação: 1ª tentativa falha; 2ª tentativa sucesso (sem ativação real no banco de produção).
+  - [ ] Garantir que com a flag desligada o fluxo real permaneça inalterado.

@@ -344,3 +344,11 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Segurança Operacional:** `manual/aprovar` protegido por `X-API-Secret`/`API_SECRET`, com validações de entrada e respostas explícitas para cenários de erro.
 - **Integração Frontend:** `ModalPagamento` em modo manual agora registra solicitação interna antes do handoff para WhatsApp, preservando experiência visual premium existente.
 - **QA Mockado:** Regra de alternância (falha/sucesso) mantida no mock para permitir validação previsível de ambas as telas no fluxo de pagamento.
+
+### 08/03: [Roadmap de Mock para Ativacao](./walkthrough/roadmap_mock_ativacao.md)
+
+- **Demanda Adiada com Rastreabilidade:** Necessidade de teste previsivel da ativacao premium foi documentada para implementacao futura, sem alterar o fluxo atual.
+- **Escopo Fechado de QA:** Definido mock backend para `POST /api/tokens/ativar` com regra controlada de tentativas (1a falha, 2a sucesso).
+- **Reuso de Estrutura Existente:** Planejado uso da tabela `tentativas_ativacao` para controle por `token_hash_tentado + fingerprint_hash`, evitando nova migration.
+- **Seguranca Operacional:** Mock deve ser habilitado apenas por flag (`MOCK_ATIVACAO_TOKEN=true`) e manter o comportamento real inalterado com a flag desligada.
+
