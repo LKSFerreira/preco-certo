@@ -245,15 +245,24 @@
 
 ## Fase 2.5: Migração para Produção (Supabase) ⚡
 
-> **Objetivo:** Implementação segura do banco de produção, seguindo o guia `supabase_learning.md`.
-> **Foco:** Segurança (RLS), Custos (Free Tier) e Performance.
+> **Objetivo:** Implementação segura do PostgreSQL de produção hospedado na Supabase, seguindo o guia `supabase_learning.md`.
+> **Foco:** Paridade com o banco local, custos controlados e robustez operacional do backend.
+> **Branch de decisão:** Ver parecer em [roadmap_supabase_prontidao_producao.md](./roadmap_supabase_prontidao_producao.md) antes do cutover real.
+> **Branch de feature aberta:** Ver plano em [refatoracao_auditoria_telemetria.md](./feat/refatoracao_auditoria_telemetria.md).
+> **Branch de feature aberta:** Ver plano em [idempotencia_confirmacao_pagamento.md](./feat/idempotencia_confirmacao_pagamento.md).
+> **Branch de feature aberta:** Ver plano em [postgres_gerenciado_supabase.md](./feat/postgres_gerenciado_supabase.md).
+> **Branch de feature aberta:** Ver plano em [estrategia_ambiente.md](./feat/estrategia_ambiente.md).
+> **Branch de feature aberta:** Ver plano em [governanca_catalogo_compartilhado.md](./feat/governanca_catalogo_compartilhado.md).
+> **Branch de feature aberta:** Ver plano em [validacao_migrations_carga_remota.md](./feat/validacao_migrations_carga_remota.md).
+> **Branch de feature aberta:** Ver plano em [smoke_test_producao.md](./feat/smoke_test_producao.md).
+> **Plano consolidado:** Ver [plano_implementacao_postgres_producao.md](./feat/plano_implementacao_postgres_producao.md).
 
 - [x] **2.5.1** Criar documentação `supabase_learning.md` (Checklist de Segurança/Custos)
 - [ ] **2.5.2** Configurar Projeto Supabase (Região SP, Spend Cap Ativo)
 - [ ] **2.5.3** Configurar Migrations e Seeds (Réplica do Schema Local)
-- [ ] **2.5.4** Implementar `RepositorioProdutosSupabase` (SDK Oficial)
-- [ ] **2.5.5** Configurar RLS (Row Level Security) para proteção de dados
-- [ ] **2.5.6** Switch de Repositório (Local -> Supabase) via Variável de Ambiente
+- [ ] **2.5.4** Configurar conexão da Vercel com o PostgreSQL gerenciado da Supabase via `DATABASE_URL`
+- [ ] **2.5.5** Validar paridade de schema e carga inicial no banco remoto
+- [ ] **2.5.6** Executar cutover controlado mantendo a API própria como única porta de acesso
 
 ---
 
