@@ -1,11 +1,12 @@
-﻿---
+---
 trigger: always_on
 ---
 
 # Fluxo de Trabalho Obrigatório:
 
-> **ESTA REGRA É INVIOLÁVEL.** 
-> Nenhuma linha de código ou modificação de arquivo pode ser iniciada sem passar estritamente por todas as etapas abaixo, na ordem exata.
+> **DIRETRIZES DE EXECUÇÃO DE CÓDIGO.** 
+> Ação Padrão: O processo de codificação/modificação deve OBRIGATORIAMENTE seguir as etapas de planejamento listadas abaixo, de forma sequencial.
+Comportamento de Exceção (Bypass): A execução imediata do código/escrita (ignorando as etapas de planejamento) só é permitida se o usuário der uma ordem explícita e direta para ação imediata usando termos imperativos (ex: "Apenas escreva o código para...", "Edite o arquivo...", "Crie um arquivo ...).
 
 ## Etapas de Execução:
 
