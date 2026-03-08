@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
-import { useRepositorios } from '../contextos/ContextoRepositorios';
 
 interface PropsModalPagamentoAprovado {
   token: string;
@@ -20,18 +19,15 @@ const ModalPagamentoAprovado: React.FC<PropsModalPagamentoAprovado> = ({
   const cartaoRef = useRef<HTMLDivElement>(null);
   const [capturando, setCapturando] = useState(false);
   const [copiado, setCopiado] = useState(false);
-  const { premium } = useRepositorios();
 
   const urlApp = window.location.origin;
   const urlAtivacao = `${urlApp}/ativar/${token}`;
 
   const nomePlanoMonitor = plano === 'plano_cafe' ? 'Café' : plano === 'plano_lanche' ? 'Lanche' : 'Apoiador';
 
-  const ativarPlano = async () => {
-    // A ativação real ocorreria via backend, simulamos aqui para o fluxo aprovado pré-pago
-    await premium.salvarTokenHash(token);
-    premium.salvarDiasRestantes(diasAtivados);
-    aoAtivarCallback(); // Fecha a modal e vai pro Dashboard com premium ativo
+  const ativarPlano = () => {
+    // Encaminha para o fluxo oficial de ativação com token pré-preenchido.
+    aoAtivarCallback();
   };
 
   const copiarToken = () => {
@@ -238,4 +234,3 @@ const ModalPagamentoAprovado: React.FC<PropsModalPagamentoAprovado> = ({
 };
 
 export default ModalPagamentoAprovado;
-

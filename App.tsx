@@ -817,9 +817,13 @@ export default function App() {
               diasAtivados={diasAtivadosGerado}
               plano={nomePlanoGerado}
               aoAtivarCallback={() => {
+                const tokenParaAtivacao = tokenGerado;
                 setMostrarModalAprovado(false);
                 setTokenGerado(null);
-                setTelaAtual('DASHBOARD');
+                if (tokenParaAtivacao) {
+                  setDeepLinkToken(tokenParaAtivacao);
+                }
+                setMostrarAtivarToken(true);
               }}
               aoFechar={() => {
                 setMostrarModalAprovado(false);
