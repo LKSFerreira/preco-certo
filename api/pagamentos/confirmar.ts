@@ -3,17 +3,17 @@ import { orquestradorPagamento } from '../_lib/pagamentos/orquestrador.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ erro: 'Metodo nao permitido' });
+        return res.status(405).json({ erro: 'Método não permitido' });
     }
 
     const { pagamento_id: pagamentoId, plano_id: planoId } = req.body || {};
 
     if (!pagamentoId || typeof pagamentoId !== 'string') {
-        return res.status(400).json({ erro: 'Campo "pagamento_id" e obrigatorio' });
+        return res.status(400).json({ erro: 'Campo "pagamento_id" é obrigatório' });
     }
 
     if (!planoId || typeof planoId !== 'string') {
-        return res.status(400).json({ erro: 'Campo "plano_id" e obrigatorio' });
+        return res.status(400).json({ erro: 'Campo "plano_id" é obrigatório' });
     }
 
     try {
@@ -44,12 +44,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         return res.status(400).json({
-            erro: 'Pagamento nao esta aprovado',
+            erro: 'Pagamento não está aprovado',
             status_atual: resultado.status_atual,
         });
     } catch (erro: unknown) {
         const mensagemErro = erro instanceof Error ? erro.message : 'Erro desconhecido';
-        const erroPlanoInvalido = mensagemErro.toLowerCase().includes('plano invalido');
+        const erroPlanoInvalido = mensagemErro.toLowerCase().includes('plano inválido');
 
         if (erroPlanoInvalido) {
             return res.status(400).json({ erro: mensagemErro });

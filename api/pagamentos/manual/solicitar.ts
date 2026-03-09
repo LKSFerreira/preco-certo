@@ -3,7 +3,7 @@ import { orquestradorPagamento } from '../../_lib/pagamentos/orquestrador.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ erro: 'Metodo nao permitido' });
+        return res.status(405).json({ erro: 'Método não permitido' });
     }
 
     const {
@@ -15,15 +15,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } = req.body || {};
 
     if (!pagamentoId || typeof pagamentoId !== 'string') {
-        return res.status(400).json({ erro: 'Campo "pagamento_id" e obrigatorio' });
+        return res.status(400).json({ erro: 'Campo "pagamento_id" é obrigatório' });
     }
 
     if (!planoId || typeof planoId !== 'string') {
-        return res.status(400).json({ erro: 'Campo "plano_id" e obrigatorio' });
+        return res.status(400).json({ erro: 'Campo "plano_id" é obrigatório' });
     }
 
     if (!nomeContato || typeof nomeContato !== 'string' || nomeContato.trim().length < 3) {
-        return res.status(400).json({ erro: 'Campo "nome_contato" e obrigatorio e deve ter ao menos 3 caracteres' });
+        return res.status(400).json({ erro: 'Campo "nome_contato" é obrigatório e deve ter ao menos 3 caracteres' });
     }
 
     if (telefoneContato && typeof telefoneContato !== 'string') {
@@ -44,18 +44,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         });
 
         return res.status(201).json({
-            mensagem: 'Solicitacao de aprovacao manual registrada',
+            mensagem: 'Solicitação de aprovação manual registrada',
             solicitacao,
         });
     } catch (erro: unknown) {
         const mensagemErro = erro instanceof Error ? erro.message : 'Erro desconhecido';
-        const erroPlanoInvalido = mensagemErro.toLowerCase().includes('plano invalido');
+        const erroPlanoInvalido = mensagemErro.toLowerCase().includes('plano inválido');
 
         if (erroPlanoInvalido) {
             return res.status(400).json({ erro: mensagemErro });
         }
 
         console.error('🚨 [Pagamentos/Manual/Solicitar] Erro:', erro);
-        return res.status(500).json({ erro: 'Erro interno ao registrar solicitacao manual' });
+        return res.status(500).json({ erro: 'Erro interno ao registrar solicitação manual' });
     }
 }

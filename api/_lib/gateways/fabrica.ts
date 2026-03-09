@@ -12,11 +12,11 @@ class FabricaGatewayPagamento {
         if (!this.instancia) {
             switch (this.gatewayPagamentoBackend) {
                 case 'mockado':
-                    console.warn('⚠️ [AVISO] Usando GATEWAY MOCK (simulacao automatizada)');
+                    console.warn('⚠️ [AVISO] Usando GATEWAY MOCK (simulação automatizada)');
                     this.instancia = new GatewayMockado();
                     break;
                 case 'nubank_failover':
-                    console.warn('⚠️ [AVISO] Usando GATEWAY NUBANK FAILOVER (confirmacao manual)');
+                    console.warn('⚠️ [AVISO] Usando GATEWAY NUBANK FAILOVER (confirmação manual)');
                     this.instancia = new GatewayNubankFailover();
                     break;
                 case 'mercado_pago':

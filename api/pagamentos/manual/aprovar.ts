@@ -3,7 +3,7 @@ import { orquestradorPagamento } from '../../_lib/pagamentos/orquestrador.js';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ erro: 'Metodo nao permitido' });
+        return res.status(405).json({ erro: 'Método não permitido' });
     }
 
     const segredoRecebido = req.headers['x-api-secret'];
@@ -16,7 +16,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { pagamento_id: pagamentoId, aprovado_por: aprovadoPor } = req.body || {};
 
     if (!pagamentoId || typeof pagamentoId !== 'string') {
-        return res.status(400).json({ erro: 'Campo "pagamento_id" e obrigatorio' });
+        return res.status(400).json({ erro: 'Campo "pagamento_id" é obrigatório' });
     }
 
     if (aprovadoPor && typeof aprovadoPor !== 'string') {
@@ -32,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(200).json(resposta);
     } catch (erro: unknown) {
         const mensagemErro = erro instanceof Error ? erro.message : 'Erro desconhecido';
-        const solicitacaoNaoEncontrada = mensagemErro.toLowerCase().includes('nao encontrada');
+        const solicitacaoNaoEncontrada = mensagemErro.toLowerCase().includes('não encontrada');
         const solicitacaoRejeitada = mensagemErro.toLowerCase().includes('rejeitada');
 
         if (solicitacaoNaoEncontrada) {

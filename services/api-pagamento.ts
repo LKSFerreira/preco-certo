@@ -7,7 +7,7 @@ import {
 } from './pagamento/tipos';
 
 /**
- * Solicita ao backend a criacao de uma cobranca PIX para um plano especifico.
+ * Solicita ao backend a criação de uma cobrança PIX para um plano específico.
  */
 export const apiGerarPix = async (plano_id: PlanoID): Promise<RespostaCriacaoPagamento> => {
     const resposta = await fetch('/api/pagamentos/pix', {
@@ -27,7 +27,7 @@ export const apiGerarPix = async (plano_id: PlanoID): Promise<RespostaCriacaoPag
 };
 
 /**
- * Consulta no backend o status atual de uma cobranca (gateway real ou mock).
+ * Consulta no backend o status atual de uma cobrança (gateway real ou mock).
  */
 export const apiConsultarStatus = async (pagamento_id: string): Promise<StatusPagamento> => {
     const parametros = new URLSearchParams({ id: pagamento_id });
@@ -42,7 +42,7 @@ export const apiConsultarStatus = async (pagamento_id: string): Promise<StatusPa
 };
 
 /**
- * Registra solicitacao de comprovante para fluxo manual de aprovacao.
+ * Registra solicitação de comprovante para fluxo manual de aprovação.
  */
 export const apiSolicitarAprovacaoManual = async (
     payload: RequisicaoAprovacaoManual
@@ -57,7 +57,7 @@ export const apiSolicitarAprovacaoManual = async (
 
     if (!resposta.ok) {
         const erroBody = await resposta.text();
-        throw new Error(`Falha ao solicitar aprovacao manual. Status: ${resposta.status}. Retorno: ${erroBody}`);
+        throw new Error(`Falha ao solicitar aprovação manual. Status: ${resposta.status}. Retorno: ${erroBody}`);
     }
 
     const json = await resposta.json();

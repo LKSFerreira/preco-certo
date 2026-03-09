@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy, useRef } from 'react';
 import { Produto, ItemCarrinho, ItemCarrinhoExpandido, TelaApp } from './types';
 import { IMAGEM_PADRAO } from './constants';
 import { formatarMoeda } from './services/utilitarios';
@@ -70,6 +70,7 @@ export default function App() {
   const [tokenGerado, setTokenGerado] = useState<string | null>(null);
   const [diasAtivadosGerado, setDiasAtivadosGerado] = useState(0);
   const [nomePlanoGerado, setNomePlanoGerado] = useState('');
+  const confirmacoesPagamentoEmAndamento = useRef<Set<string>>(new Set());
 
   // Controle de continuidade após tutorial
   const [acaoPendenteTutorial, setAcaoPendenteTutorial] = useState<(() => void) | null>(null);
@@ -763,6 +764,19 @@ export default function App() {
                 setDadosPagamento(null);
               }}
               aoSucesso={async (pagamentoIdAprovado: string) => {
+                if (confirmacoesPagamentoEmAndamento.current.has(pagamentoIdAprovado)) {
+                  console.warn('↩️ [Confirmar] Ignorando confirmação duplicada para o mesmo pagamento');
+                  return;
+                }
+
+                const planoParaConfirmar = planoSelecionado;
+                if (!planoParaConfirmar) {
+                  console.error('🚨 [Confirmar] Plano não definido para confirmar pagamento');
+                  setTelaAtual('DASHBOARD');
+                  return;
+                }
+
+                confirmacoesPagamentoEmAndamento.current.add(pagamentoIdAprovado);
                 setMostrarModalPagamento(false);
                 setDadosPagamento(null);
 
@@ -772,7 +786,7 @@ export default function App() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                       pagamento_id: pagamentoIdAprovado,
-                      plano_id: planoSelecionado,
+                      plano_id: planoParaConfirmar,
                     }),
                   });
 
@@ -795,11 +809,13 @@ export default function App() {
                   // Token novo gerado com sucesso — abre modal de aprovação
                   setTokenGerado(dados.token);
                   setDiasAtivadosGerado(dados.duracao_dias);
-                  setNomePlanoGerado(planoSelecionado || '');
+                  setNomePlanoGerado(planoParaConfirmar);
                   setMostrarModalAprovado(true);
                 } catch (erroRede) {
                   console.error('🚨 [Confirmar] Erro de rede:', erroRede);
                   setTelaAtual('DASHBOARD');
+                } finally {
+                  confirmacoesPagamentoEmAndamento.current.delete(pagamentoIdAprovado);
                 }
               }}
               aoTentarNovamente={async () => {

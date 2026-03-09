@@ -32,7 +32,7 @@ export class GatewayMockado implements GatewayPagamento {
             const dadosPixEstatico = chavesPixEstaticas.find((chavePix: ChavePix) => chavePix.plano === planoNomeArquivo);
 
             if (!dadosPixEstatico) {
-                throw new Error(`QR Code estatico para valor ${valor} nao encontrado no JSON mockado.`);
+                throw new Error(`QR Code estático para valor ${valor} não encontrado no JSON mockado.`);
             }
 
             await new Promise(resolve => setTimeout(resolve, 800));
@@ -57,7 +57,7 @@ export class GatewayMockado implements GatewayPagamento {
             };
         } catch (erro) {
             console.error('🔴 [ERRO] Erro ao carregar PIX Mockado:', erro);
-            throw new Error('Falha na comunicacao com o gateway Mockado');
+            throw new Error('Falha na comunicação com o gateway Mockado');
         }
     }
 

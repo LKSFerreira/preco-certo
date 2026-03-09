@@ -13,7 +13,7 @@ export class GatewayMercadoPago implements GatewayPagamento {
                 headers: {
                     'Authorization': `Bearer ${this.access_token}`,
                     'Content-Type': 'application/json',
-                    'X-Idempotency-Key': `PIX_${Date.now()}_SEM-SUSTO`
+                    'X-Idempotency-Key': `PIX_MERCADO_PAGO_${Date.now()}_SEM-SUSTO`
                 },
                 body: JSON.stringify({
                     description: descricao,

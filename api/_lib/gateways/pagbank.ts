@@ -17,7 +17,7 @@ export class GatewayPagBank implements GatewayPagamento {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    reference_id: `PIX_${Date.now()}_SEM-SUSTO`,
+                    reference_id: `PIX_PAGBANK_${Date.now()}_SEM-SUSTO`,
                     items: [
                         {
                             name: descricao,

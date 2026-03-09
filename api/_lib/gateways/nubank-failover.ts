@@ -24,7 +24,7 @@ export class GatewayNubankFailover implements GatewayPagamento {
             const dadosPixEstatico = chavesPixEstaticas.find((chavePix: ChavePix) => chavePix.plano === planoNomeArquivo);
 
             if (!dadosPixEstatico) {
-                throw new Error(`QR Code estatico para valor ${valor} nao encontrado no JSON de failover.`);
+                throw new Error(`QR Code estático para valor ${valor} não encontrado no JSON de failover.`);
             }
 
             const idPagamento = `PIX-NUBANK-FAILOVER_${Date.now()}_SEM-SUSTO`;
@@ -40,12 +40,12 @@ export class GatewayNubankFailover implements GatewayPagamento {
             };
         } catch (erro) {
             console.error('🔴 [ERRO] Erro ao carregar PIX Nubank Failover:', erro);
-            throw new Error('Falha na comunicacao com o failover manual Nubank');
+            throw new Error('Falha na comunicação com o failover manual Nubank');
         }
     }
 
     async consultarStatus(idPagamento: string): Promise<RespostaGatewayStatus> {
-        console.info(`🔄 [INFO] Status Pagamento (Nubank Failover) ${idPagamento} permanece pendente ate confirmacao manual.`);
+        console.info(`🔄 [INFO] Status Pagamento (Nubank Failover) ${idPagamento} permanece pendente até confirmação manual.`);
 
         return {
             pagamento_id: idPagamento,
