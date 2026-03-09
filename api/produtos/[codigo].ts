@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z as zod } from 'zod';
 import { createHash } from 'crypto';
 import pool from '../_lib/banco.js';
+import { registrarEventoProduto } from '../_lib/telemetria_produtos.js';
 
 // Schema de Validação (Blindagem contra lixo)
 const schemaProduto = zod.object({
@@ -27,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
     const ipHash = hashIp(clientIp);
 
-    // --- GET: Consulta (Auditada Manualmente) ---
+    // --- GET: Consulta + Telemetria de Comportamento ---
     if (req.method === 'GET') {
         try {
             const client = await pool.connect();
@@ -37,13 +38,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     [codigoFinal]
                 );
 
-                // Auditoria de Leitura (SELECT)
-                // Inserimos manualmente pois Triggers não pegam SELECT
-                await client.query(
-                    `INSERT INTO auditoria_logs (tabela, operacao, dados_antigos, usuario_id, ip_hash)
-           VALUES ('produtos', 'SELECT', $1, 'anonimo', $2)`,
-                    [JSON.stringify({ codigo_barras: codigoFinal }), ipHash]
-                );
+                await registrarEventoProduto({
+                    client,
+                    evento: resultado.rows.length === 0 ? 'produto_nao_encontrado' : 'produto_encontrado',
+                    origem: 'api_produtos_get',
+                    codigo_barras: codigoFinal,
+                    usuario_id: 'anonimo',
+                    ip_hash: ipHash,
+                });
 
                 if (resultado.rows.length === 0) {
                     return res.status(404).json({ erro: 'Produto não encontrado' });
