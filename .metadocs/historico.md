@@ -347,8 +347,24 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 
 ### 08/03: [Roadmap de Mock para Ativacao](./walkthrough/roadmap_mock_ativacao.md)
 
-- **Demanda Adiada com Rastreabilidade:** Necessidade de teste previsivel da ativacao premium foi documentada para implementacao futura, sem alterar o fluxo atual.
+- **Demanda Adiada com Rastreabilidade:** Necessidade de teste previsivel da ativacao premium foi documentada para implementação futura, sem alterar o fluxo atual.
 - **Escopo Fechado de QA:** Definido mock backend para `POST /api/tokens/ativar` com regra controlada de tentativas (1a falha, 2a sucesso).
 - **Reuso de Estrutura Existente:** Planejado uso da tabela `tentativas_ativacao` para controle por `token_hash_tentado + fingerprint_hash`, evitando nova migration.
 - **Seguranca Operacional:** Mock deve ser habilitado apenas por flag (`MOCK_ATIVACAO_TOKEN=true`) e manter o comportamento real inalterado com a flag desligada.
+
+### 08/03: [Idempotência na Confirmação de Pagamento](./walkthrough/idempotencia_confirmacao_pagamento.md)
+
+- **Blindagem de Concorrência:** `api/_lib/pagamentos/orquestrador.ts` passou a tratar conflito de unicidade em `pagamento_id` como estado de domínio, retornando `token_existente` em vez de erro técnico.
+- **Protecao em Duas Camadas:** O frontend ganhou guarda contra confirmações duplicadas do mesmo pagamento em andamento, enquanto o backend permaneceu como arbitro final da idempotência.
+- **Mock Tornado Testavel:** O gateway `mockado` deixou de devolver token fixo e passou a persistir token real via o mesmo caminho de produção, permitindo QA fiel no banco local.
+- **Automacao de QA:** Criados os utilitarios `scripts/remove_pagamentos_mockados.py` e `scripts/testar_concorrencia_pagamento.ts` para limpeza e teste concorrente automatizado dentro do Docker.
+- **Validação Pratica:** Teste em paralelo no container `app` comprovou 1 resposta `201`, 1 resposta `200`, nenhum `500` e apenas 1 token persistido para o mesmo `pagamento_id`.
+
+### 08/03: [Refatoracao de Auditoria e Telemetria](./walkthrough/refatoracao_auditoria_telemetria.md)
+
+- **Separação de Responsabilidade:** O `GET /api/produtos/[código]` deixou de registrar `SELECT` em `auditoria_logs` e passou a publicar comportamento em `telemetria_produtos`.
+- **Telemetria Agregada:** A migration `010_cria_tabela_telemetria_produtos.sql` criou uma trilha agregada diaria por evento, origem, produto, usuário e `ip_hash`, reduzindo explosao de linhas sem perder o sinal de uso.
+- **Eventos Iniciais:** A primeira iteracao ativou `produto_encontrado` e `produto_nao_encontrado`, com origem `api_produtos_get`.
+- **Auditoria Preservada:** O trigger de escrita em `produtos` foi mantido para `INSERT`, `UPDATE` e `DELETE`, preservando a rastreabilidade operacional forte.
+- **Validação no Docker:** O ambiente local confirmou os dois ramos do endpoint (`200` e `404`) gerando telemetria correta, sem nova escrita de leitura em `auditoria_logs` apos a refatoracao.
 

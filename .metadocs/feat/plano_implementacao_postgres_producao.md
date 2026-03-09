@@ -1,22 +1,22 @@
-# Feature Plan - Plano Implementacao Postgres Producao
+# Feature Plan - Plano Implementação Postgres Produção
 
-> **Ultima atualizacao:** 2026-03-08
-> **Status:** Consolidado para execucao futura
-> **Tipo:** Plano mestre de implementacao
-> **Escopo:** Introduzir PostgreSQL remoto oficial em producao usando Supabase como Postgres gerenciado
+> **Ultima atualização:** 2026-03-08
+> **Status:** Consolidado para execução futura
+> **Tipo:** Plano mestre de implementação
+> **Escopo:** Introduzir PostgreSQL remoto oficial em produção usando Supabase como Postgres gerenciado
 
 ---
 
 ## 1. Objetivo Executivo
 
-Consolidar em um unico plano a ordem de implementacao das decisoes arquiteturais e operacionais aprovadas para introduzir o banco PostgreSQL remoto oficial em producao.
+Consolidar em um único plano a ordem de implementação das decisões arquiteturais e operacionais aprovadas para introduzir o banco PostgreSQL remoto oficial em produção.
 
 ### Resultado esperado
 
-- producao passa a usar PostgreSQL gerenciado na Supabase
-- backend proprio continua como unica porta de acesso ao banco
-- frontend continua sem integracao nativa com Supabase nesta fase
-- catalogo compartilhado oficial passa a existir com governanca adequada
+- produção passa a usar PostgreSQL gerenciado na Supabase
+- backend proprio continua como única porta de acesso ao banco
+- frontend continua sem integração nativa com Supabase nesta fase
+- catalogo compartilhado oficial passa a existir com governança adequada
 
 ---
 
@@ -25,42 +25,42 @@ Consolidar em um unico plano a ordem de implementacao das decisoes arquiteturais
 ### Dentro do escopo
 
 - robustez operacional do backend
-- idempotencia em confirmacao de pagamento
-- separacao entre auditoria e telemetria
-- estrategia de ambiente
-- governanca do catalogo compartilhado
-- validacao de migrations e carga inicial no banco remoto
+- idempotência em confirmação de pagamento
+- separação entre auditoria e telemetria
+- estratégia de ambiente
+- governança do catalogo compartilhado
+- validação de migrations e carga inicial no banco remoto
 - cutover controlado
-- smoke test real de producao
+- smoke test real de produção
 
 ### Fora do escopo nesta fase
 
 - SDK Supabase no frontend
 - Auth Supabase
 - RLS como base principal do fluxo atual
-- sync automatico obrigatorio do catalogo local para remoto
-- engine de recomendacao
-- curadoria completa por IA como etapa obrigatoria do primeiro cutover
+- sync automático obrigatório do catalogo local para remoto
+- engine de recomendação
+- curadoria completa por IA como etapa obrigatória do primeiro cutover
 
 ---
 
 ## 3. Premissas Oficiais
 
-- Supabase sera usada como **Postgres gerenciado**, nao como plataforma nativa da aplicacao nesta fase
-- ambientes oficiais: `local` e `producao`
-- nao havera homologacao remota permanente por enquanto
-- havera **validacao remota pre-cutover** como procedimento controlado
-- `produtos` sera o catalogo oficial compartilhado
-- `produtos_adicionados_pelo_usuario` sera staging/inbox
+- Supabase será usada como **Postgres gerenciado**, não como plataforma nativa da aplicacao nesta fase
+- ambientes oficiais: `local` e `produção`
+- não havera homologacao remota permanente por enquanto
+- havera **validação remota pré-cutover** como procedimento controlado
+- `produtos` será o catalogo oficial compartilhado
+- `produtos_adicionados_pelo_usuario` será staging/inbox
 
 ---
 
 ## 4. Dependencias Consolidadas
 
-Este plano depende das decisoes ja registradas em:
+Este plano depende das decisões já registradas em:
 
-- [refatoracao_auditoria_telemetria.md](./refatoracao_auditoria_telemetria.md)
-- [idempotencia_confirmacao_pagamento.md](./idempotencia_confirmacao_pagamento.md)
+- [refatoracao_auditoria_telemetria.md](../walkthrough/refatoracao_auditoria_telemetria.md)
+- [idempotencia_confirmacao_pagamento.md](../walkthrough/idempotencia_confirmacao_pagamento.md)
 - [postgres_gerenciado_supabase.md](./postgres_gerenciado_supabase.md)
 - [estrategia_ambiente.md](./estrategia_ambiente.md)
 - [governanca_catalogo_compartilhado.md](./governanca_catalogo_compartilhado.md)
@@ -69,37 +69,37 @@ Este plano depende das decisoes ja registradas em:
 
 ---
 
-## 5. Ordem de Implementacao Recomendada
+## 5. Ordem de Implementação Recomendada
 
 ### Fase 1 - Blindagem do backend atual
 
 Objetivo:
 
-- eliminar riscos de producao independentes do banco remoto
+- eliminar riscos de produção independentes do banco remoto
 
 Entregas:
 
-- idempotencia/concorrencia em confirmacao de pagamento
-- separacao entre auditoria operacional e telemetria de comportamento
+- idempotência/concorrência em confirmação de pagamento
+- separação entre auditoria operacional e telemetria de comportamento
 
 Motivo da prioridade:
 
-- esses pontos sao bloqueadores do cutover mesmo sem Supabase
+- esses pontos são bloqueadores do cutover mesmo sem Supabase
 
 ### Fase 2 - Base operacional e de dados
 
 Objetivo:
 
-- definir com seguranca como o sistema opera entre local e producao
+- definir com seguranca como o sistema opera entre local e produção
 
 Entregas:
 
-- estrategia de ambiente
-- governanca do catalogo compartilhado
+- estratégia de ambiente
+- governança do catalogo compartilhado
 
 Motivo da prioridade:
 
-- sem isso, o banco remoto entra sem regra clara de escrita, sincronizacao e operacao
+- sem isso, o banco remoto entra sem regra clara de escrita, sincronizacao e operação
 
 ### Fase 3 - Ferramental operacional remoto
 
@@ -109,15 +109,15 @@ Objetivo:
 
 Entregas:
 
-- separacao entre migrations, carga inicial e validacao
+- separação entre migrations, carga inicial e validação
 - orquestrador operacional fino
 - preparacao da conexao com Postgres gerenciado na Supabase
 
 Motivo da prioridade:
 
-- evita operacao manual fragil e evita script magico opaco
+- evita operação manual fragil e evita script magico opaco
 
-### Fase 4 - Validacao remota pre-cutover
+### Fase 4 - Validação remota pré-cutover
 
 Objetivo:
 
@@ -134,39 +134,39 @@ Entregas:
 
 Objetivo:
 
-- trocar a producao do modelo atual para o PostgreSQL remoto oficial
+- trocar a produção do modelo atual para o PostgreSQL remoto oficial
 
 Entregas:
 
-- configuracao final de ambiente
-- deploy com `DATABASE_URL` apontando para producao remota
-- verificacao final de operacao
+- configuração final de ambiente
+- deploy com `DATABASE_URL` apontando para produção remota
+- verificação final de operação
 
-### Fase 6 - Aceite pos-cutover
+### Fase 6 - Aceite pós-cutover
 
 Objetivo:
 
-- confirmar que a migracao foi bem-sucedida no ambiente real
+- confirmar que a migração foi bem-sucedida no ambiente real
 
 Entregas:
 
-- smoke test real de producao
-- decisao formal de aceite ou rollback
+- smoke test real de produção
+- decisão formal de aceite ou rollback
 
 ---
 
-## 6. Sequencia Tecnica Consolidada
+## 6. Sequencia Técnica Consolidada
 
 ### Bloco A - Backend seguro
 
-1. Implementar idempotencia em pagamento
+1. Implementar idempotência em pagamento
 2. Refatorar captura de eventos: auditoria vs telemetria
 
-### Bloco B - Regras de operacao
+### Bloco B - Regras de operação
 
-3. Formalizar ambiente `local` e `producao`
+3. Formalizar ambiente `local` e `produção`
 4. Proteger scripts sensiveis por ambiente
-5. Formalizar governanca de escrita no catalogo compartilhado
+5. Formalizar governança de escrita no catalogo compartilhado
 
 ### Bloco C - Banco remoto
 
@@ -174,7 +174,7 @@ Entregas:
 7. Separar etapas operacionais:
    - migrations
    - carga inicial
-   - validacao
+   - validação
 8. Implementar orquestrador fino
 
 ### Bloco D - Prova antes da virada
@@ -186,7 +186,7 @@ Entregas:
 ### Bloco E - Virada
 
 12. Fazer cutover controlado
-13. Executar smoke test real de producao
+13. Executar smoke test real de produção
 14. Decidir aceite ou rollback
 
 ---
@@ -195,17 +195,17 @@ Entregas:
 
 ### Fase 1
 
-- nenhum fluxo legitimo de confirmacao do mesmo pagamento retorna erro tecnico por corrida
+- nenhum fluxo legitimo de confirmação do mesmo pagamento retorna erro técnico por corrida
 - `SELECT` de produto deixa de ser tratado como auditoria operacional
 
 ### Fase 2
 
 - ambientes oficiais ficam claros
-- dados locais do usuario nao escrevem diretamente no catalogo oficial
+- dados locais do usuário não escrevem diretamente no catalogo oficial
 
 ### Fase 3
 
-- operacao remota fica dividida entre schema, carga inicial e validacao
+- operação remota fica dividida entre schema, carga inicial e validação
 - orquestrador e transparente e previsivel
 
 ### Fase 4
@@ -216,76 +216,76 @@ Entregas:
 
 ### Fase 5
 
-- producao aponta para o banco remoto oficial
-- nao ha regressao grave imediatamente observavel
+- produção aponta para o banco remoto oficial
+- não ha regressao grave imediatamente observavel
 
 ### Fase 6
 
-- smoke test de producao passa
-- migracao e formalmente aceita
+- smoke test de produção passa
+- migração e formalmente aceita
 
 ---
 
 ## 8. Riscos que Este Plano Busca Conter
 
-- erro de concorrencia em pagamento
+- erro de concorrência em pagamento
 - degradacao do scanner por escrita indevida
 - contaminacao do catalogo oficial por dados locais ruins
-- confusao entre ambiente local e producao
+- confusao entre ambiente local e produção
 - migration/carga inicial executadas de forma opaca
-- cutover sem validacao suficiente
+- cutover sem validação suficiente
 
 ---
 
-## 9. Decisoes Explicitas Sobre Escopo
+## 9. Decisões Explícitas Sobre Escopo
 
-### Sync automatico do catalogo local
+### Sync automático do catalogo local
 
-Nao e obrigatorio nesta fase.
+Não e obrigatório nesta fase.
 
 Se for implementado depois:
 
 - deve operar em segundo plano
-- nao deve bloquear startup
-- nao deve promover direto para `produtos`
+- não deve bloquear startup
+- não deve promover direto para `produtos`
 
 ### Curadoria com IA
 
-Pode existir futuramente, mas nao deve bloquear a introducao inicial do Postgres remoto.
+Pode existir futuramente, mas não deve bloquear a introducao inicial do Postgres remoto.
 
 ### RLS
 
-Pode ser discutido em fase posterior, mas nao e requisito central para esta entrega, pois o frontend nao acessara o banco diretamente.
+Pode ser discutido em fase posterior, mas não e requisito central para esta entrega, pois o frontend não acessara o banco diretamente.
 
 ---
 
-## 10. Evidencias Minimas para Considerar a Migracao Pronta
+## 10. Evidencias Minimas para Considerar a Migração Pronta
 
 - documentacao de features implementadas convertida em walkthrough correspondente
 - banco remoto com schema valido
 - carga inicial confirmada
-- aplicacao em producao operando com banco remoto
-- smoke test de producao aprovado
+- aplicacao em produção operando com banco remoto
+- smoke test de produção aprovado
 
 ---
 
 ## 11. Proximo Passo Apos Este Plano
 
-Quando a implementacao for iniciada, este plano deve ser usado como ordem oficial de execucao.
+Quando a implementação for iniciada, este plano deve ser usado como ordem oficial de execução.
 
 Cada branch de feature devera:
 
 - ser implementada
 - validada
 - movida para `/.metadocs/walkthrough/`
-- referenciada no `historico.md`
+- referenciada no `histórico.md`
 
 ---
 
-## 12. Destino Pos-Implementacao
+## 12. Destino Pós-Implementação
 
-Apos a execucao completa da iniciativa, este mesmo arquivo pode ser movido para:
+Apos a execução completa da iniciativa, este mesmo arquivo pode ser movido para:
 
 - `.metadocs/walkthrough/plano_implementacao_postgres_producao.md`
 
-Se o plano for mantido apenas como artefato de governanca, ele tambem pode permanecer em `feat/` como registro mestre de planejamento.
+Se o plano for mantido apenas como artefato de governança, ele também pode permanecer em `feat/` como registro mestre de planejamento.

@@ -248,8 +248,8 @@
 > **Objetivo:** Implementação segura do PostgreSQL de produção hospedado na Supabase, seguindo o guia `supabase_learning.md`.
 > **Foco:** Paridade com o banco local, custos controlados e robustez operacional do backend.
 > **Branch de decisão:** Ver parecer em [roadmap_supabase_prontidao_producao.md](./roadmap_supabase_prontidao_producao.md) antes do cutover real.
-> **Branch de feature aberta:** Ver plano em [refatoracao_auditoria_telemetria.md](./feat/refatoracao_auditoria_telemetria.md).
-> **Branch de feature aberta:** Ver plano em [idempotencia_confirmacao_pagamento.md](./feat/idempotencia_confirmacao_pagamento.md).
+> **Walkthrough concluido:** Ver implementacao em [refatoracao_auditoria_telemetria.md](./walkthrough/refatoracao_auditoria_telemetria.md).
+> **Walkthrough concluido:** Ver implementacao em [idempotencia_confirmacao_pagamento.md](./walkthrough/idempotencia_confirmacao_pagamento.md).
 > **Branch de feature aberta:** Ver plano em [postgres_gerenciado_supabase.md](./feat/postgres_gerenciado_supabase.md).
 > **Branch de feature aberta:** Ver plano em [estrategia_ambiente.md](./feat/estrategia_ambiente.md).
 > **Branch de feature aberta:** Ver plano em [governanca_catalogo_compartilhado.md](./feat/governanca_catalogo_compartilhado.md).

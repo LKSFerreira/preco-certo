@@ -1,92 +1,92 @@
-# Roadmap Branch - Prontidao para Supabase em Producao
+# Roadmap Branch - Prontidão para Supabase em Produção
 
-> **Ultima atualizacao:** 2026-03-08
-> **Status:** Em analise tecnica
-> **Escopo:** Avaliar se a base atual esta pronta para usar Supabase como banco real de producao
+> **Ultima atualização:** 2026-03-08
+> **Status:** Em análise técnica
+> **Escopo:** Avaliar se a base atual esta pronta para usar Supabase como banco real de produção
 
 ---
 
 ## 1. Veredito Executivo
 
-> **Conclusao curta:** A base esta relativamente perto de estar pronta para usar a Supabase como **PostgreSQL gerenciado de producao**, mas **ainda nao esta pronta** para o cutover enquanto alguns bloqueadores operacionais do backend permanecerem em aberto.
+> **Conclusao curta:** A base esta relativamente perto de estar pronta para usar a Supabase como **PostgreSQL gerenciado de produção**, mas **ainda não esta pronta** para o cutover enquanto alguns bloqueadores operacionais do backend permanecerem em aberto.
 
 O escopo correto desta avaliacao e:
 
-- Supabase como hospedeira do banco PostgreSQL de producao
-- backend proprio como unica porta de acesso ao banco
-- frontend sem integracao nativa com Supabase nesta fase
+- Supabase como hospedeira do banco PostgreSQL de produção
+- backend proprio como única porta de acesso ao banco
+- frontend sem integração nativa com Supabase nesta fase
 
 Dentro desse recorte, o caminho e tecnicamente bom e coerente com a arquitetura atual.
 
-Os bloqueadores remanescentes passam a ser principalmente de robustez operacional do backend, e nao de integracao nativa com Supabase:
+Os bloqueadores remanescentes passam a ser principalmente de robustez operacional do backend, e não de integração nativa com Supabase:
 
-- Blindagem de concorrencia em fluxos criticos de pagamento/token
-- Separacao entre auditoria operacional e telemetria de comportamento
-- Estrategia de ambiente separando dev/producao com mais clareza
-- Governanca da sincronizacao entre catalogo local e catalogo compartilhado oficial
-- Validacao de migrations e carga inicial no banco remoto com processo auditavel
-- Validacao real de cutover em producao
+- Blindagem de concorrência em fluxos criticos de pagamento/token
+- Separação entre auditoria operacional e telemetria de comportamento
+- Estratégia de ambiente separando dev/produção com mais clareza
+- Governança da sincronizacao entre catalogo local e catalogo compartilhado oficial
+- Validação de migrations e carga inicial no banco remoto com processo auditavel
+- Validação real de cutover em produção
 
 ---
 
-## 2. O Que Ja Esta Pronto
+## 2. O Que Já Esta Pronto
 
 ### Arquitetura
 
-- O frontend consome a API propria, nao o banco diretamente.
-- O padrao de repositorios ja permite troca de implementacao sem reescrever a UI.
+- O frontend consome a API propria, não o banco diretamente.
+- O padrão de repositorios já permite troca de implementação sem reescrever a UI.
 - O fluxo `Offline First` reduz risco de degradacao total por latencia remota.
 
 ### Banco e Persistencia
 
-- O schema principal ja esta em migrations SQL versionadas.
-- A base local em PostgreSQL ja foi validada com dataset real.
+- O schema principal já esta em migrations SQL versionadas.
+- A base local em PostgreSQL já foi validada com dataset real.
 - O backend atual opera sobre Postgres puro, o que facilita portar para o banco do Supabase.
 
-### Operacao
+### Operação
 
-- Os endpoints criticos de produto, token e pagamento ja existem.
-- O projeto ja tem documentacao especifica de Supabase e seguranca/custo.
-- O roadmap ja reconhece formalmente a trilha de migracao para Supabase.
+- Os endpoints criticos de produto, token e pagamento já existem.
+- O projeto já tem documentacao especifica de Supabase e seguranca/custo.
+- O roadmap já reconhece formalmente a trilha de migração para Supabase.
 
 ---
 
 ## 3. Principais Bloqueadores Antes do Cutover
 
-### 3.1 Concorrencia no fluxo de confirmacao de pagamento
+### 3.1 Concorrência no fluxo de confirmação de pagamento
 
-Hoje o fluxo de confirmacao consulta se ja existe token para um `pagamento_id` e depois faz `INSERT`.
+Hoje o fluxo de confirmação consulta se já existe token para um `pagamento_id` e depois faz `INSERT`.
 
-**Risco:** duas confirmacoes simultaneas podem passar pela leitura antes da gravacao e uma delas terminar em erro por conflito no indice unico.
+**Risco:** duas confirmações simultaneas podem passar pela leitura antes da gravacao e uma delas terminar em erro por conflito no indice único.
 
-**Impacto:** em producao isso pode virar erro intermitente no exato momento de maior sensibilidade do usuario: pagamento aprovado e token nao entregue de forma limpa.
+**Impacto:** em produção isso pode virar erro intermitente no exato momento de maior sensibilidade do usuário: pagamento aprovado e token não entregue de forma limpa.
 
-**Conclusao:** antes do Supabase em producao, a idempotencia precisa ficar atomica e previsivel.
+**Conclusao:** antes do Supabase em produção, a idempotência precisa ficar atomica e previsivel.
 
 ### 3.2 Auditoria excessiva em leitura de produtos
 
 O endpoint de produto registra auditoria manual em `SELECT`.
 
-**Risco:** o scanner e a busca de catalogo sao fluxos de alta frequencia. Auditar toda leitura aumenta:
+**Risco:** o scanner e a busca de catalogo são fluxos de alta frequencia. Auditar toda leitura aumenta:
 
 - escrita no banco
 - crescimento de storage
 - ruido operacional
 - custo indireto no free tier
 
-**Conclusao:** a estrategia de auditoria precisa ser revista antes de colocar trafego real em um banco gerenciado externo.
+**Conclusao:** a estratégia de auditoria precisa ser revista antes de colocar trafego real em um banco gerenciado externo.
 
-### 3.3 Estrategia de ambiente ainda esta ambigua
+### 3.3 Estratégia de ambiente ainda esta ambigua
 
-O runtime atual usa `DATABASE_URL` como fonte principal. O roadmap ja aponta a necessidade de separar melhor os ambientes, mas isso ainda nao esta formalizado em runtime/operacao.
+O runtime atual usa `DATABASE_URL` como fonte principal. O roadmap já aponta a necessidade de separar melhor os ambientes, mas isso ainda não esta formalizado em runtime/operação.
 
-**Risco:** deploy mal configurado, apontando para banco errado, seed rodando em ambiente indevido ou confusao entre local e producao.
+**Risco:** deploy mal configurado, apontando para banco errado, seed rodando em ambiente indevido ou confusao entre local e produção.
 
 **Conclusao:** antes do cutover, ambiente e segredos precisam estar explicitamente organizados.
 
-### 3.4 Cutover para banco remoto ainda nao foi validado ponta a ponta
+### 3.4 Cutover para banco remoto ainda não foi validado ponta a ponta
 
-Mesmo com o desenho arquitetural correto, ainda falta a validacao operacional no banco remoto gerenciado:
+Mesmo com o desenho arquitetural correto, ainda falta a validação operacional no banco remoto gerenciado:
 
 - migrations
 - carga inicial
@@ -108,20 +108,20 @@ Mesmo com o desenho arquitetural correto, ainda falta a validacao operacional no
 ### Seguranca
 
 - Segredos e conexoes de ambiente ainda precisam de definicao mais rigida
-- O backend precisa continuar sendo a unica porta de acesso ao banco
-- Integracoes nativas futuras com Supabase devem ser tratadas como decisao separada
+- O backend precisa continuar sendo a única porta de acesso ao banco
+- Integracoes nativas futuras com Supabase devem ser tratadas como decisão separada
 
 ### Produto
 
 - Falha de entrega de token em condicao de corrida
-- Regressao silenciosa em fluxos de premium e aprovacao manual
-- Migracao para producao sem smoke test real dos fluxos mais sensiveis
+- Regressao silenciosa em fluxos de premium e aprovação manual
+- Migração para produção sem smoke test real dos fluxos mais sensiveis
 
 ---
 
-## 5. Recomendacao de Estrategia
+## 5. Recomendação de Estratégia
 
-### Estrategia recomendada agora
+### Estratégia recomendada agora
 
 Migrar para **Supabase como PostgreSQL gerenciado**, mantendo:
 
@@ -129,7 +129,7 @@ Migrar para **Supabase como PostgreSQL gerenciado**, mantendo:
 - `DATABASE_URL` como caminho principal nesta etapa
 - frontend consumindo apenas a API propria
 
-### Estrategia que eu nao recomendo agora
+### Estratégia que eu não recomendo agora
 
 Misturar nesta mesma fase:
 
@@ -141,37 +141,37 @@ Misturar nesta mesma fase:
 
 ---
 
-## 6. Gate de Prontidao Antes da Migracao
+## 6. Gate de Prontidão Antes da Migração
 
 ### Bloqueadores
 
-- [ ] Tornar idempotente e atomico o fluxo de confirmacao de pagamento/token
+- [ ] Tornar idempotente e atomico o fluxo de confirmação de pagamento/token
 - [ ] Separar auditoria operacional de telemetria de comportamento em `produtos`
-- [ ] Fechar estrategia de variaveis de ambiente para dev e producao
-- [ ] Rodar migrations e seed em projeto Supabase de validacao
+- [ ] Fechar estratégia de variaveis de ambiente para dev e produção
+- [ ] Rodar migrations e seed em projeto Supabase de validação
 - [ ] Validar fluxo completo: produto, token, ativacao e pagamento manual
 
 ### Recomendados
 
 - [ ] Criar checklist operacional de deploy/cutover
-- [ ] Definir estrategia de rollback
+- [ ] Definir estratégia de rollback
 - [ ] Medir comportamento de latencia no fluxo de busca por GTIN
 
 ---
 
-## 7. Decisao Recomendada
+## 7. Decisão Recomendada
 
 ### Se a pergunta for:
 
-**"Ja podemos usar a Supabase como PostgreSQL gerenciado de producao agora?"**
+**"Já podemos usar a Supabase como PostgreSQL gerenciado de produção agora?"**
 
 Minha resposta e:
 
-> **Ainda nao.**
+> **Ainda não.**
 
 ### Se a pergunta for:
 
-**"Ja podemos preparar uma migracao controlada para Supabase sem reinventar a arquitetura?"**
+**"Já podemos preparar uma migração controlada para Supabase sem reinventar a arquitetura?"**
 
 Minha resposta e:
 
@@ -185,13 +185,13 @@ Com a seguinte condicao:
 
 ---
 
-## 8. Referencias Tecnicas
+## 8. Referencias Técnicas
 
 - `api/_lib/pagamentos/orquestrador.ts`
 - `api/pagamentos/confirmar.ts`
 - `api/pagamentos/manual/aprovar.ts`
 - `api/pagamentos/manual/solicitar.ts`
-- `api/produtos/[codigo].ts`
+- `api/produtos/[código].ts`
 - `api/_lib/banco.ts`
 - `repositorios/postgres.ts`
 - `contextos/ContextoRepositorios.tsx`
@@ -202,23 +202,23 @@ Com a seguinte condicao:
 
 ## 9. Proximo Passo Recomendado
 
-Antes de qualquer implementacao de Supabase em producao:
+Antes de qualquer implementação de Supabase em produção:
 
-1. Debater o desenho final esperado da migracao
-2. Definir se a etapa 1 sera apenas `Supabase = Postgres gerenciado`
+1. Debater o desenho final esperado da migração
+2. Definir se a etapa 1 será apenas `Supabase = Postgres gerenciado`
 3. Fechar criterios de sucesso e rollback
-4. So depois abrir o plano de execucao
+4. So depois abrir o plano de execução
 
 ---
 
 ## 10. Branches de Feature Derivadas
 
-As refatoracoes estruturais identificadas neste parecer devem ser detalhadas em `/.metadocs/feat/` antes da implementacao.
+As refatoracoes estruturais identificadas neste parecer devem ser detalhadas em `/.metadocs/feat/` antes da implementação.
 
 ### Documentos abertos
 
-- [refatoracao_auditoria_telemetria.md](./feat/refatoracao_auditoria_telemetria.md)
-- [idempotencia_confirmacao_pagamento.md](./feat/idempotencia_confirmacao_pagamento.md)
+- [refatoracao_auditoria_telemetria.md](./walkthrough/refatoracao_auditoria_telemetria.md)
+- [idempotencia_confirmacao_pagamento.md](./walkthrough/idempotencia_confirmacao_pagamento.md)
 - [postgres_gerenciado_supabase.md](./feat/postgres_gerenciado_supabase.md)
 - [estrategia_ambiente.md](./feat/estrategia_ambiente.md)
 - [governanca_catalogo_compartilhado.md](./feat/governanca_catalogo_compartilhado.md)
@@ -229,4 +229,4 @@ As refatoracoes estruturais identificadas neste parecer devem ser detalhadas em 
 ### Convencao
 
 - Durante planejamento: `/.metadocs/feat/<tema>.md`
-- Apos implementacao: mover o mesmo arquivo para `/.metadocs/walkthrough/<tema>.md`
+- Apos implementação: mover o mesmo arquivo para `/.metadocs/walkthrough/<tema>.md`
