@@ -221,7 +221,7 @@ Se qualquer verificacao critica falhar:
 - [roadmap_supabase_prontidao_producao.md](../roadmap_supabase_prontidao_producao.md)
 - [roadmap.md](../roadmap.md)
 - [estrategia_ambiente.md](../walkthrough/estrategia_ambiente.md)
-- [validacao_migrations_carga_remota.md](./validacao_migrations_carga_remota.md)
+- [validacao_migrations_carga_remota.md](../walkthrough/validacao_migrations_carga_remota.md)
 - [postgres_gerenciado_supabase.md](./postgres_gerenciado_supabase.md)
 
 ---

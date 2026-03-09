@@ -1,6 +1,6 @@
 # Feature Plan - Plano Implementação Postgres Produção
 
-> **Ultima atualização:** 2026-03-08
+> **Última atualização:** 2026-03-09
 > **Status:** Consolidado para execução futura
 > **Tipo:** Plano mestre de implementação
 > **Escopo:** Introduzir PostgreSQL remoto oficial em produção usando Supabase como Postgres gerenciado
@@ -14,9 +14,9 @@ Consolidar em um único plano a ordem de implementação das decisões arquitetu
 ### Resultado esperado
 
 - produção passa a usar PostgreSQL gerenciado na Supabase
-- backend proprio continua como única porta de acesso ao banco
+- backend próprio continua como única porta de acesso ao banco
 - frontend continua sem integração nativa com Supabase nesta fase
-- catalogo compartilhado oficial passa a existir com governança adequada
+- catálogo compartilhado oficial passa a existir com governança adequada
 
 ---
 
@@ -28,7 +28,7 @@ Consolidar em um único plano a ordem de implementação das decisões arquitetu
 - idempotência em confirmação de pagamento
 - separação entre auditoria e telemetria
 - estratégia de ambiente
-- governança do catalogo compartilhado
+- governança do catálogo compartilhado
 - validação de migrations e carga inicial no banco remoto
 - cutover controlado
 - smoke test real de produção
@@ -38,7 +38,7 @@ Consolidar em um único plano a ordem de implementação das decisões arquitetu
 - SDK Supabase no frontend
 - Auth Supabase
 - RLS como base principal do fluxo atual
-- sync automático obrigatório do catalogo local para remoto
+- sync automático obrigatório do catálogo local para remoto
 - engine de recomendação
 - curadoria completa por IA como etapa obrigatória do primeiro cutover
 
@@ -46,16 +46,20 @@ Consolidar em um único plano a ordem de implementação das decisões arquitetu
 
 ## 3. Premissas Oficiais
 
-- Supabase será usada como **Postgres gerenciado**, não como plataforma nativa da aplicacao nesta fase
+- Supabase será usada como **Postgres gerenciado**, não como plataforma nativa da aplicação nesta fase
 - ambientes oficiais: `local` e `produção`
-- não havera homologacao remota permanente por enquanto
-- havera **validação remota pré-cutover** como procedimento controlado
-- `produtos` será o catalogo oficial compartilhado
+- não haverá homologação remota permanente por enquanto
+- haverá **validação remota pré-cutover** como procedimento controlado
+- `produtos` será o catálogo oficial compartilhado
 - `produtos_adicionados_pelo_usuario` será staging/inbox
+- a trilha operacional remota será implementada em **Node/JS CLI**
+- `scripts/init_db.py` não será expandido como modelo principal desta fase
+- operações de migrations/carga/validação remota não serão expostas por HTTP
+- módulos genéricos de ambiente e banco devem residir em camada compartilhada neutra, não em `api/_lib/`
 
 ---
 
-## 4. Dependencias Consolidadas
+## 4. Dependências Consolidadas
 
 Este plano depende das decisões já registradas em:
 
@@ -64,7 +68,8 @@ Este plano depende das decisões já registradas em:
 - [postgres_gerenciado_supabase.md](./postgres_gerenciado_supabase.md)
 - [estrategia_ambiente.md](../walkthrough/estrategia_ambiente.md)
 - [governanca_catalogo_compartilhado.md](../walkthrough/governanca_catalogo_compartilhado.md)
-- [validacao_migrations_carga_remota.md](./validacao_migrations_carga_remota.md)
+- [validacao_migrations_carga_remota.md](../walkthrough/validacao_migrations_carga_remota.md)
+- [guia_execucao_validacao_remota_node.md](../walkthrough/guia_execucao_validacao_remota_node.md)
 - [smoke_test_producao.md](./smoke_test_producao.md)
 
 ---
@@ -90,16 +95,16 @@ Motivo da prioridade:
 
 Objetivo:
 
-- definir com seguranca como o sistema opera entre local e produção
+- definir com segurança como o sistema opera entre local e produção
 
 Entregas:
 
 - estratégia de ambiente
-- governança do catalogo compartilhado
+- governança do catálogo compartilhado
 
 Motivo da prioridade:
 
-- sem isso, o banco remoto entra sem regra clara de escrita, sincronizacao e operação
+- sem isso, o banco remoto entra sem regra clara de escrita, sincronização e operação
 
 ### Fase 3 - Ferramental operacional remoto
 
@@ -110,18 +115,19 @@ Objetivo:
 Entregas:
 
 - separação entre migrations, carga inicial e validação
+- scripts operacionais em Node/JS CLI
 - orquestrador operacional fino
-- preparacao da conexao com Postgres gerenciado na Supabase
+- preparação da conexão com Postgres gerenciado na Supabase
 
 Motivo da prioridade:
 
-- evita operação manual fragil e evita script magico opaco
+- evita operação manual frágil e evita script mágico opaco
 
 ### Fase 4 - Validação remota pré-cutover
 
 Objetivo:
 
-- provar o banco remoto antes de virar a aplicacao
+- provar o banco remoto antes de virar a aplicação
 
 Entregas:
 
@@ -155,7 +161,7 @@ Entregas:
 
 ---
 
-## 6. Sequencia Técnica Consolidada
+## 6. Sequência Técnica Consolidada
 
 ### Bloco A - Backend seguro
 
@@ -165,73 +171,76 @@ Entregas:
 ### Bloco B - Regras de operação
 
 3. Formalizar ambiente `local` e `produção`
-4. Proteger scripts sensiveis por ambiente
-5. Formalizar governança de escrita no catalogo compartilhado
+4. Proteger scripts sensíveis por ambiente
+5. Formalizar governança de escrita no catálogo compartilhado
 
 ### Bloco C - Banco remoto
 
 6. Preparar projeto Supabase como Postgres gerenciado
-7. Separar etapas operacionais:
+7. Extrair infraestrutura compartilhada de ambiente/conexão para camada neutra
+8. Separar etapas operacionais:
    - migrations
    - carga inicial
    - validação
-8. Implementar orquestrador fino
+9. Implementar scripts Node/JS CLI da trilha remota
+10. Implementar orquestrador fino
 
 ### Bloco D - Prova antes da virada
 
-9. Rodar migrations no banco remoto
-10. Rodar carga inicial do catalogo
-11. Validar schema, volume e comportamento
+11. Rodar migrations no banco remoto
+12. Rodar carga inicial do catálogo
+13. Validar schema, volume e comportamento
 
 ### Bloco E - Virada
 
-12. Fazer cutover controlado
-13. Executar smoke test real de produção
-14. Decidir aceite ou rollback
+14. Fazer cutover controlado
+15. Executar smoke test real de produção
+16. Decidir aceite ou rollback
 
 ---
 
-## 7. Criterios de Aceite por Fase
+## 7. Critérios de Aceite por Fase
 
 ### Fase 1
 
-- nenhum fluxo legitimo de confirmação do mesmo pagamento retorna erro técnico por corrida
+- nenhum fluxo legítimo de confirmação do mesmo pagamento retorna erro técnico por corrida
 - `SELECT` de produto deixa de ser tratado como auditoria operacional
 
 ### Fase 2
 
 - ambientes oficiais ficam claros
-- dados locais do usuário não escrevem diretamente no catalogo oficial
+- dados locais do usuário não escrevem diretamente no catálogo oficial
 
 ### Fase 3
 
 - operação remota fica dividida entre schema, carga inicial e validação
-- orquestrador e transparente e previsivel
+- scripts CLI ficam alinhados à stack principal do projeto
+- orquestrador é transparente e previsível
 
 ### Fase 4
 
 - banco remoto replica o schema esperado
-- catalogo inicial e carregado corretamente
+- catálogo inicial é carregado corretamente
 - backend opera corretamente com o banco remoto
 
 ### Fase 5
 
 - produção aponta para o banco remoto oficial
-- não ha regressao grave imediatamente observavel
+- não há regressão grave imediatamente observável
 
 ### Fase 6
 
 - smoke test de produção passa
-- migração e formalmente aceita
+- migração é formalmente aceita
 
 ---
 
 ## 8. Riscos que Este Plano Busca Conter
 
 - erro de concorrência em pagamento
-- degradacao do scanner por escrita indevida
-- contaminacao do catalogo oficial por dados locais ruins
-- confusao entre ambiente local e produção
+- degradação do scanner por escrita indevida
+- contaminação do catálogo oficial por dados locais ruins
+- confusão entre ambiente local e produção
 - migration/carga inicial executadas de forma opaca
 - cutover sem validação suficiente
 
@@ -239,9 +248,9 @@ Entregas:
 
 ## 9. Decisões Explícitas Sobre Escopo
 
-### Sync automático do catalogo local
+### Sync automático do catálogo local
 
-Não e obrigatório nesta fase.
+Não é obrigatório nesta fase.
 
 Se for implementado depois:
 
@@ -251,40 +260,51 @@ Se for implementado depois:
 
 ### Curadoria com IA
 
-Pode existir futuramente, mas não deve bloquear a introducao inicial do Postgres remoto.
+Pode existir futuramente, mas não deve bloquear a introdução inicial do Postgres remoto.
 
 ### RLS
 
-Pode ser discutido em fase posterior, mas não e requisito central para esta entrega, pois o frontend não acessara o banco diretamente.
+Pode ser discutido em fase posterior, mas não é requisito central para esta entrega, pois o frontend não acessará o banco diretamente.
+
+### Stack operacional da validação remota
+
+A trilha nova desta fase deve permanecer em Node/JS CLI.
+
+Portanto:
+
+- não expandir Python como stack principal desta frente
+- não criar endpoints HTTP para executar operações de banco remoto
+- manter operação de infraestrutura fora da superfície pública da aplicação
+- não acoplar a CLI à semântica de `api/_lib/` quando o módulo for compartilhado
 
 ---
 
-## 10. Evidencias Minimas para Considerar a Migração Pronta
+## 10. Evidências Mínimas para Considerar a Migração Pronta
 
-- documentacao de features implementadas convertida em walkthrough correspondente
-- banco remoto com schema valido
+- documentação de features implementadas convertida em walkthrough correspondente
+- banco remoto com schema válido
 - carga inicial confirmada
-- aplicacao em produção operando com banco remoto
+- aplicação em produção operando com banco remoto
 - smoke test de produção aprovado
 
 ---
 
-## 11. Proximo Passo Apos Este Plano
+## 11. Próximo Passo Após Este Plano
 
 Quando a implementação for iniciada, este plano deve ser usado como ordem oficial de execução.
 
-Cada branch de feature devera:
+Cada branch de feature deverá:
 
 - ser implementada
 - validada
 - movida para `/.metadocs/walkthrough/`
-- referenciada no `histórico.md`
+- referenciada no `historico.md`
 
 ---
 
 ## 12. Destino Pós-Implementação
 
-Apos a execução completa da iniciativa, este mesmo arquivo pode ser movido para:
+Após a execução completa da iniciativa, este mesmo arquivo pode ser movido para:
 
 - `.metadocs/walkthrough/plano_implementacao_postgres_producao.md`
 

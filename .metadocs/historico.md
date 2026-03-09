@@ -382,3 +382,9 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Nova Tabela de Inbox:** A migration `011_cria_tabela_produtos_adicionados_pelo_usuario.sql` criou a camada de staging com `status_curadoria`, `origem`, `usuario_id`, `ip_hash` e trigger de auditoria.
 - **Contrato OfflineFirst Alinhado:** `repositorios/offline-first.ts` e `repositorios/postgres.ts` agora assumem explicitamente que leitura remota e catalogo oficial, enquanto escrita remota e staging.
 - **Validacao Pratica:** Build aprovado, migration `011` aplicada e teste real confirmou 1 linha em `produtos_adicionados_pelo_usuario` e 0 linhas em `produtos` para o mesmo GTIN.
+
+### 09/03: [Validação de Migrations e Carga Remota](./walkthrough/validacao_migrations_carga_remota.md) 🧭
+
+- **Trilha Operacional em Node/JS CLI:** Implementados `aplicar_migrations.ts`, `carregar_catalogo_inicial.ts`, `validar_banco_remoto.ts` e `orquestrar_validacao_remota.ts` em `lib/scripts/database/`, sem expandir Python e sem expor endpoints HTTP para operar banco.
+- **Infraestrutura Compartilhada Corrigida:** `ambiente` foi consolidado em `infra/ambiente/`, `lib/database/banco.ts` passou a reutilizar essa base e a camada nova deixou de depender semanticamente de `api/_lib/`.
+- **Validação Local Completa:** Build aprovado e execução validada via Docker dos quatro comandos da trilha, incluindo a orquestração completa com `12/12` migrations registradas, `30196` registros lidos no catálogo e escrita controlada com rollback.

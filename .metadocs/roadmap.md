@@ -253,7 +253,7 @@
 > **Branch de feature aberta:** Ver plano em [postgres_gerenciado_supabase.md](./feat/postgres_gerenciado_supabase.md).
 > **Walkthrough concluido:** Ver implementacao em [estrategia_ambiente.md](./walkthrough/estrategia_ambiente.md).
 > **Walkthrough concluido:** Ver implementacao em [governanca_catalogo_compartilhado.md](./walkthrough/governanca_catalogo_compartilhado.md).
-> **Branch de feature aberta:** Ver plano em [validacao_migrations_carga_remota.md](./feat/validacao_migrations_carga_remota.md).
+> **Walkthrough concluido:** Ver implementacao em [validacao_migrations_carga_remota.md](./walkthrough/validacao_migrations_carga_remota.md).
 > **Branch de feature aberta:** Ver plano em [smoke_test_producao.md](./feat/smoke_test_producao.md).
 > **Plano consolidado:** Ver [plano_implementacao_postgres_producao.md](./feat/plano_implementacao_postgres_producao.md).
 
