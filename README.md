@@ -28,7 +28,7 @@
 
 Consumidores frequentemente perdem o controle do valor total durante compras, resultando em orçamentos estourados. Este app oferece uma solução prática e inteligente para manter o controle financeiro.
 
-> [!NOTE] 
+> [!NOTE]
 > **Histórico:** Este projeto foi originalmente chamado **"Preço Certo"** e renomeado para **"Sem Susto"** em Janeiro/2026 para refletir o novo domínio `semsusto.app`. O repositório GitHub pode ainda conter referências ao nome antigo em commits históricos.
 
 ---
@@ -68,7 +68,7 @@ O **Sem Susto** foi projetado com foco extremo em performance e experiência do 
 
 - **React 19** — Biblioteca UI com hooks e functional components
 - **TypeScript 5.8** — Tipagem estática para maior robustez
-- **Vite 7** — Build tool ultrarrápido com HMR
+- **Vite 6** — Build tool ultrarrápido com HMR
 
 ### Inteligência Artificial
 
@@ -124,7 +124,7 @@ npm run dev
 
 ## 🏗 Arquitetura
 
-```
+```text
 sem-susto/
 ├── .docker/                # Arquivos Docker Compose
 ├── .metadocs/              # Documentação de projeto
