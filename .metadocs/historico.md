@@ -368,3 +368,10 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Auditoria Preservada:** O trigger de escrita em `produtos` foi mantido para `INSERT`, `UPDATE` e `DELETE`, preservando a rastreabilidade operacional forte.
 - **Validação no Docker:** O ambiente local confirmou os dois ramos do endpoint (`200` e `404`) gerando telemetria correta, sem nova escrita de leitura em `auditoria_logs` apos a refatoracao.
 
+### 08/03: [Estrategia de Ambiente](./walkthrough/estrategia_ambiente.md)
+
+- **Contrato Operacional Explicito:** Introduzidos `APP_ENV` e `VITE_APP_ENV` como fonte oficial para distinguir `local` e `producao`, sem ativar o PostgreSQL remoto nesta fase.
+- **Defaults Seguros no Frontend:** `ContextoRepositorios.tsx` deixou de assumir PostgreSQL remoto em producao por ausencia de flag, mantendo o app em modo local/offline ate o cutover.
+- **Banco Sob Demanda:** `api/_lib/banco.ts` passou a inicializar o pool apenas no primeiro uso real, evitando derrubar o servidor por `DATABASE_URL` ausente em ambiente que ainda nao deve usar banco remoto.
+- **Travas no `init_db.py`:** Reset, criacao automatica e carga inicial passaram a respeitar `APP_ENV`, `INIT_DB_IMPORTAR_DADOS` e `INIT_DB_RESETAR_BANCO`.
+- **Validacao:** `docker compose -f .docker/compose.yaml exec app npm run build` aprovado e `docker compose -f .docker/compose.yaml exec backend env APP_ENV=local INIT_DB_IMPORTAR_DADOS=false INIT_DB_RESETAR_BANCO=false python scripts/init_db.py` validado com sucesso.

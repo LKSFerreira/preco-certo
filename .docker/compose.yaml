@@ -22,7 +22,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=sem_susto
-      - PG_ENV=development
+      - APP_ENV=local
 
   # ---------------------------------------------------------------------------
   # backend - Python Worker para scripts pesados (Data Engineering)
@@ -35,8 +35,10 @@ services:
       - ../:/app
     working_dir: /app
     environment:
-      - PG_ENV=development
+      - APP_ENV=local
       - DATABASE_URL=postgresql://postgres:postgres@database:5432/sem_susto
+      - INIT_DB_IMPORTAR_DADOS=true
+      - INIT_DB_RESETAR_BANCO=false
     # Mantém o container vivo para rodarmos comandos manuais ou roda o script direto
     command: tail -f /dev/null
 
@@ -58,8 +60,11 @@ services:
     stdin_open: true
     tty: true
     environment:
+      - APP_ENV=local
+      - VITE_APP_ENV=local
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@database:5432/sem_susto
+      - VITE_USAR_BANCO_POSTGRES=true
       - WATCHPACK_POLLING=true
       - HOST_IP=${HOST_IP:-}
     env_file:

@@ -220,7 +220,7 @@ As refatoracoes estruturais identificadas neste parecer devem ser detalhadas em 
 - [refatoracao_auditoria_telemetria.md](./walkthrough/refatoracao_auditoria_telemetria.md)
 - [idempotencia_confirmacao_pagamento.md](./walkthrough/idempotencia_confirmacao_pagamento.md)
 - [postgres_gerenciado_supabase.md](./feat/postgres_gerenciado_supabase.md)
-- [estrategia_ambiente.md](./feat/estrategia_ambiente.md)
+- [estrategia_ambiente.md](./walkthrough/estrategia_ambiente.md)
 - [governanca_catalogo_compartilhado.md](./feat/governanca_catalogo_compartilhado.md)
 - [validacao_migrations_carga_remota.md](./feat/validacao_migrations_carga_remota.md)
 - [smoke_test_producao.md](./feat/smoke_test_producao.md)

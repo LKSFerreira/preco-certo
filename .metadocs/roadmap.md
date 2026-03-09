@@ -251,7 +251,7 @@
 > **Walkthrough concluido:** Ver implementacao em [refatoracao_auditoria_telemetria.md](./walkthrough/refatoracao_auditoria_telemetria.md).
 > **Walkthrough concluido:** Ver implementacao em [idempotencia_confirmacao_pagamento.md](./walkthrough/idempotencia_confirmacao_pagamento.md).
 > **Branch de feature aberta:** Ver plano em [postgres_gerenciado_supabase.md](./feat/postgres_gerenciado_supabase.md).
-> **Branch de feature aberta:** Ver plano em [estrategia_ambiente.md](./feat/estrategia_ambiente.md).
+> **Walkthrough concluido:** Ver implementacao em [estrategia_ambiente.md](./walkthrough/estrategia_ambiente.md).
 > **Branch de feature aberta:** Ver plano em [governanca_catalogo_compartilhado.md](./feat/governanca_catalogo_compartilhado.md).
 > **Branch de feature aberta:** Ver plano em [validacao_migrations_carga_remota.md](./feat/validacao_migrations_carga_remota.md).
 > **Branch de feature aberta:** Ver plano em [smoke_test_producao.md](./feat/smoke_test_producao.md).

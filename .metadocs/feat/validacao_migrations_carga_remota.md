@@ -262,7 +262,7 @@ Validar:
 
 - [roadmap_supabase_prontidao_producao.md](../roadmap_supabase_prontidao_producao.md)
 - [roadmap.md](../roadmap.md)
-- [estrategia_ambiente.md](./estrategia_ambiente.md)
+- [estrategia_ambiente.md](../walkthrough/estrategia_ambiente.md)
 - [postgres_gerenciado_supabase.md](./postgres_gerenciado_supabase.md)
 - `scripts/init_db.py`
 

@@ -1,25 +1,58 @@
 import { Pool } from 'pg';
+import { obterAmbienteOperacionalServidor, obterDatabaseUrlConfigurada } from './ambiente.js';
 
 /**
  * Pool de conexões PostgreSQL para os endpoints serverless.
  *
- * Reutiliza conexões entre invocações na mesma instância serverless,
- * evitando o overhead de abrir/fechar conexão a cada requisição.
- *
- * A variável DATABASE_URL é configurada na Vercel (produção)
- * ou no compose.yaml (desenvolvimento local).
+ * O pool é inicializado sob demanda para não derrubar o servidor local
+ * inteiro quando o banco remoto ainda não estiver ativo no ambiente.
  */
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+let poolCompartilhado: Pool | null = null;
 
-    // Serverless: limita conexões para não esgotar o pool do banco
-    max: 5,
+function criarPool(): Pool {
+    const databaseUrl = obterDatabaseUrlConfigurada();
+    const ambiente = obterAmbienteOperacionalServidor();
 
-    // Fecha conexões ociosas após 30 segundos (liberando recursos)
-    idleTimeoutMillis: 30000,
+    if (!databaseUrl) {
+        throw new Error(
+            `[Banco] DATABASE_URL não definida para APP_ENV=${ambiente}. ` +
+            'Mantenha o fluxo PostgreSQL desativado neste ambiente até o cutover.'
+        );
+    }
 
-    // Timeout de 10 segundos para estabelecer conexão
-    connectionTimeoutMillis: 10000,
+    return new Pool({
+        connectionString: databaseUrl,
+
+        // Serverless: limita conexões para não esgotar o pool do banco
+        max: 5,
+
+        // Fecha conexões ociosas após 30 segundos
+        idleTimeoutMillis: 30000,
+
+        // Timeout de 10 segundos para estabelecer conexão
+        connectionTimeoutMillis: 10000,
+    });
+}
+
+function obterPool(): Pool {
+    if (!poolCompartilhado) {
+        poolCompartilhado = criarPool();
+    }
+
+    return poolCompartilhado;
+}
+
+const pool = new Proxy({} as Pool, {
+    get(_, propriedade) {
+        const instancia = obterPool();
+        const valor = Reflect.get(instancia, propriedade);
+
+        if (typeof valor === 'function') {
+            return valor.bind(instancia);
+        }
+
+        return valor;
+    },
 });
 
 export default pool;
