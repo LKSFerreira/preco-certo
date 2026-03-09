@@ -1,5 +1,5 @@
 import { Pool } from 'pg';
-import { obterAmbienteOperacionalServidor, obterDatabaseUrlConfigurada } from './ambiente.js';
+import { obterAmbienteOperacionalServidor, obterDatabaseUrlConfigurada } from '../../infra/ambiente/server.js';
 
 /**
  * Pool de conexões PostgreSQL para os endpoints serverless.
@@ -15,7 +15,7 @@ function criarPool(): Pool {
 
     if (!databaseUrl) {
         throw new Error(
-            `[Banco] DATABASE_URL não definida para APP_ENV=${ambiente}. ` +
+            `[Banco] DATABASE_URL não definida para /data=${ambiente}. ` +
             'Mantenha o fluxo PostgreSQL desativado neste ambiente até o cutover.'
         );
     }

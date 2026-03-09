@@ -1,9 +1,9 @@
-import pool from './banco.js';
+import pool from '../../lib/database/banco.js';
 
 /**
  * Valida se um Hash de Token possui status Premium ativo no banco de dados.
  * Protege contra acessos indevidos na API.
- * 
+ *
  * @param tokenHash Hash SHA-256 do token fornecido pelo cliente
  * @returns true se o token existe e está ativo/não expirado
  */

@@ -1,4 +1,4 @@
-import pool from '../banco.js';
+import pool from '../../../lib/database/banco.js';
 import { fabricaGatewayPagamento } from '../gateways/fabrica';
 import { gerarCodigoToken, calcularHash, obterDuracaoPorPlano } from '../tokens.js';
 

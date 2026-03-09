@@ -6,7 +6,7 @@
  * Uso: npx tsx scripts/testar_proxy_ia.ts
  */
 
-import handler from '../api/ia/analisar';
+import handler from '../../api/ia/analisar';
 
 // Mock de Request
 const req = {

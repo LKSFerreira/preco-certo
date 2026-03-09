@@ -4,27 +4,27 @@ import os from 'os';
 
 // Importa os handlers da API
 // @ts-ignore
-import analisarHandler from '../api/ia/analisar';
+import analisarHandler from '../../api/ia/analisar';
 // @ts-ignore
-import cosmosHandler from '../api/cosmos/gtin/[codigo]';
+import cosmosHandler from '../../api/cosmos/gtin/[codigo]';
 // @ts-ignore
-import gerarTokenHandler from '../api/tokens/gerar';
+import gerarTokenHandler from '../../api/tokens/gerar';
 // @ts-ignore
-import ativarTokenHandler from '../api/tokens/ativar';
+import ativarTokenHandler from '../../api/tokens/ativar';
 // @ts-ignore
-import consultarTokenHandler from '../api/tokens/consultar';
+import consultarTokenHandler from '../../api/tokens/consultar';
 // @ts-ignore
-import produtosHandler from '../api/produtos/[codigo]';
+import produtosHandler from '../../api/produtos/[codigo]';
 // @ts-ignore
-import pixHandler from '../api/pagamentos/pix';
+import pixHandler from '../../api/pagamentos/pix';
 // @ts-ignore
-import pixStatusHandler from '../api/pagamentos/status';
+import pixStatusHandler from '../../api/pagamentos/status';
 // @ts-ignore
-import confirmarPagamentoHandler from '../api/pagamentos/confirmar';
+import confirmarPagamentoHandler from '../../api/pagamentos/confirmar';
 // @ts-ignore
-import solicitarAprovacaoManualHandler from '../api/pagamentos/manual/solicitar';
+import solicitarAprovacaoManualHandler from '../../api/pagamentos/manual/solicitar';
 // @ts-ignore
-import aprovarPagamentoManualHandler from '../api/pagamentos/manual/aprovar';
+import aprovarPagamentoManualHandler from '../../api/pagamentos/manual/aprovar';
 
 const app = express();
 const PORT = process.env.PORT || 3000;

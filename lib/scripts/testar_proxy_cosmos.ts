@@ -5,7 +5,7 @@
  * Uso: npx tsx scripts/testar_proxy_cosmos.ts
  */
 
-import handler from '../api/cosmos/gtin/[codigo]';
+import handler from '../../api/cosmos/gtin/[codigo]';
 
 // Mock de Request
 const req = {

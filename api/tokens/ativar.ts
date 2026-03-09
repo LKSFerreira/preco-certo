@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import pool from '../_lib/banco.js';
+import pool from '../../lib/database/banco.js';
 import { calcularHash, formatoTokenEhValido } from '../_lib/tokens.js';
 import { hashear, verificarRateLimit, registrarTentativa } from '../_lib/rate_limiter.js';
 

@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z as zod } from 'zod';
-import pool from '../_lib/banco.js';
+import pool from '../../lib/database/banco.js';
 import { registrarEventoProduto } from '../_lib/telemetria_produtos.js';
 
 const schemaProduto = zod.object({

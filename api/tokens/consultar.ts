@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import pool from '../_lib/banco.js';
+import pool from '../../lib/database/banco.js';
 
 /**
  * Endpoint para consultar o status de um token premium.
