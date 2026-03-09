@@ -375,3 +375,10 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Banco Sob Demanda:** `api/_lib/banco.ts` passou a inicializar o pool apenas no primeiro uso real, evitando derrubar o servidor por `DATABASE_URL` ausente em ambiente que ainda nao deve usar banco remoto.
 - **Travas no `init_db.py`:** Reset, criacao automatica e carga inicial passaram a respeitar `APP_ENV`, `INIT_DB_IMPORTAR_DADOS` e `INIT_DB_RESETAR_BANCO`.
 - **Validacao:** `docker compose -f .docker/compose.yaml exec app npm run build` aprovado e `docker compose -f .docker/compose.yaml exec backend env APP_ENV=local INIT_DB_IMPORTAR_DADOS=false INIT_DB_RESETAR_BANCO=false python scripts/init_db.py` validado com sucesso.
+### 09/03: [Governanca Catalogo Compartilhado](./walkthrough/governanca_catalogo_compartilhado.md)
+
+- **Catalogo Oficial Preservado:** `GET /api/produtos/:codigo` continua lendo exclusivamente de `produtos`.
+- **Escrita do Usuario em Staging:** `POST /api/produtos/:codigo` passou a registrar contribuicoes em `produtos_adicionados_pelo_usuario`, retornando `202 Accepted` com status `enviado_para_curadoria`.
+- **Nova Tabela de Inbox:** A migration `011_cria_tabela_produtos_adicionados_pelo_usuario.sql` criou a camada de staging com `status_curadoria`, `origem`, `usuario_id`, `ip_hash` e trigger de auditoria.
+- **Contrato OfflineFirst Alinhado:** `repositorios/offline-first.ts` e `repositorios/postgres.ts` agora assumem explicitamente que leitura remota e catalogo oficial, enquanto escrita remota e staging.
+- **Validacao Pratica:** Build aprovado, migration `011` aplicada e teste real confirmou 1 linha em `produtos_adicionados_pelo_usuario` e 0 linhas em `produtos` para o mesmo GTIN.

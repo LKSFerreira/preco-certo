@@ -1,16 +1,19 @@
-import { RepositorioProdutos } from './tipos-repositorio';
 import { Produto } from '../types';
+import { RepositorioProdutos } from './tipos-repositorio';
 
 /**
- * Implementação do Repositório de Produtos via HTTP (API Própria).
- * Consome os endpoints /api/produtos/:codigo
+ * Implementação do repositório remoto via API própria.
+ *
+ * Regras atuais:
+ * - GET lê do catálogo oficial (`produtos`)
+ * - POST envia contribuição do usuário para staging (`produtos_adicionados_pelo_usuario`)
  */
 export class RepositorioProdutosPostgres implements RepositorioProdutos {
 
     async buscarPorGTIN(gtin: string, _aoMudarStatus?: (status: string) => void): Promise<Produto | null> {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 7000); // 7 segundos
+            const timeoutId = setTimeout(() => controller.abort(), 7000);
 
             const response = await fetch(`/api/produtos/${gtin}`, {
                 signal: controller.signal
@@ -28,7 +31,6 @@ export class RepositorioProdutosPostgres implements RepositorioProdutos {
 
             const dados = await response.json();
 
-            // Converte datas strings para Date
             return {
                 ...dados,
                 preco_estimado: Number(dados.preco_estimado),
@@ -37,17 +39,17 @@ export class RepositorioProdutosPostgres implements RepositorioProdutos {
             };
         } catch (erro: any) {
             if (erro.name === 'AbortError') {
-                console.warn('[Database Postgres] ⏱️ Timeout de 7s atingido. Banco de dados remoto (PostgreSQL) demorou muito para responder.');
+                console.warn('[Database Postgres] Timeout de 7s atingido ao consultar o catálogo oficial remoto.');
                 console.error('[Database Postgres] Erro ao buscar:', erro);
-                return null; // Fallback seguro
+                return null;
             }
+
             throw erro;
         }
     }
 
     async listarTodos(): Promise<Produto[]> {
-        // Não implementado via API por questões de performance/paginação
-        console.warn('[Database Postgres] ⚠️ listarTodos não é suportado via API completa.');
+        console.warn('[Database Postgres] listarTodos não é suportado via API completa.');
         return [];
     }
 
@@ -69,16 +71,16 @@ export class RepositorioProdutosPostgres implements RepositorioProdutos {
 
             if (!response.ok) {
                 const erro = await response.json();
-                throw new Error(erro.erro || 'Erro ao salvar na API');
+                throw new Error(erro.erro || 'Erro ao registrar staging na API');
             }
         } catch (erro: any) {
-            console.error('[Database Postgres] ❌ Erro ao salvar:', erro);
+            console.error('[Database Postgres] Erro ao enviar produto para staging remoto:', erro);
             throw erro;
         }
     }
 
     async remover(gtin: string): Promise<void> {
-        console.warn('[Database Postgres] ⚠️ remover não implementado.');
+        console.warn(`[Database Postgres] remover ainda não implementado para staging remoto (${gtin}).`);
         return Promise.resolve();
     }
 }

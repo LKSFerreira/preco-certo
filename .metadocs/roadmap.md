@@ -252,7 +252,7 @@
 > **Walkthrough concluido:** Ver implementacao em [idempotencia_confirmacao_pagamento.md](./walkthrough/idempotencia_confirmacao_pagamento.md).
 > **Branch de feature aberta:** Ver plano em [postgres_gerenciado_supabase.md](./feat/postgres_gerenciado_supabase.md).
 > **Walkthrough concluido:** Ver implementacao em [estrategia_ambiente.md](./walkthrough/estrategia_ambiente.md).
-> **Branch de feature aberta:** Ver plano em [governanca_catalogo_compartilhado.md](./feat/governanca_catalogo_compartilhado.md).
+> **Walkthrough concluido:** Ver implementacao em [governanca_catalogo_compartilhado.md](./walkthrough/governanca_catalogo_compartilhado.md).
 > **Branch de feature aberta:** Ver plano em [validacao_migrations_carga_remota.md](./feat/validacao_migrations_carga_remota.md).
 > **Branch de feature aberta:** Ver plano em [smoke_test_producao.md](./feat/smoke_test_producao.md).
 > **Plano consolidado:** Ver [plano_implementacao_postgres_producao.md](./feat/plano_implementacao_postgres_producao.md).

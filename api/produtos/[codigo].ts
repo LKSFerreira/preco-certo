@@ -1,20 +1,20 @@
+import { createHash } from 'crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z as zod } from 'zod';
-import { createHash } from 'crypto';
 import pool from '../_lib/banco.js';
 import { registrarEventoProduto } from '../_lib/telemetria_produtos.js';
 
-// Schema de Validação (Blindagem contra lixo)
 const schemaProduto = zod.object({
-    descricao: zod.string().min(3).max(200).transform(s => s.trim()), // Sanitização básica
-    marca: zod.string().min(1).max(100).transform(s => s.trim()),
-    tamanho: zod.string().min(1).max(50).transform(s => s.trim()),
+    descricao: zod.string().min(3).max(200).transform((descricao) => descricao.trim()),
+    marca: zod.string().min(1).max(100).transform((marca) => marca.trim()),
+    tamanho: zod.string().min(1).max(50).transform((tamanho) => tamanho.trim()),
     preco_estimado: zod.number().min(0).optional(),
-    imagem: zod.string().url().optional().or(zod.literal('')), // URL válida ou vazia
+    imagem: zod.string().url().optional().or(zod.literal('')),
 });
 
-// Helper para Hash de IP (Privacidade)
-const hashIp = (ip: string) => createHash('sha256').update(ip).digest('hex');
+function hashIp(ip: string) {
+    return createHash('sha256').update(ip).digest('hex');
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { codigo } = req.query;
@@ -24,14 +24,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ erro: 'Código de barras inválido' });
     }
 
-    // Identifica Cliente (IP Header Padrão Vercel vs Local)
     const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
     const ipHash = hashIp(clientIp);
+    const usuarioId = 'anonimo';
 
-    // --- GET: Consulta + Telemetria de Comportamento ---
     if (req.method === 'GET') {
         try {
             const client = await pool.connect();
+
             try {
                 const resultado = await client.query(
                     'SELECT * FROM produtos WHERE codigo_barras = $1',
@@ -43,7 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     evento: resultado.rows.length === 0 ? 'produto_nao_encontrado' : 'produto_encontrado',
                     origem: 'api_produtos_get',
                     codigo_barras: codigoFinal,
-                    usuario_id: 'anonimo',
+                    usuario_id: usuarioId,
                     ip_hash: ipHash,
                 });
 
@@ -56,74 +56,92 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 client.release();
             }
         } catch (erro) {
-            console.error('🚨 [API Produtos]', erro);
+            console.error('[API Produtos] Erro ao buscar produto:', erro);
             return res.status(500).json({ erro: 'Erro interno ao buscar produto' });
         }
     }
 
-    // --- POST: Salvar/Atualizar (Auditada via Trigger) ---
     if (req.method === 'POST') {
-        // 1. Rate Limiting (Flood Protection)
         const limite = await pool.query(
-            `SELECT COUNT(*) as total FROM rate_limit_aposta 
-       WHERE ip_hash = $1 AND endpoint = '/api/produtos' 
-       AND criado_em > NOW() - INTERVAL '1 minute'`,
+            `SELECT COUNT(*) as total FROM rate_limit_aposta
+             WHERE ip_hash = $1 AND endpoint = '/api/produtos'
+             AND criado_em > NOW() - INTERVAL '1 minute'`,
             [ipHash]
         );
 
-        if (parseInt(limite.rows[0].total) > 10) {
-            return res.status(429).json({ erro: 'Calma! Muitas requisições. Tente em 1 minuto.' });
+        if (parseInt(limite.rows[0].total, 10) > 10) {
+            return res.status(429).json({ erro: 'Calma. Muitas requisições. Tente novamente em 1 minuto.' });
         }
 
-        // Registra tentativa (mesmo se falhar validação Zod depois, já contou)
         await pool.query(
             `INSERT INTO rate_limit_aposta (ip_hash, endpoint) VALUES ($1, '/api/produtos')`,
             [ipHash]
         );
 
-        // 2. Validação Zod
         const validacao = schemaProduto.safeParse(req.body);
+
         if (!validacao.success) {
             return res.status(400).json({ erro: 'Dados inválidos', detalhes: validacao.error.format() });
         }
 
         const { descricao, marca, tamanho, preco_estimado, imagem } = validacao.data;
-
-        // 3. Transação com Contexto (Para o Trigger pegar o IP)
         const client = await pool.connect();
+
         try {
             await client.query('BEGIN');
-
-            // Injeta Variáveis de Sessão (Usando set_config para suportar parametros)
-            await client.query(`SELECT set_config('app.current_user_token', 'anonimo', true)`);
+            await client.query(`SELECT set_config('app.current_user_token', $1, true)`, [usuarioId]);
             await client.query(`SELECT set_config('app.client_ip', $1, true)`, [ipHash]);
 
-            // Upsert (Insert ou Update)
             const query = `
-        INSERT INTO produtos (codigo_barras, descricao, marca, tamanho, preco_estimado, imagem, atualizado_em)
-        VALUES ($1, $2, $3, $4, $5, $6, NOW())
-        ON CONFLICT (codigo_barras) 
-        DO UPDATE SET 
-          descricao = EXCLUDED.descricao,
-          marca = EXCLUDED.marca,
-          tamanho = EXCLUDED.tamanho,
-          preco_estimado = COALESCE(EXCLUDED.preco_estimado, produtos.preco_estimado),
-          imagem = COALESCE(EXCLUDED.imagem, produtos.imagem),
-          atualizado_em = NOW()
-        RETURNING *;
-      `;
+                INSERT INTO produtos_adicionados_pelo_usuario (
+                    codigo_barras,
+                    descricao,
+                    marca,
+                    tamanho,
+                    preco_informado,
+                    imagem,
+                    origem,
+                    status_curadoria,
+                    usuario_id,
+                    ip_hash,
+                    atualizado_em
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, 'catalogo_local_usuario', 'pendente', $7, $8, NOW())
+                ON CONFLICT (codigo_barras, usuario_id, ip_hash)
+                DO UPDATE SET
+                    descricao = EXCLUDED.descricao,
+                    marca = EXCLUDED.marca,
+                    tamanho = EXCLUDED.tamanho,
+                    preco_informado = COALESCE(EXCLUDED.preco_informado, produtos_adicionados_pelo_usuario.preco_informado),
+                    imagem = COALESCE(EXCLUDED.imagem, produtos_adicionados_pelo_usuario.imagem),
+                    origem = EXCLUDED.origem,
+                    status_curadoria = 'pendente',
+                    atualizado_em = NOW()
+                RETURNING id, codigo_barras, status_curadoria, criado_em, atualizado_em;
+            `;
 
             const resultado = await client.query(query, [
-                codigoFinal, descricao, marca, tamanho, preco_estimado || 0, imagem || null
+                codigoFinal,
+                descricao,
+                marca,
+                tamanho,
+                preco_estimado ?? null,
+                imagem || null,
+                usuarioId,
+                ipHash,
             ]);
 
             await client.query('COMMIT');
-            return res.status(200).json(resultado.rows[0]);
 
+            return res.status(202).json({
+                status: 'enviado_para_curadoria',
+                destino: 'produtos_adicionados_pelo_usuario',
+                registro: resultado.rows[0],
+            });
         } catch (erro) {
             await client.query('ROLLBACK');
-            console.error('🚨 [API Produtos] ERRO DETALHADO:', erro);
-            return res.status(500).json({ erro: 'Erro ao salvar produto' });
+            console.error('[API Produtos] Erro ao registrar staging de produto:', erro);
+            return res.status(500).json({ erro: 'Erro ao registrar produto para curadoria' });
         } finally {
             client.release();
         }

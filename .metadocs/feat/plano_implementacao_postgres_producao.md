@@ -63,7 +63,7 @@ Este plano depende das decisões já registradas em:
 - [idempotencia_confirmacao_pagamento.md](../walkthrough/idempotencia_confirmacao_pagamento.md)
 - [postgres_gerenciado_supabase.md](./postgres_gerenciado_supabase.md)
 - [estrategia_ambiente.md](../walkthrough/estrategia_ambiente.md)
-- [governanca_catalogo_compartilhado.md](./governanca_catalogo_compartilhado.md)
+- [governanca_catalogo_compartilhado.md](../walkthrough/governanca_catalogo_compartilhado.md)
 - [validacao_migrations_carga_remota.md](./validacao_migrations_carga_remota.md)
 - [smoke_test_producao.md](./smoke_test_producao.md)
 

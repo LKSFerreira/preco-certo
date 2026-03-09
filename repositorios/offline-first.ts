@@ -1,12 +1,12 @@
-import { RepositorioProdutos } from './tipos-repositorio';
 import { Produto } from '../types';
+import { RepositorioProdutos } from './tipos-repositorio';
 
 /**
- * Repositório Offline First: Prioriza LocalStorage (Rápido) + Sincroniza API (Fonte da Verdade).
- * 
+ * Repositório Offline First.
+ *
  * Estratégia:
- * - Leitura: Tenta Local -> Se falhar, tenta API -> Se achar na API, salva Local.
- * - Escrita: Salva Local (Síncrono/Rápido) + Salva API (Assíncrono/Audit).
+ * - Leitura: Local -> catálogo oficial remoto -> fallback null
+ * - Escrita: Local imediato + envio assíncrono para staging remoto
  */
 export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
     constructor(
@@ -15,55 +15,51 @@ export class RepositorioProdutosOfflineFirst implements RepositorioProdutos {
     ) { }
 
     async buscarPorGTIN(gtin: string, aoMudarStatus?: (status: string) => void): Promise<Produto | null> {
-        // 1. Cache Local (IndexedDB)
         aoMudarStatus?.('Buscando no banco local (IndexedDB)...');
         const produtoLocal = await this.local.buscarPorGTIN(gtin);
+
         if (produtoLocal) {
             return produtoLocal;
         }
 
-        // 2. Banco Remoto (Postgres - Fonte da Verdade)
         try {
-            aoMudarStatus?.('Buscando no banco remoto (Postgres)...');
+            aoMudarStatus?.('Buscando no catálogo oficial remoto...');
             const produtoRemoto = await this.remoto.buscarPorGTIN(gtin);
+
             if (produtoRemoto) {
-                // Hidratação do Cache Local
                 await this.local.salvar(produtoRemoto);
                 return produtoRemoto;
             }
         } catch (erro) {
-            // Falha silenciosa no Postgres não deve quebrar a busca (pode estar offline)
-            console.warn('[OfflineFirst] Falha ao buscar no Postgres Remoto:', erro);
+            console.warn('[OfflineFirst] Falha ao buscar no catálogo oficial remoto:', erro);
         }
 
         return null;
     }
 
     async listarTodos(): Promise<Produto[]> {
-        // Lista apenas do local, pois API tem paginação/limites
         return this.local.listarTodos();
     }
 
     async salvar(produto: Produto): Promise<void> {
-        // 1. Salva Localmente (Garante funcionamento offline)
         await this.local.salvar(produto);
 
-        // 2. Sincroniza com API (Tenta persistir e auditar)
         try {
             await this.remoto.salvar(produto);
-            console.log(`☁️ [OfflineFirst] Sincronizado com Postgres Remoto: ${produto.codigo_barras}`);
+            console.log(`☁️ [OfflineFirst] Produto enviado para staging remoto: ${produto.codigo_barras}`);
         } catch (erro) {
-            console.error('[OfflineFirst] Erro na sincronização com Postgres Remoto:', erro);
-            // TODO: Adicionar em fila de retry (SyncQueue) futura
+            console.error('[OfflineFirst] Erro ao sincronizar staging remoto:', erro);
+            // TODO: Adicionar fila de retry futura
         }
     }
 
     async remover(gtin: string): Promise<void> {
         await this.local.remover(gtin);
+
         try {
             await this.remoto.remover(gtin);
         } catch (erro) {
-            console.warn('[OfflineFirst] Falha ao remover no Postgres Remoto:', erro);
+            console.warn('[OfflineFirst] Falha ao remover no remoto:', erro);
         }
     }
 }
