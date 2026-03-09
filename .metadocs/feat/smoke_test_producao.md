@@ -1,102 +1,104 @@
-# Feature Plan - Smoke Test Producao
+# Feature Plan - Smoke Test Produção
 
-> **Ultima atualizacao:** 2026-03-08
+> **Última atualização:** 2026-03-09
 > **Status:** Em planejamento
-> **Tipo:** Operacao de validacao pos-cutover
+> **Tipo:** Operação de validação pós-cutover
 > **Origem:** Debate derivado de `roadmap_supabase_prontidao_producao.md`
 
 ---
 
 ## 1. Contexto
 
-O projeto vai introduzir, pela primeira vez, um PostgreSQL remoto oficial no fluxo real de producao.
+O projeto vai introduzir, pela primeira vez, um PostgreSQL remoto oficial no fluxo real de produção.
 
-Depois do cutover, nao basta assumir que tudo esta funcionando porque:
+Este smoke test não é uma frente isolada para agora. Ele existe como etapa obrigatória do momento em que o PostgreSQL remoto na Supabase for efetivamente implementado e entrar no processo de cutover.
 
-- o deploy concluiu
-- a conexao com o banco existe
-- as migrations nao falharam
+Depois do cutover, não basta assumir que tudo está funcionando porque:
 
-E necessario validar rapidamente, no ambiente real, que os fluxos criticos continuam operacionais.
+- o deploy concluiu;
+- a conexão com o banco existe;
+- as migrations não falharam.
+
+É necessário validar rapidamente, no ambiente real, que os fluxos críticos continuam operacionais.
 
 ---
 
-## 2. Definicao
+## 2. Definição
 
-### O que e smoke test de producao
+### O que é smoke test de produção
 
-Uma bateria curta de verificacoes de alto valor, executada no ambiente real de producao logo apos uma mudanca critica.
+Uma bateria curta de verificações de alto valor, executada no ambiente real de produção logo após uma mudança crítica.
 
 ### Objetivo
 
 Responder rapidamente:
 
-- a aplicacao esta viva?
-- o backend esta falando com o banco remoto?
-- os fluxos essenciais ainda funcionam?
+- a aplicação está viva;
+- o backend está falando com o banco remoto;
+- os fluxos essenciais ainda funcionam.
 
-### O que nao e
+### O que não é
 
-- nao e suite completa de QA
-- nao e teste exaustivo
-- nao e teste de carga
-- nao e validacao de todas as telas
+- não é suíte completa de QA;
+- não é teste exaustivo;
+- não é teste de carga;
+- não é validação de todas as telas.
 
 ---
 
-## 3. Decisao Arquitetural
+## 3. Decisão Arquitetural
 
-### Decisao
+### Decisão
 
-Definir um smoke test oficial de producao como etapa obrigatoria do cutover para o PostgreSQL remoto.
+Definir um smoke test oficial de produção como etapa obrigatória do cutover para o PostgreSQL remoto na Supabase.
 
-### Principio
+### Princípio
 
 O smoke test deve ser:
 
-- curto
-- objetivo
-- executavel manualmente
-- focado em fluxos criticos
-- forte o suficiente para sinalizar rollback quando necessario
+- curto;
+- objetivo;
+- executável manualmente;
+- focado em fluxos críticos;
+- forte o suficiente para sinalizar rollback quando necessário.
 
 ---
 
-## 4. Problema que Esta Decisao Resolve
+## 4. Problema que Esta Decisão Resolve
 
-Evita a falsa sensacao de sucesso baseada apenas em:
+Evita a falsa sensação de sucesso baseada apenas em:
 
-- deploy verde
-- script concluido
-- sem erro visivel no log
+- deploy verde;
+- script concluído;
+- ausência de erro visível no log.
 
-Esses sinais sao insuficientes para provar que a experiencia real do usuario continua funcionando.
+Esses sinais são insuficientes para provar que a experiência real do usuário continua funcionando.
 
 ---
 
 ## 5. Escopo do Smoke Test
 
-O smoke test deve verificar somente o que e mais critico para a operacao do produto.
+O smoke test deve verificar somente o que é mais crítico para a operação do produto, depois que a aplicação em produção estiver apontando para o banco remoto oficial.
 
-### Fluxos minimos esperados
+### Fluxos mínimos esperados
 
-- aplicacao abre em producao
-- endpoint principal de produto responde
-- busca por GTIN conhecido funciona
-- escrita controlada em fluxo de produto continua funcionando
-- fluxo premium que toca banco continua operacional
-- nenhuma chamada critica retorna erro 500
+- a aplicação abre em produção;
+- o endpoint principal de produto responde;
+- a busca por GTIN conhecido funciona;
+- a escrita controlada em fluxo de produto continua funcionando;
+- o fluxo premium que toca banco continua operacional;
+- nenhuma chamada crítica retorna erro 500.
 
 ---
 
-## 6. Criterios de Selecao dos Testes
+## 6. Critérios de Seleção dos Testes
 
-Cada verificacao do smoke test deve obedecer a pelo menos um destes criterios:
+Cada verificação do smoke test deve obedecer a pelo menos um destes critérios:
 
-- fluxo central de usuario
-- dependencia direta do banco remoto
-- alto impacto em caso de falha
-- alto poder de detectar regressao grave
+- fluxo central de usuário;
+- dependência direta do banco remoto;
+- alto impacto em caso de falha;
+- alto poder de detectar regressão grave.
 
 ---
 
@@ -104,42 +106,42 @@ Cada verificacao do smoke test deve obedecer a pelo menos um destes criterios:
 
 ### Bloco 1 - Disponibilidade
 
-- abrir o app em producao
-- validar carregamento inicial
+- abrir o app em produção;
+- validar carregamento inicial.
 
-### Bloco 2 - Leitura critica
+### Bloco 2 - Leitura crítica
 
-- consultar um GTIN conhecido
-- validar resposta coerente
+- consultar um GTIN conhecido;
+- validar resposta coerente.
 
-### Bloco 3 - Escrita critica
+### Bloco 3 - Escrita crítica
 
-- validar um fluxo controlado que persiste dado esperado
+- validar um fluxo controlado que persiste dado esperado.
 
 ### Bloco 4 - Fluxo premium/banco
 
-- validar ao menos um caminho sensivel ligado a token/pagamento/consulta persistida
+- validar ao menos um caminho sensível ligado a token, pagamento ou consulta persistida.
 
-### Bloco 5 - Integridade observavel
+### Bloco 5 - Integridade observável
 
-- confirmar ausencia de erro tecnico severo
-- confirmar que a experiencia final e coerente
+- confirmar ausência de erro técnico severo;
+- confirmar que a experiência final é coerente.
 
 ---
 
-## 8. Regra de Operacao
+## 8. Regra de Operação
 
 O smoke test deve ser executado:
 
-- logo apos o cutover
-- antes de considerar a migracao concluida
+- logo após o cutover para o PostgreSQL remoto na Supabase;
+- antes de considerar a migração concluída.
 
-### Regra de decisao
+### Regra de decisão
 
-Se qualquer verificacao critica falhar:
+Se qualquer verificação crítica falhar:
 
-- o cutover nao deve ser considerado aceito
-- a equipe deve avaliar rollback ou intervencao imediata
+- o cutover não deve ser considerado aceito;
+- a equipe deve avaliar rollback ou intervenção imediata.
 
 ---
 
@@ -149,74 +151,76 @@ Se qualquer verificacao critica falhar:
 
 **Vantagens**
 
-- rapido
+- rápido.
 
 **Desvantagens**
 
-- nao valida experiencia real
-- pode mascarar falhas de fluxo
+- não valida experiência real;
+- pode mascarar falhas de fluxo.
 
-**Decisao:** descartada
+**Decisão:** descartada.
 
-### Alternativa B - QA completa apos cada cutover
+### Alternativa B - QA completa após cada cutover
 
 **Vantagens**
 
-- cobertura maior
+- cobertura maior.
 
 **Desvantagens**
 
-- lenta demais para o momento imediato de virada
-- pouco proporcional ao objetivo
+- lenta demais para o momento imediato de virada;
+- pouco proporcional ao objetivo.
 
-**Decisao:** descartada como etapa inicial obrigatoria
+**Decisão:** descartada como etapa inicial obrigatória.
 
 ### Alternativa C - Smoke test curto e oficial
 
 **Vantagens**
 
-- rapido
-- focado
-- forte para detectar falhas graves
+- rápido;
+- focado;
+- forte para detectar falhas graves.
 
 **Desvantagens**
 
-- nao substitui QA mais profunda
+- não substitui QA mais profunda.
 
-**Decisao:** aprovada
+**Decisão:** aprovada.
 
 ---
 
-## 10. Plano de Implementacao Proposto
+## 10. Plano de Implementação Proposto
+
+Esta frente deve ser executada apenas quando a implantação do PostgreSQL remoto em Supabase entrar na fase de cutover.
 
 ### Fase 1 - Definir checklist oficial
 
-- listar verificacoes obrigatorias
-- listar criterio de sucesso/falha
+- listar verificações obrigatórias;
+- listar critério de sucesso e falha.
 
 ### Fase 2 - Definir procedimento operacional
 
-- quando executar
-- quem executa
-- qual evidencia minima registrar
+- quando executar;
+- quem executa;
+- qual evidência mínima registrar.
 
 ### Fase 3 - Integrar ao cutover
 
-- amarrar smoke test ao processo de migracao real
-- definir gatilho de rollback ou bloqueio de aceite
+- amarrar o smoke test ao processo de migração real;
+- definir gatilho de rollback ou bloqueio de aceite.
 
 ---
 
-## 11. Criterios de Sucesso
+## 11. Critérios de Sucesso
 
-- existe checklist oficial de smoke test de producao
-- o smoke test cobre os fluxos mais criticos do app
-- a equipe sabe quando considerar o cutover aceito ou rejeitado
-- o processo continua curto e pratico
+- existe checklist oficial de smoke test de produção;
+- o smoke test cobre os fluxos mais críticos do app;
+- a equipe sabe quando considerar o cutover aceito ou rejeitado;
+- o processo continua curto e prático.
 
 ---
 
-## 12. Referencias
+## 12. Referências
 
 - [roadmap_supabase_prontidao_producao.md](../roadmap_supabase_prontidao_producao.md)
 - [roadmap.md](../roadmap.md)
@@ -226,14 +230,14 @@ Se qualquer verificacao critica falhar:
 
 ---
 
-## 13. Destino Pos-Implementacao
+## 13. Destino Pós-Implementação
 
-Apos a implementacao, este mesmo arquivo deve ser movido para:
+Após a implementação, este mesmo arquivo deve ser movido para:
 
 - `.metadocs/walkthrough/smoke_test_producao.md`
 
 Depois do movimento:
 
-- o conteudo deve ser ajustado de plano para walkthrough
-- a referencia deve ser adicionada ao `historico.md`
-- a feature deve ser marcada como concluida na documentacao correspondente
+- o conteúdo deve ser ajustado de plano para walkthrough;
+- a referência deve ser adicionada ao `historico.md`;
+- a feature deve ser marcada como concluída na documentação correspondente.

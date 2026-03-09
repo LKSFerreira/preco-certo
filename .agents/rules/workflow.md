@@ -2,44 +2,50 @@
 trigger: always_on
 ---
 
-# Fluxo de Trabalho Obrigatório:
+# Fluxo de Trabalho Obrigatório
 
-> **DIRETRIZES DE EXECUÇÃO DE CÓDIGO.** 
-> Ação Padrão: O processo de codificação/modificação deve OBRIGATORIAMENTE seguir as etapas de planejamento listadas abaixo, de forma sequencial.
-Comportamento de Exceção (Bypass): A execução imediata do código/escrita (ignorando as etapas de planejamento) só é permitida se o usuário der uma ordem explícita e direta para ação imediata usando termos imperativos (ex: "Apenas escreva o código para...", "Edite o arquivo...", "Crie um arquivo ...).
+> **Diretrizes de execução de código.**
+> A ação padrão para codificação ou modificação deve seguir obrigatoriamente as etapas de planejamento abaixo, em sequência.
+> A execução imediata de escrita só é permitida quando o usuário der uma ordem explícita e direta usando termos imperativos, como "Edite o arquivo..." ou "Crie um arquivo...".
 
-## Etapas de Execução:
+## Etapas de Execução
 
-### 1: Análise (Discovery)
+### 1. Análise (Discovery)
+
 - Estude o contexto, os requisitos e o impacto da mudança solicitada.
 - Vasculhe o projeto: leia os arquivos relevantes, a documentação existente em `.metadocs/` e as regras de negócio.
-- **Ação:** Formule mentalmente (ou no bloco `<thinking>`) o problema raiz.
+- Formule mentalmente, ou no bloco `<thinking>`, o problema raiz.
 
-### 2: Discussão (Debate)
-- Apresente a sua análise técnica ao usuário de forma clara e direta.
-- Discuta alternativas, *trade-offs* (prós e contras) e decisões de arquitetura.
-- Tire dúvidas, aponte possíveis gargalos (edge cases) e alinhe as expectativas.
-- **Ação:** Aguarde o feedback do usuário.
+### 2. Discussão (Debate)
 
-### 3: Refinamento (Ajuste)
+- Apresente a análise técnica ao usuário de forma clara e direta.
+- Discuta alternativas, trade-offs e decisões de arquitetura.
+- Tire dúvidas, aponte possíveis gargalos e alinhe expectativas.
+- Aguarde o feedback do usuário.
+
+### 3. Refinamento (Ajuste)
+
 - Incorpore o feedback recebido.
-- Ajuste a proposta técnica até que ambos (Agente e Usuário) estejam 100% alinhados.
-- Se a decisão mudar a arquitetura do sistema, documente essa decisão nos arquivos da pasta `.metadocs/`.
+- Ajuste a proposta técnica até que agente e usuário estejam alinhados.
+- Se a decisão mudar a arquitetura do sistema, documente essa decisão em `.metadocs/`.
 
-### 4: Aprovação (Gatekeeper)
-- Crie um plano de implementação detalhado (passo a passo do que será alterado).
-- **PARE E AGUARDE a aprovação explícita do usuário** antes de executar qualquer comando ou escrever qualquer código.
-- Sem aprovação = Sem código.
+### 4. Aprovação (Gatekeeper)
 
-### 5: Execução (Code)
-- Implemente **SOMENTE** o que foi aprovado no plano.
-- Siga o plano à risca. Se durante a execução você encontrar um bloqueio não previsto, pare a execução e retorne à etapa 2 (Discussão). Desvios não autorizados são proibidos.
+- Crie um plano de implementação detalhado com o passo a passo do que será alterado.
+- Pare e aguarde a aprovação explícita do usuário antes de executar qualquer comando de implementação ou escrever código.
+- Sem aprovação, sem código.
+
+### 5. Execução (Code)
+
+- Implemente somente o que foi aprovado no plano.
+- Siga o plano à risca.
+- Se surgir um bloqueio não previsto durante a execução, pare e retorne à etapa de discussão.
 
 ---
 
-## Regra de Ouro:
+## Regra de Ouro
 
 ```text
-PROIBIDO: Analisar → Implementar
-CORRETO:  Analisar → Discutir → Refinar → Aprovar → Implementar
+PROIBIDO: Analisar -> Implementar
+CORRETO:  Analisar -> Discutir -> Refinar -> Aprovar -> Implementar
 ```

@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛒 Sem Susto
+# Sem Susto
 
 **Controle seus gastos durante as compras em tempo real**
 
@@ -20,78 +20,82 @@
 
 ---
 
-## 📚 Sobre o Projeto
+## Sobre o Projeto
 
 **Sem Susto** é um aplicativo web mobile-first que resolve um problema comum: não saber quanto você está gastando durante as compras. Com ele, você escaneia os produtos enquanto compra e acompanha o total acumulado em tempo real.
 
-### 🎯 Problema Resolvido
+### Problema Resolvido
 
 Consumidores frequentemente perdem o controle do valor total durante compras, resultando em orçamentos estourados. Este app oferece uma solução prática e inteligente para manter o controle financeiro.
 
 > [!NOTE]
-> **Histórico:** Este projeto foi originalmente chamado **"Preço Certo"** e renomeado para **"Sem Susto"** em Janeiro/2026 para refletir o novo domínio `semsusto.app`. O repositório GitHub pode ainda conter referências ao nome antigo em commits históricos.
+> **Histórico:** Este projeto foi originalmente chamado **"Preço Certo"** e renomeado para **"Sem Susto"** em janeiro de 2026 para refletir o domínio `semsusto.app`. O repositório GitHub pode ainda conter referências ao nome antigo em commits históricos.
 
 ---
 
-## ⚡ Performance
+## Performance
 
 O **Sem Susto** foi projetado com foco extremo em performance e experiência do usuário. Recentemente, alcançamos a pontuação máxima em todas as categorias do Google Lighthouse:
 
 <img src=".github/assets/lighthouse-score.png" alt="Lighthouse Score" width="500">
 
 ### Otimizações Implementadas
-- **Build Optimization:** Uso de Terser para minificação agressiva, removendo comentários e `console.log` em produção.
-- **Critical Path:** Remoção de operações bloqueantes de I/O (como `localStorage.clear()`) do fluxo de renderização inicial.
-- **Asset Management:** Otimização de pacotes e uso de imports dinâmicos para reduzir o bundle size.
-- **Acessibilidade:** Ajustes rigorosos de contraste e semântica HTML para conformidade WCAG AA.
+
+- **Build Optimization:** uso de Terser para minificação agressiva, removendo comentários e `console.log` em produção.
+- **Critical Path:** remoção de operações bloqueantes de I/O, como `localStorage.clear()`, do fluxo de renderização inicial.
+- **Asset Management:** otimização de pacotes e uso de imports dinâmicos para reduzir o bundle size.
+- **Acessibilidade:** ajustes rigorosos de contraste e semântica HTML para conformidade WCAG AA.
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-| Feature                            | Descrição                                                      |
-| ---------------------------------- | -------------------------------------------------------------- |
-| 📷 **Scanner de Código de Barras** | Leitura via câmera com fallback para entrada manual            |
-| 🤖 **IA para Leitura de Rótulos**  | Extração automática de nome, marca e tamanho via Google Gemini |
-| 🛒 **Carrinho Inteligente**        | Controle de quantidade com atualização do total em tempo real  |
-| 💾 **Catálogo Persistente**        | Produtos cadastrados ficam salvos para futuras compras         |
-| 📱 **Design Responsivo**           | Interface otimizada para uso durante as compras                |
-| 🎓 **Tutorial de Primeiro Acesso** | Guia visual ensinando a usar scanner e foto para OCR           |
-| ✅ **Validação Inteligente**       | Foco automático no campo inválido ao tentar salvar             |
-| 🎨 **Design Premium**              | Botão Rainbow animado, Title Case automático e fluxo ágil      |
+| Feature | Descrição |
+| --- | --- |
+| **Scanner de Código de Barras** | Leitura via câmera com fallback para entrada manual |
+| **IA para Leitura de Rótulos** | Extração automática de nome, marca e tamanho via Google Gemini |
+| **Carrinho Inteligente** | Controle de quantidade com atualização do total em tempo real |
+| **Catálogo Persistente** | Produtos cadastrados ficam salvos para futuras compras |
+| **Design Responsivo** | Interface otimizada para uso durante as compras |
+| **Tutorial de Primeiro Acesso** | Guia visual ensinando a usar scanner e foto para OCR |
+| **Validação Inteligente** | Foco automático no campo inválido ao tentar salvar |
+| **Design Premium** | Botão Rainbow animado, Title Case automático e fluxo ágil |
 
 ---
 
-## 🛠 Tecnologias
+## Tecnologias
 
 ### Core
 
-- **React 19** — Biblioteca UI com hooks e functional components
-- **TypeScript 5.8** — Tipagem estática para maior robustez
-- **Vite 6** — Build tool ultrarrápido com HMR
+- **React 19**: biblioteca UI com hooks e functional components.
+- **TypeScript 5.8**: tipagem estática para maior robustez.
+- **Vite 6**: build tool com HMR.
 
 ### Inteligência Artificial
 
-- **Groq + Meta Llama** — Llama 4 Scout (visão) e Llama 3.1 8B (texto) via API Groq
-- **Structured Output** — Respostas em JSON com schema validado
-- **html5-qrcode** — Scanner de código de barras via câmera
+- **Groq + Meta Llama**: Llama 4 Scout (visão) e Llama 3.1 8B (texto) via API Groq.
+- **Structured Output**: respostas em JSON com schema validado.
+- **html5-qrcode**: scanner de código de barras via câmera.
 
 ### Infraestrutura
 
-- **Supabase** — PostgreSQL gerenciado + Autenticação + API REST
-- **Docker Compose** — Ambiente de desenvolvimento isolado e reproduzível
-- **PostgreSQL** — Banco de dados local para desenvolvimento
+- **Supabase**: PostgreSQL gerenciado para a etapa de banco remoto em produção.
+- **Docker Compose**: ambiente de desenvolvimento isolado e reproduzível.
+- **PostgreSQL**: banco de dados local para desenvolvimento.
 
 ---
 
-## 🚀 Instalação
+## Instalação
 
 ### Pré-requisitos
 
-- [Docker](https://www.docker.com/) instalado
-- Chave de API do [Groq](https://console.groq.com/keys) (Free tier generoso)
+- [Docker](https://www.docker.com/) instalado para o fluxo em container.
+- [Node.js 20+](https://nodejs.org/) se você optar por rodar localmente fora do container.
+- Chave de API do [Groq](https://console.groq.com/keys).
 
 ### Setup com Docker Compose (Recomendado)
+
+O fluxo oficial do projeto usa Docker Compose. Esta é a opção recomendada para manter o ambiente alinhado com as regras de desenvolvimento do repositório.
 
 ```bash
 # 1. Clone o repositório
@@ -102,7 +106,7 @@ cd sem-susto
 cp .env.example .env.local
 # Edite .env.local e adicione sua chave em VITE_GROQ_TOKEN
 
-# 3. Suba os containers (Recomendado)
+# 3. Suba os containers
 # O script detecta seu IP automaticamente para acesso via celular
 ./dev.sh
 
@@ -110,9 +114,11 @@ cp .env.example .env.local
 # O terminal mostrará os links de acesso (Local e Celular)
 ```
 
-O app estará disponível em `https://localhost:5173`
+O app estará disponível em `https://localhost:5173`.
 
-### Setup Local (Alternativo)
+### Setup Local com Node.js (Opcional)
+
+Rodar fora do container é uma escolha do usuário para desenvolvimento local. O projeto suporta esse modo, mas ele não substitui o fluxo oficial recomendado com Docker Compose.
 
 ```bash
 # Requer Node.js 20+
@@ -122,25 +128,25 @@ npm run dev
 
 ---
 
-## 🏗 Arquitetura
+## Arquitetura
 
 ```text
 sem-susto/
-├── .docker/                # Arquivos Docker Compose
-├── .metadocs/              # Documentação de projeto
-│   └── roadmap.md          # Planejamento de features
-├── contextos/              # Contextos React (injeção de dependências)
-├── repositorios/           # Camada de persistência (Repository Pattern)
-├── components/             # Componentes React reutilizáveis
-│   ├── ScannerBarras.tsx   # Interface do scanner
-│   ├── FormularioProduto.tsx # Cadastro com IA
-│   └── ModalDoacao.tsx     # Sistema de apoio
-├── services/               # Lógica de negócio
-│   ├── ia.ts               # Integração com Gemini
-│   └── utilitarios.ts      # Funções auxiliares
-├── App.tsx                 # Componente principal
-├── types.ts                # Definições TypeScript
-└── constants.ts            # Configurações globais
+|-- .docker/                # Arquivos Docker Compose
+|-- .metadocs/              # Documentação de projeto
+|   `-- roadmap.md          # Planejamento de features
+|-- contextos/              # Contextos React (injeção de dependências)
+|-- repositorios/           # Camada de persistência (Repository Pattern)
+|-- components/             # Componentes React reutilizáveis
+|   |-- ScannerBarras.tsx   # Interface do scanner
+|   |-- FormularioProduto.tsx # Cadastro com IA
+|   `-- ModalDoacao.tsx     # Sistema de apoio
+|-- services/               # Lógica de negócio
+|   |-- ia.ts               # Integração com IA
+|   `-- utilitarios.ts      # Funções auxiliares
+|-- App.tsx                 # Componente principal
+|-- types.ts                # Definições TypeScript
+`-- constants.ts            # Configurações globais
 ```
 
 ### Fluxo de Dados
@@ -157,18 +163,18 @@ flowchart LR
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
-> _Em desenvolvimento — adicionar capturas de tela do app_
+> Em desenvolvimento; adicionar capturas de tela do app.
 
 ---
 
-## 🗺 Roadmap
+## Roadmap
 
 - [x] MVP com scanner e carrinho
 - [x] Integração com Gemini AI / Groq
 - [x] Scanner real com `html5-qrcode`
-- [x] Deploy em produção (https://www.semsusto.app)
+- [x] Deploy em produção (`https://www.semsusto.app`)
 - [ ] Histórico de compras
 - [ ] Comparador de preços entre lojas
 - [ ] PWA com suporte offline completo
@@ -177,20 +183,13 @@ Veja o [roadmap completo](./.metadocs/roadmap.md) para mais detalhes.
 
 ---
 
-## 🤝 Contribuindo
+## Contribuindo
 
-Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests.
+Contribuições são bem-vindas. Fique à vontade para abrir issues ou pull requests.
 
 ---
 
-## 📄 Licença
+## Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
 
----
-
-<div align="center">
-
-**Desenvolvido com 💚 por [Lucas Ferreira](https://github.com/LKSFerreira)**
-
-</div>
