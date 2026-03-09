@@ -2,7 +2,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PoolClient } from 'pg';
-import { criarPoolDatabase, encerrarPoolDatabase } from './_comum';
+import { criarPoolDatabase, encerrarPoolDatabase, obterClienteComRetry } from './_comum';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -53,7 +53,7 @@ function erroRepresentaObjetoExistente(erro: unknown): boolean {
 
 export async function aplicarMigrations(): Promise<ResumoMigrations> {
   const pool = criarPoolDatabase();
-  const cliente = await pool.connect();
+  const cliente = await obterClienteComRetry(pool);
 
   try {
     console.info('🚀 Iniciando migrations...\n');

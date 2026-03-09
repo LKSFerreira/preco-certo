@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { PoolClient } from 'pg';
-import { criarPoolDatabase, encerrarPoolDatabase } from './_comum';
+import { criarPoolDatabase, encerrarPoolDatabase, obterClienteComRetry } from './_comum';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,7 +81,7 @@ async function inserirLote(cliente: PoolClient, lote: ReturnType<typeof normaliz
 
 export async function carregarCatalogoInicial(): Promise<ResumoCargaInicial> {
   const pool = criarPoolDatabase();
-  const cliente = await pool.connect();
+  const cliente = await obterClienteComRetry(pool);
 
   try {
     console.info('📦 Iniciando carga inicial do catálogo...');

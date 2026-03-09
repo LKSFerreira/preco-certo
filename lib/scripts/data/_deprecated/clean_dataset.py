@@ -1,3 +1,7 @@
+# @deprecated Desde 09/03/2026.
+# Substituído por `lib/scripts/data/clean_dataset.ts`.
+# Mantido em `_deprecated/` para referência histórica e rollback controlado.
+
 import pandas as pd
 import json
 import re

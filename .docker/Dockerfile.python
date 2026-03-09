@@ -12,7 +12,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends libpq5 && \
     rm -rf /var/lib/apt/lists/*
 
-# Usa uv como instalador principal de dependencias Python
+# Usa uv como instalador principal de dependencias Python legadas
 RUN pip install --no-cache-dir uv
 
 # Copiamos o manifesto para aproveitar cache de layer

@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# @deprecated Desde 09/03/2026.
+# Substituído por `lib/scripts/data/filtrar_base_dado_para_brasil.ts`.
+# Mantido em `_deprecated/` para referência histórica e rollback controlado.
+
 """
 Script otimizado para processar o dump do Open Food Facts.
 Filtra apenas produtos brasileiros e salva em CSV.

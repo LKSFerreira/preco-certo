@@ -25,7 +25,7 @@ services:
       - APP_ENV=local
 
   # ---------------------------------------------------------------------------
-  # backend - Python Worker para scripts pesados (Data Engineering)
+  # backend - Ambiente Python legado para rollback de scripts deprecados
   # ---------------------------------------------------------------------------
   backend:
     build:

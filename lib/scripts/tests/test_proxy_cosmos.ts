@@ -2,10 +2,10 @@
  * Teste para o proxy Cosmos.
  * Valida se o handler consegue ler a variável COSMOS_TOKEN (agora sem prefixo VITE_).
  *
- * Uso: npx tsx scripts/testar_proxy_cosmos.ts
+ * Uso: npx tsx lib/scripts/tests/test_proxy_cosmos.ts
  */
 
-import handler from '../../api/cosmos/gtin/[codigo]';
+import handler from '../../../api/cosmos/gtin/[codigo]';
 
 // Mock de Request
 const req = {

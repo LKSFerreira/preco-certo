@@ -3,10 +3,10 @@
  * Tenta chamar o handler diretamente (mockando req/res) para ver se ele
  * inicia a comunicação com a Groq.
  *
- * Uso: npx tsx scripts/testar_proxy_ia.ts
+ * Uso: npx tsx lib/scripts/tests/test_proxy_ia.ts
  */
 
-import handler from '../../api/ia/analisar';
+import handler from '../../../api/ia/analisar';
 
 // Mock de Request
 const req = {

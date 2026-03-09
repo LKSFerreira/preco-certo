@@ -4,16 +4,16 @@
  * Testa os 3 handlers (gerar, ativar, consultar) chamando
  * as funções diretamente com objetos mock de req/res.
  *
- * Uso: npx tsx scripts/testar_endpoints.ts
+ * Uso: npx tsx lib/scripts/tests/test_endpoints.ts
  */
 
 // Configura variável de ambiente necessária antes de importar os handlers
 process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgresql://postgres:postgres@db:5432/sem_susto';
 process.env.API_SECRET = process.env.API_SECRET || 'segredo_teste_local';
 
-import gerarHandler from '../../api/tokens/gerar';
-import ativarHandler from '../../api/tokens/ativar';
-import consultarHandler from '../../api/tokens/consultar';
+import gerarHandler from '../../../api/tokens/gerar';
+import ativarHandler from '../../../api/tokens/ativar';
+import consultarHandler from '../../../api/tokens/consultar';
 
 /**
  * Cria um objeto mock que simula VercelRequest.
@@ -213,7 +213,7 @@ async function executarTestes() {
     console.log('='.repeat(60) + '\n');
 
     // Encerra o pool de conexões para o processo terminar
-    const pool = (await import('../database/banco')).default;
+    const pool = (await import('../../database/banco')).default;
     await pool.end();
 }
 

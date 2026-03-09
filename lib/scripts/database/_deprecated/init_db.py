@@ -1,3 +1,6 @@
+# @deprecated Desde 09/03/2026.
+# Substituído por `lib/scripts/database/init_db.ts`.
+# Mantido em `_deprecated/` para referência histórica e rollback controlado.
 """
 Script de inicialização do banco de dados PostgreSQL.
 

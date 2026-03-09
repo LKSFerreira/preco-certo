@@ -1,3 +1,7 @@
+# @deprecated Desde 09/03/2026.
+# Substituído por `lib/scripts/data/remover_genericos.ts`.
+# Mantido em `_deprecated/` para referência histórica e rollback controlado.
+
 import json
 import os
 import re

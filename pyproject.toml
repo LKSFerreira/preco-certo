@@ -1,7 +1,7 @@
 [project]
 name = "sem-susto-scripts"
 version = "0.1.0"
-description = "Scripts de automação e engenharia de dados do Sem Susto"
+description = "Ambiente legado para scripts Python deprecados do Sem Susto"
 requires-python = ">=3.12"
 dependencies = [
     "pandas",

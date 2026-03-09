@@ -1,3 +1,6 @@
+# @deprecated Desde 09/03/2026.
+# Substituído por `lib/scripts/database/gerar_token.ts`.
+# Mantido em `_deprecated/` para referência histórica e rollback controlado.
 """
 Script CLI para gerar tokens trial manualmente.
 

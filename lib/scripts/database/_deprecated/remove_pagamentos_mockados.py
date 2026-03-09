@@ -1,3 +1,6 @@
+# @deprecated Desde 09/03/2026.
+# Substituído por `lib/scripts/database/remove_pagamentos_mockados.ts`.
+# Mantido em `_deprecated/` para referência histórica e rollback controlado.
 """
 Script utilitario para remover tokens gerados por pagamentos mockados.
 

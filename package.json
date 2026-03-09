@@ -4,9 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"tsx scripts/server.ts\" \"vite\"",
+    "dev": "concurrently \"tsx backend/server.ts\" \"vite\"",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:init": "tsx lib/scripts/database/init_db.ts",
+    "db:reset": "tsx lib/scripts/database/reset_banco_local.ts",
+    "token:gerar": "tsx lib/scripts/database/gerar_token.ts"
   },
   "dependencies": {
     "cropperjs": "^1.6.2",
