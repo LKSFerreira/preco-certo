@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy, useRef } from 'react';
-import { Produto, ItemCarrinho, ItemCarrinhoExpandido, TelaApp } from './types';
-import { IMAGEM_PADRAO } from './constants';
+import { Produto, ItemCarrinho, ItemCarrinhoExpandido, TelaApp, Compra } from './types';
+import { IMAGEM_PADRAO, LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO } from './constants';
 import { formatarMoeda } from './services/utilitarios';
 const ScannerCodigo = lazy(() => import('./components/ModalScannerBarras'));
 import ModalLoadingCarrinho from './components/ModalLoadingCarrinho';
@@ -8,9 +8,11 @@ const ModalFormularioProduto = lazy(() => import('./components/ModalFormularioPr
 import DebugConsole from './components/DebugConsole';
 
 const ModalContato = lazy(() => import('./components/ModalContato'));
+const ModalBloqueio = lazy(() => import('./components/ModalBloqueio'));
 const ModalConfirmacao = lazy(() => import('./components/ModalConfirmacao'));
 const ModalTutorialUso = lazy(() => import('./components/ModalTutorialUso'));
 const ModalAtivarToken = lazy(() => import('./components/ModalAtivarToken'));
+const ModalHistoricoCompras = lazy(() => import('./components/ModalHistoricoCompras'));
 const ModalPlano = lazy(() => import('./components/ModalPlano'));
 const ModalPagamento = lazy(() => import('./components/ModalPagamento'));
 const ModalPagamentoAprovado = lazy(() => import('./components/ModalPagamentoAprovado'));
@@ -19,14 +21,16 @@ import { apiGerarPix } from './services/api-pagamento';
 import { RespostaCriacaoPagamento, PlanoID } from './services/pagamento/tipos';
 import { useRepositorios } from './contextos/ContextoRepositorios';
 import BannerInstalarApp from './components/BannerInstalarApp';
+import { useEntitlementPremium } from './hooks/useEntitlementPremium';
 
 
 export default function App() {
   // --- Acesso aos repositórios via contexto ---
   const { produtos: repositorioProdutos, carrinho: repositorioCarrinho, historico: repositorioHistorico } = useRepositorios();
+  const { estadoPremium, premiumAtivo, revalidarEstadoPremium } = useEntitlementPremium();
 
   // --- Tutorial de primeiro acesso ---
-  const { mostrar: mostrarTutorial, fechar: fecharTutorial, tentarMostrar, marcarComoVisto: marcarTutorialComoVisto } = useTutorialPrimeiroAcesso();
+  const { mostrar: mostrarTutorial, tentarMostrar, marcarComoVisto: marcarTutorialComoVisto } = useTutorialPrimeiroAcesso();
 
   // --- Estados ---
   const [telaAtual, setTelaAtual] = useState<TelaApp>('DASHBOARD');
@@ -58,6 +62,10 @@ export default function App() {
   // Estados Premium
   const [mostrarAtivarToken, setMostrarAtivarToken] = useState(false);
   const [deepLinkToken, setDeepLinkToken] = useState<string | null>(null);
+  const [mostrarHistoricoCompras, setMostrarHistoricoCompras] = useState(false);
+  const [historicoCompras, setHistoricoCompras] = useState<Compra[]>([]);
+  const [carregandoHistoricoCompras, setCarregandoHistoricoCompras] = useState(false);
+  const [mostrarBloqueioCarrinhoPremium, setMostrarBloqueioCarrinhoPremium] = useState(false);
 
   // Estados de Pagamento (Monetização)
   const [mostrarModalPlano, setMostrarModalPlano] = useState(false);
@@ -116,11 +124,15 @@ export default function App() {
       const ultimaLimpeza = ultimaLimpezaTexto ? Number(ultimaLimpezaTexto) : 0;
       const tempoDesdeUltimaLimpeza = agora - ultimaLimpeza;
 
-      if (!ultimaLimpeza || Number.isNaN(ultimaLimpeza) || tempoDesdeUltimaLimpeza >= INTERVALO_MINIMO_LIMPEZA_MS) {
+      if (
+        import.meta.env.DEV &&
+        import.meta.env.VITE_DEBUG_RESET_LOCALSTORAGE === 'true' &&
+        (!ultimaLimpeza || Number.isNaN(ultimaLimpeza) || tempoDesdeUltimaLimpeza >= INTERVALO_MINIMO_LIMPEZA_MS)
+      ) {
         localStorage.clear();
         localStorage.setItem(CHAVE_DEBUG_ULTIMA_LIMPEZA, String(agora));
         console.log('🧹 localStorage limpo (debug com throttle de 5 minutos)');
-      } else {
+      } else if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_RESET_LOCALSTORAGE === 'true') {
         const segundosRestantes = Math.ceil((INTERVALO_MINIMO_LIMPEZA_MS - tempoDesdeUltimaLimpeza) / 1000);
         console.log(`⏱️ limpeza de debug ignorada; nova limpeza disponível em ~${segundosRestantes}s`);
       }
@@ -151,6 +163,72 @@ export default function App() {
 
     carregarDados();
   }, [repositorioProdutos, repositorioCarrinho]);
+
+  useEffect(() => {
+    if (!premiumAtivo && mostrarHistoricoCompras) {
+      setMostrarHistoricoCompras(false);
+    }
+  }, [mostrarHistoricoCompras, premiumAtivo]);
+
+  useEffect(() => {
+    if (!mostrarHistoricoCompras || !premiumAtivo) {
+      return;
+    }
+
+    let cancelado = false;
+    setCarregandoHistoricoCompras(true);
+
+    const carregarHistoricoCompras = async () => {
+      try {
+        const compras = await repositorioHistorico.listarTodas();
+
+        if (!cancelado) {
+          setHistoricoCompras(compras);
+        }
+      } catch (erro) {
+        console.error('🚨 Erro ao carregar histórico de compras:', erro);
+
+        if (!cancelado) {
+          setHistoricoCompras([]);
+        }
+      } finally {
+        if (!cancelado) {
+          setCarregandoHistoricoCompras(false);
+        }
+      }
+    };
+
+    void carregarHistoricoCompras();
+
+    return () => {
+      cancelado = true;
+    };
+  }, [mostrarHistoricoCompras, premiumAtivo, repositorioHistorico]);
+
+  const abrirHistoricoPremium = useCallback(async () => {
+    const estadoPremiumAtual = await revalidarEstadoPremium(false);
+
+    if (estadoPremiumAtual.ativo) {
+      setMostrarHistoricoCompras(true);
+      return;
+    }
+
+    setMostrarModalPlano(true);
+  }, [revalidarEstadoPremium]);
+
+  const solicitarAberturaScanner = useCallback(async () => {
+    const estadoPremiumAtual = await revalidarEstadoPremium(false);
+    const premiumLiberado = estadoPremiumAtual.ativo;
+
+    if (!premiumLiberado && carrinho.length >= LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO) {
+      setMostrarBloqueioCarrinhoPremium(true);
+      return;
+    }
+
+    const { acordarAPIsSilenciosamente } = await import('./services/warmup');
+    acordarAPIsSilenciosamente();
+    setTelaAtual('SCANNER');
+  }, [carrinho.length, revalidarEstadoPremium]);
 
   // --- Funções de Join (Carrinho + Catálogo) ---
 
@@ -195,6 +273,17 @@ export default function App() {
     // (usa a referência do carrinho no momento da chamada)
     const itemExistente = carrinho.find(item => item.codigo_barras === codigo_barras);
     const novaQuantidade = itemExistente ? itemExistente.quantidade + 1 : 1;
+    const estadoPremiumAtual = await revalidarEstadoPremium(false);
+    const premiumLiberado = estadoPremiumAtual.ativo;
+
+    if (
+      !premiumLiberado &&
+      !itemExistente &&
+      carrinho.length >= LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO
+    ) {
+      setMostrarBloqueioCarrinhoPremium(true);
+      return false;
+    }
 
     // Atualiza estado local (UI responsiva)
     setCarrinho(prev => {
@@ -219,23 +308,17 @@ export default function App() {
     } catch (erro) {
       console.error('🚨 Erro ao sincronizar carrinho:', erro);
     }
-  }, [carrinho, repositorioCarrinho]);
+    return true;
+  }, [carrinho, revalidarEstadoPremium, repositorioCarrinho]);
 
   /**
    * Salva produto no catálogo (localStorage + banco de dados).
    * Chamado após encontrar nas APIs ou após edição pelo usuário.
    */
   const salvarProdutoNoCatalogo = useCallback(async (produto: Produto) => {
-    // Atualiza catálogo local
+    await repositorioProdutos.salvar(produto);
     setCatalogo(prev => ({ ...prev, [produto.codigo_barras]: produto }));
-
-    // Persiste no repositório
-    try {
-      await repositorioProdutos.salvar(produto);
-      console.log(`💾 [CATÁLOGO] Produto salvo: ${produto.codigo_barras}`);
-    } catch (erro) {
-      console.error('🚨 Erro ao salvar produto:', erro);
-    }
+    console.log(`💾 [CATÁLOGO] Produto salvo: ${produto.codigo_barras}`);
   }, [repositorioProdutos]);
 
   /**
@@ -248,7 +331,14 @@ export default function App() {
 
     // 2. Decide: Adicionar (+1) ou apenas atualizar dados (Edição)
     if (!modoEdicao) {
-      await adicionarAoCarrinho(produto.codigo_barras);
+      const produtoFoiAdicionadoAoCarrinho = await adicionarAoCarrinho(produto.codigo_barras);
+
+      if (produtoFoiAdicionadoAoCarrinho === false) {
+        setTelaAtual('DASHBOARD');
+        setCodigoLido(null);
+        setModoEdicao(false);
+        return;
+      }
     }
     // Se for edição, o produto já está no carrinho, só atualizou o catálogo
 
@@ -443,6 +533,8 @@ export default function App() {
     setMostrarConfirmacaoFinalizar(false);
 
     try {
+      const estadoPremiumAtual = await revalidarEstadoPremium(false);
+
       // Cria objeto de compra com snapshot dos itens expandidos
       const novaCompra = {
         id: crypto.randomUUID(),
@@ -454,16 +546,18 @@ export default function App() {
       await repositorioHistorico.salvar(novaCompra);
       await repositorioCarrinho.limpar();
       setCarrinho([]);
-      setMostrarModalPlano(true);
+      if (!estadoPremiumAtual.ativo) {
+        setMostrarModalPlano(true);
+      }
     } catch (erro) {
       console.error('🚨 Erro ao finalizar compra:', erro);
     }
-  }, [carrinhoExpandido, calcularTotal, repositorioHistorico, repositorioCarrinho]);
+  }, [carrinhoExpandido, calcularTotal, revalidarEstadoPremium, repositorioHistorico, repositorioCarrinho]);
 
   const solicitarFinalizacao = useCallback(() => {
     if (carrinho.length === 0) return;
-    executarFinalizacao();
-  }, [carrinho.length, executarFinalizacao]);
+    setMostrarConfirmacaoFinalizar(true);
+  }, [carrinho.length]);
 
   const solicitarEsvaziamento = useCallback(() => {
     if (carrinho.length === 0) return;
@@ -480,12 +574,15 @@ export default function App() {
     setCarrinho([]);
 
     try {
+      const estadoPremiumAtual = await revalidarEstadoPremium(false);
       await repositorioCarrinho.limpar();
-      setMostrarModalPlano(true);
+      if (!estadoPremiumAtual.ativo) {
+        setMostrarModalPlano(true);
+      }
     } catch (erro) {
       console.error('🚨 Erro ao limpar carrinho:', erro);
     }
-  }, [repositorioCarrinho]);
+  }, [revalidarEstadoPremium, repositorioCarrinho]);
 
   // --- Renderização ---
 
@@ -546,27 +643,49 @@ export default function App() {
               - rounded-xl → bordas (rounded, rounded-lg, rounded-xl, rounded-2xl, rounded-full)
               - text-xl    → tamanho do ícone (text-sm, text-base, text-lg, text-xl, text-2xl, text-3xl)
             */}
-              <button
-                onClick={() => setMostrarModalPlano(true)}
-                className="bg-red-50 text-red-500 p-2 [@media(max-height:700px)]:p-1.5 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
-                title="Seja Premium"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                  <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-                </svg>
-              </button>
+              {premiumAtivo ? (
+                <button
+                  onClick={() => {
+                    void abrirHistoricoPremium();
+                  }}
+                  className="bg-amber-50 text-amber-700 p-2 [@media(max-height:700px)]:p-1.5 rounded-xl text-xs font-bold border border-amber-100 hover:bg-amber-100 transition-colors flex items-center justify-center shadow-sm"
+                  title={`Histórico premium • ${estadoPremium.diasRestantes} dias restantes`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="url(#history-gradient)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                    <defs>
+                      <linearGradient id="history-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#9C27B0" />
+                        <stop offset="50%" stopColor="#3F51B5" />
+                        <stop offset="100%" stopColor="#03A9F4" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M12 7v5l3 3" />
+                  </svg>
+                </button>
+              ) : (
+                <button
+                  onClick={() => setMostrarModalPlano(true)}
+                  className="bg-red-50 text-red-500 p-2 [@media(max-height:700px)]:p-1.5 rounded-xl text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
+                  title="Seja Premium"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                  </svg>
+                </button>
+              )}
 
               {/* Botão Esvaziar Carrinho */}
               {carrinho.length > 0 && (
                 <button
                   onClick={solicitarEsvaziamento}
-                  className="p-2 rounded-lg text-sm font-medium transition-colors bg-red-50 text-red-600 hover:bg-red-100"
+                  className="bg-red-50 text-red-500 p-2 [@media(max-height:700px)]:p-1.5 rounded-xl border border-red-100 hover:bg-red-100 transition-colors flex items-center justify-center shadow-sm"
                   title="Esvaziar carrinho"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 mr-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                   </svg>
-                  <span className="text-xs">Esvaziar</span>
                 </button>
               )}
             </div>
@@ -691,9 +810,7 @@ export default function App() {
                 onClick={() => {
                   const abrirScanner = async () => {
                     // IMPORTAÇÃO DINÂMICA: Só baixa esse código se o usuário clicar!
-                    const { acordarAPIsSilenciosamente } = await import('./services/warmup');
-                    acordarAPIsSilenciosamente();
-                    setTelaAtual('SCANNER');
+                    await solicitarAberturaScanner();
                   };
 
                   // Se for o primeiro uso, salva a intenção e mostra o tutorial
@@ -855,6 +972,13 @@ export default function App() {
           {mostrarContato && (
             <ModalContato aoFechar={() => setMostrarContato(false)} />
           )}
+          {mostrarHistoricoCompras && (
+            <ModalHistoricoCompras
+              compras={historicoCompras}
+              carregando={carregandoHistoricoCompras}
+              aoFechar={() => setMostrarHistoricoCompras(false)}
+            />
+          )}
           {/* Tela de Loading Reutilizável */}
           <ModalLoadingCarrinho
             visivel={etapaBusca !== null}
@@ -893,6 +1017,7 @@ export default function App() {
               textoBotaoConfirmar="Esvaziar"
               textoBotaoCancelar="Cancelar"
               corBotaoConfirmar="vermelho"
+              icone="lixeira"
               aoConfirmar={executarEsvaziamento}
               aoCancelar={() => setMostrarConfirmacaoEsvaziar(false)}
             />
@@ -902,6 +1027,7 @@ export default function App() {
           {mostrarAtivarToken && (
             <ModalAtivarToken
               tokenObrigatorioUrl={deepLinkToken}
+              aoPremiumAtivado={() => revalidarEstadoPremium(true)}
               aoVoltar={() => {
                 setMostrarAtivarToken(false);
                 setDeepLinkToken(null);
@@ -914,16 +1040,39 @@ export default function App() {
             />
           )}
 
-          {/* Modal de Confirmação - Finalizar Compra */}
+          {/* Modal de Confirmação - Finalizar Registro */}
           {mostrarConfirmacaoFinalizar && (
             <ModalConfirmacao
-              titulo="Finalizar Compra"
-              mensagem={`Confirma a compra de ${carrinho.length} ${carrinho.length === 1 ? 'item' : 'itens'} no valor de ${formatarMoeda(calcularTotal)}?`}
+              titulo="Finalizar Registro"
+              mensagem={
+                <p>
+                  Deseja finalizar? O total é de{' '}
+                  <strong className="font-black text-verde-700 text-lg">
+                    {formatarMoeda(calcularTotal)}
+                  </strong>
+                  .
+                </p>
+              }
               textoBotaoConfirmar="Finalizar"
               textoBotaoCancelar="Voltar"
               corBotaoConfirmar="verde"
+              icone="check"
               aoConfirmar={executarFinalizacao}
               aoCancelar={() => setMostrarConfirmacaoFinalizar(false)}
+            />
+          )}
+
+          {mostrarBloqueioCarrinhoPremium && (
+            <ModalBloqueio
+              titulo="Limite do plano gratuito"
+              mensagem={`O plano gratuito permite até ${LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO} itens distintos no carrinho. Para continuar adicionando novos produtos, ative o premium.`}
+              textoBotaoPrincipal="Ver premium"
+              textoBotaoSecundario="Agora não"
+              aoConfirmar={() => {
+                setMostrarBloqueioCarrinhoPremium(false);
+                setMostrarModalPlano(true);
+              }}
+              aoCancelar={() => setMostrarBloqueioCarrinhoPremium(false)}
             />
           )}
 
