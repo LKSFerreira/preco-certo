@@ -179,9 +179,15 @@ interface PropsAtivacaoToken {
     tokenObrigatorioUrl?: string | null;
     aoVoltar: () => void;
     aoIrParaDashboard: () => void;
+    aoPremiumAtivado?: () => Promise<void> | void;
 }
 
-const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, aoVoltar, aoIrParaDashboard }) => {
+const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({
+    tokenObrigatorioUrl,
+    aoVoltar,
+    aoIrParaDashboard,
+    aoPremiumAtivado
+}) => {
     const { premium } = useRepositorios();
     const [token, setToken] = useState(tokenObrigatorioUrl || 'SEM-SUSTO-');
     const [status, setStatus] = useState<'IDLE' | 'CARREGANDO' | 'SUCESSO' | 'ERRO'>('IDLE');
@@ -260,9 +266,23 @@ const ModalAtivarToken: React.FC<PropsAtivacaoToken> = ({ tokenObrigatorioUrl, a
             if (data.status === 'ativo' || data.status === 'valido') {
                 await premium.salvarTokenHash(token.toUpperCase());
                 premium.salvarDiasRestantes(data.dias_restantes);
+                premium.salvarEstadoPremium({
+                    ativo: true,
+                    plano: typeof data.plano === 'string' ? data.plano : null,
+                    diasRestantes: Number(data.dias_restantes || 0),
+                    expiraEm: typeof data.expira_em === 'string' ? data.expira_em : null,
+                    ultimaValidacaoEm: Date.now()
+                });
 
                 setDiasAtivados(data.dias_restantes);
                 setStatus('SUCESSO');
+                if (aoPremiumAtivado) {
+                    try {
+                        await aoPremiumAtivado();
+                    } catch (erroAtualizacaoPremium) {
+                        console.warn('⚠️ [Premium UI] Falha ao atualizar estado premium após ativação:', erroAtualizacaoPremium);
+                    }
+                }
                 setToken('SEM-SUSTO-'); // Mantém o prefixo limpo após sucesso para UX consistente
             } else {
                 setStatus('ERRO');

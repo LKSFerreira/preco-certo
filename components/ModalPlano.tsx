@@ -77,9 +77,9 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
     };
 
     const planos = [
-        { id: 'plano_cafe' as PlanoID, nome: 'Cafe', valor: 'R$ 2,90', dias: 15, microCopy: 'R$ 0,19/dia' },
+        { id: 'plano_cafe' as PlanoID, nome: 'Café', valor: 'R$ 2,90', dias: 15, microCopy: 'R$ 0,19/dia' },
         { id: 'plano_lanche' as PlanoID, nome: 'Lanche', valor: 'R$ 4,90', dias: 30, microCopy: 'Apenas R$ 0,16/dia' },
-        { id: 'plano_apoiador' as PlanoID, nome: 'Apoiador', valor: 'R$ 9,90', dias: 60, microCopy: 'Maximo tempo' },
+        { id: 'plano_apoiador' as PlanoID, nome: 'Apoiador', valor: 'R$ 9,90', dias: 60, microCopy: 'Máximo tempo' },
     ];
 
     return (
@@ -146,7 +146,7 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
 
                         <div className="relative z-10 flex flex-col items-center">
                             <span className={`inline-block px-4 py-1.5 ${isMuitoCompacto ? 'mb-1.5' : 'mb-2'} text-[10px] sm:text-xs font-black tracking-widest uppercase bg-amber-500 text-amber-950 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.4)]`}>
-                                Experiencia Completa
+                                Experiência Completa
                             </span>
 
                             <h2 className={`text-2xl sm:text-3xl font-black tracking-tight ${isMuitoCompacto ? 'mb-0' : 'mb-1'}`}>
@@ -273,7 +273,7 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
                         <div className="px-1 relative">
                             <div className={`flex items-center justify-center gap-4 ${isMuitoCompacto ? 'mb-3' : 'mb-4'}`}>
                                 <div className="h-px bg-gray-200 flex-1"></div>
-                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">O QUE VOCE GANHA</h4>
+                                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">O QUE VOCÊ GANHA</h4>
                                 <div className="h-px bg-gray-200 flex-1"></div>
                             </div>
 
@@ -281,7 +281,7 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
                                 {[
                                     { titulo: 'Auto Preenchimento com IA ilimitado' },
                                     { titulo: 'Sem limite de itens no Carrinho' },
-                                    { titulo: 'Historico das suas compras' },
+                                    { titulo: 'Histórico das suas compras' },
                                     { titulo: 'Acompanhe variações de preço' },
                                 ].map((item, index) => (
                                     <li key={index} className="flex items-center gap-3">
@@ -323,7 +323,7 @@ const ModalPlano: React.FC<PropsModalPlano> = ({ aoFechar, aoSelecionarPlano }) 
                                 disabled={carregando !== null}
                                 className="text-gray-400 text-[13px] font-medium active:text-gray-600 transition-colors underline decoration-gray-300 underline-offset-4 disabled:opacity-50"
                             >
-                                Continuar na versao gratuita
+                                Continuar na versão gratuita
                             </button>
                         </div>
                     </div>

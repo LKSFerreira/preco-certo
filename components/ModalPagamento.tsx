@@ -6,7 +6,7 @@ import BotaoConfirmaComShimmer from './buttons/BotaoConfirmaComShimmer';
 const WHATSAPP_SUPORTE = import.meta.env.VITE_WHATSAPP_SUPORTE || '5517996510506';
 
 const formatarNomePlano = (planoId?: PlanoID | null) => {
-  if (planoId === 'plano_cafe') return 'Cafe';
+  if (planoId === 'plano_cafe') return 'Café';
   if (planoId === 'plano_lanche') return 'Lanche';
   if (planoId === 'plano_apoiador') return 'Apoiador';
   return 'selecionado';
@@ -24,7 +24,7 @@ const OndaDeChoque = () => (
   </div>
 );
 
-/** Explosao de particulas (confetes dinamicos) no sucesso */
+/** Explosão de partículas (confetes dinâmicos) no sucesso */
 const ExplosaoDeParticulas = () => {
   const cores = [
     'bg-rose-400', 'bg-amber-400', 'bg-emerald-400',
@@ -113,7 +113,7 @@ const NucleoQuantico: React.FC<{ status: StatusVisualNucleo }> = ({ status }) =>
         playNote(987.77, 0.2, 0.3);
         playNote(1318.51, 0.3, 0.8, 'triangle');
       } catch (e) {
-        console.warn('Audio de sucesso nao suportado ou bloqueado no navegador', e);
+        console.warn('Áudio de sucesso não suportado ou bloqueado no navegador', e);
       }
     }
   }, [status]);
@@ -273,19 +273,19 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
     const hora = new Intl.DateTimeFormat('pt-BR', { timeStyle: 'short' }).format(agora);
     const nomePlano = formatarNomePlano(plano_id);
     const mensagem = [
-      `Ola, meu nome e ${nome}.`,
+      `Olá, meu nome é ${nome}.`,
       '',
-      `Realizei o pagamento do plano ${nomePlano} na data de ${data} as ${hora}.`,
-      `ID de referencia: ${pagamento_id}.`,
+      `Realizei o pagamento do plano ${nomePlano} na data de ${data} às ${hora}.`,
+      `ID de referência: ${pagamento_id}.`,
       '',
-      'Segue meu comprovante para liberacao manual do acesso premium.'
+      'Segue meu comprovante para liberação manual do acesso premium.'
     ].join('\n');
 
     setEnviandoComprovante(true);
     setErroSolicitacaoManual(null);
 
     if (!plano_id) {
-      setErroSolicitacaoManual('Nao foi possivel identificar o plano para registrar a fila manual.');
+      setErroSolicitacaoManual('Não foi possível identificar o plano para registrar a fila manual.');
     } else {
       try {
         await apiSolicitarAprovacaoManual({
@@ -295,8 +295,8 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
           mensagem,
         });
       } catch (erroSolicitacao) {
-        console.error('Erro ao registrar solicitacao manual:', erroSolicitacao);
-        setErroSolicitacaoManual('Nao foi possivel registrar na fila interna. Envie o comprovante no WhatsApp.');
+        console.error('Erro ao registrar solicitação manual:', erroSolicitacao);
+        setErroSolicitacaoManual('Não foi possível registrar na fila interna. Envie o comprovante no WhatsApp.');
       }
     }
 
@@ -325,7 +325,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
           </div>
           <h2 className="font-black text-gray-900 leading-tight">Pagamento PIX</h2>
           <p className="text-[11px] text-gray-500 font-medium uppercase tracking-widest mt-1">
-            {modo_confirmacao === 'manual' ? 'Liberacao manual' : 'Aguardando confirmacao'}
+            {modo_confirmacao === 'manual' ? 'Liberação manual' : 'Aguardando confirmação'}
           </p>
         </div>
 
@@ -337,7 +337,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
                 <h3 className="font-black text-2xl text-transparent bg-clip-text bg-gradient-to-r from-verde-600 to-emerald-500 mb-1 leading-tight">
                   PAGAMENTO<br />APROVADO!
                 </h3>
-                <p className="text-[13px] font-bold text-gray-500 mt-2">Tudo certo, liberacao concluida.</p>
+                <p className="text-[13px] font-bold text-gray-500 mt-2">Tudo certo, liberação concluída.</p>
               </div>
             </div>
           ) : status === 'expirado' || status === 'falha' ? (
@@ -345,7 +345,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
               <NucleoQuantico status="ERRO" />
               <p className="text-red-500 font-bold mb-2 mt-6">PAGAMENTO EXPIRADO</p>
               <p className="text-xs text-gray-500 mb-4 px-4">
-                O tempo para pagamento via PIX esgotou. Gere um novo codigo para continuar.
+                O tempo para pagamento via PIX esgotou. Gere um novo código para continuar.
               </p>
               <div className="w-full max-w-[280px]">
                 <BotaoConfirmaComShimmer
@@ -395,7 +395,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
                         <div className="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-[-20deg] animate-shimmer" />
                       </div>
                     )}
-                    <span className="relative z-10">{copiado ? 'CODIGO COPIADO!' : 'PIX COPIA E COLA'}</span>
+                    <span className="relative z-10">{copiado ? 'CÓDIGO COPIADO!' : 'PIX COPIA E COLA'}</span>
                   </div>
                 </button>
               </div>
@@ -427,7 +427,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
               <div className="w-full mt-4">
                 <BotaoConfirmaComShimmer
                   aoClicar={async () => enviarComprovante()}
-                  texto={enviandoComprovante ? 'Registrando solicitacao...' : 'Enviar comprovante no WhatsApp'}
+                  texto={enviandoComprovante ? 'Registrando solicitação...' : 'Enviar comprovante no WhatsApp'}
                   iconeSvg={
                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-full h-full">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347" />
@@ -446,7 +446,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
               <div className="bg-gray-50 p-3 rounded-2xl border-2 border-dashed border-gray-200 mb-6 relative group w-48 h-48 flex items-center justify-center shrink-0">
                 <img src={qr_code} alt="QR Code PIX" className={`w-full h-full mix-blend-multiply transition-opacity duration-300 ${status === 'pendente' ? 'opacity-100' : 'opacity-20'}`} />
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-active:opacity-100 transition-opacity">
-                  <div className="bg-black/80 text-white text-[10px] px-3 py-1 rounded-full font-black">QR CODE VALIDO</div>
+                  <div className="bg-black/80 text-white text-[10px] px-3 py-1 rounded-full font-black">QR CODE VÁLIDO</div>
                 </div>
               </div>
 
@@ -466,7 +466,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
                       </div>
                     )}
                     <span className="relative z-10 flex items-center gap-2">
-                      {copiado ? 'CODIGO COPIADO!' : 'PIX COPIA E COLA'}
+                      {copiado ? 'CÓDIGO COPIADO!' : 'PIX COPIA E COLA'}
                     </span>
                   </div>
                 </button>
@@ -476,7 +476,7 @@ const ModalPagamento: React.FC<PropsModalPagamento> = ({
         </div>
 
         <div className="px-6 py-4 bg-gray-50 text-[10px] text-gray-400 font-bold uppercase tracking-wider text-center border-t border-gray-100 shrink-0">
-          {modo_confirmacao === 'manual' ? 'Liberacao manual por comprovante' : 'Liberacao instantanea pelo sistema'}
+          {modo_confirmacao === 'manual' ? 'Liberação manual por comprovante' : 'Liberação instantânea pelo sistema'}
         </div>
       </div>
 

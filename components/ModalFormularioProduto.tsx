@@ -11,7 +11,7 @@ import { useTutorialFotoPrimeiroUso } from '../hooks/useTutorialFoto';
 // --- COMPONENTE PRINCIPAL ---
 interface PropsFormulario {
   gtinInicial: string;
-  aoSalvar: (produto: Produto) => void;
+  aoSalvar: (produto: Produto) => Promise<void>;
   aoCancelar: () => void;
   produtoExistente?: Produto | null;
   dadosPrePreenchidos?: Partial<Produto> | null;
@@ -433,7 +433,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     refSalvar.current?.focus();
   };
 
-  const validarESalvar = (e: React.FormEvent) => {
+  const validarESalvar = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro(null);
     setCampoComErro(null);
@@ -453,8 +453,23 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     const p = parseFloat(precoInput.replace(/\./g, '').replace(',', '.'));
     if (isNaN(p) || p <= 0) { setErro('O preço é obrigatório.'); setCampoComErro('price'); refPrice.current?.focus(); return; }
 
+    const produtoParaSalvar: Produto = {
+      codigo_barras: gtinInicial,
+      descricao: descricao.trim(),
+      marca: marca.trim(),
+      tamanho: tamanhoFinal,
+      preco_estimado: p,
+      imagem,
+    };
+
     setTamanho(tamanhoFinal);
-    aoSalvar({ gtinInicial, descricao, marca, tamanho: tamanhoFinal, preco_estimado: p, imagem: imagem! } as any);
+
+    try {
+      await aoSalvar(produtoParaSalvar);
+    } catch (erroAoSalvarProduto) {
+      console.error('Erro ao concluir salvamento do produto:', erroAoSalvarProduto);
+      setErro('Nao foi possivel salvar o produto agora. Tente novamente.');
+    }
   };
 
   const precoNumerico = useMemo(() => {
@@ -730,4 +745,3 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 };
 
 export default ModalFormularioProduto;
-

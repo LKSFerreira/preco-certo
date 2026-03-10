@@ -17,13 +17,13 @@ const PORCENTAGEM_ATUALIZACAO_TOTAL = 0.70;
 
 /**
  * Tutorial visual de primeiro acesso (Tela Única).
- * Foco em ensinar o utilizador a aproximar a câmara e mostrar a soma automática.
+ * Foco em ensinar o usuário a aproximar a câmera e mostrar a soma automática.
  */
 export const ModalTutorialUso = ({ aoFechar }) => {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [totalAcumulado, setTotalAcumulado] = useState(0);
   const [direcaoDescarte, setDirecaoDescarte] = useState(1);
-  
+
   // Controle de Responsividade Dinâmica
   const [tamanhoTela, setTamanhoTela] = useState('normal');
   const containerRef = useRef(null);
@@ -113,7 +113,7 @@ export const ModalTutorialUso = ({ aoFechar }) => {
         A distribuição agora se baseia no "flex-1" do cartão central, preenchendo as lacunas e mantendo tudo equilibrado.
       */}
       <div className={`relative h-full flex flex-col z-10 px-5 sm:px-6 mx-auto w-full max-w-md ${isMuitoCompacto ? 'py-5' : 'py-8'}`}>
-        
+
         {/* CABEÇALHO (Não estica) */}
         <div className={`flex-none text-center animate-fade-in flex flex-col items-center justify-center ${isMuitoCompacto ? 'mb-2' : 'mb-4'}`}>
           <h1 className={`text-white font-black tracking-tight transition-all ${isCompacto ? 'text-2xl mb-1' : 'text-3xl mb-2'}`}>Como usar o App</h1>
@@ -121,17 +121,17 @@ export const ModalTutorialUso = ({ aoFechar }) => {
         </div>
 
         {/* CARTÃO CENTRAL (A Mola do Layout)
-          Ajuste cirúrgico: 'justify-center' alterado para 'justify-evenly'. 
+          Ajuste cirúrgico: 'justify-center' alterado para 'justify-evenly'.
           Isso distribui o espaço excedente de forma idêntica entre o topo, o meio e o fundo (os "3 certinhos verdes").
         */}
         <div className={`flex-1 w-full bg-white/10 backdrop-blur-md border border-white/20 flex flex-col items-center justify-evenly shadow-2xl pointer-events-none transition-all rounded-[2rem] my-auto mx-auto max-h-[460px] ${isMuitoCompacto ? 'p-5' : 'p-6 py-8'}`}>
-          
+
           {/* PASSO 1 (Topo do Cartão) */}
           <div className="flex-none flex flex-col items-center relative w-full">
             <p className={`text-white font-medium text-center transition-all ${isMuitoCompacto ? 'mb-2 text-base' : 'mb-3 text-lg'}`}>
               1. <span className="text-green-400 font-bold">Aproxime e centralize</span>
             </p>
-            
+
             <div className={`relative flex items-center justify-center rounded-xl animate-focus-frame bg-black/40 overflow-hidden shadow-inner backdrop-blur-sm transition-all ${isMuitoCompacto ? 'w-[200px] h-[100px]' : 'w-[220px] h-[120px]'}`}>
               <div className="absolute top-2 left-2 w-6 h-6 border-t-4 border-l-4 rounded-tl border-white/50 animate-corner-color"></div>
               <div className="absolute top-2 right-2 w-6 h-6 border-t-4 border-r-4 rounded-tr border-white/50 animate-corner-color"></div>
@@ -156,14 +156,14 @@ export const ModalTutorialUso = ({ aoFechar }) => {
               Com o justify-center acima, é essa molinha que dita a distância exata e equilibrada entre os itens.
           */}
           <div className={`flex-1 w-full flex justify-center items-center relative z-20 transition-all ${isMuitoCompacto ? 'min-h-[15px] max-h-[35px] my-1' : 'min-h-[20px] max-h-[80px] my-3'}`}>
-            
+
             {/* A Moeda Animada (Restaurada) */}
             <div className={`bg-green-600 text-white font-bold rounded-full animate-float-money-sync absolute opacity-0 shadow-lg shadow-green-600/30 flex items-center gap-2 z-30 ${isMuitoCompacto ? 'px-4 py-1.5 text-sm' : 'px-5 py-2 text-base'}`}>
               <span className="text-sm font-black">+</span> {formataMoeda(precoAtual)}
             </div>
 
             {/* A linha agora usa um gradiente para simular o tracejado controlável */}
-            <div 
+            <div
               className="h-full w-0.5 transition-all"
               style={{
                 backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0.3) 50%, transparent 40%)`,
@@ -171,7 +171,7 @@ export const ModalTutorialUso = ({ aoFechar }) => {
                 backgroundRepeat: 'repeat-y',
               }}
             ></div>
-            
+
           </div>
 
           {/* PASSO 2 (Base do Cartão) */}

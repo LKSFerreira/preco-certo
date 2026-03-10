@@ -17,6 +17,7 @@ export const REGEX_UNIDADE = new RegExp(
 export const CHAVE_STORAGE_CARRINHO = 'sem_susto_carrinho_v1';
 export const CHAVE_STORAGE_CATALOGO = 'sem_susto_catalogo_v1';
 export const CHAVE_STORAGE_HISTORICO = 'sem_susto_historico_v1';
+export const LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO = 15;
 
 // Imagem placeholder (SVG Data URI)
 // Ícone: Sacola de compras verde estilizada com fundo suave, substituindo a cesta cinza.
@@ -31,7 +32,6 @@ export const NOMES_INVALIDOS = new Set([
   'produto sem nome',
   'sem nome',
   'sem título',
-  'sem descricao',
   'sem descrição',
   'sem informacao',
   'sem informação',
