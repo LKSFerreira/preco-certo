@@ -375,6 +375,7 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Banco Sob Demanda:** `api/_lib/banco.ts` passou a inicializar o pool apenas no primeiro uso real, evitando derrubar o servidor por `DATABASE_URL` ausente em ambiente que ainda nao deve usar banco remoto.
 - **Travas no `init_db.py`:** Reset, criacao automatica e carga inicial passaram a respeitar `APP_ENV`, `INIT_DB_IMPORTAR_DADOS` e `INIT_DB_RESETAR_BANCO`.
 - **Validacao:** `docker compose -f .docker/compose.yaml exec app npm run build` aprovado e `docker compose -f .docker/compose.yaml exec backend env APP_ENV=local INIT_DB_IMPORTAR_DADOS=false INIT_DB_RESETAR_BANCO=false python scripts/init_db.py` validado com sucesso.
+
 ### 09/03: [Governanca Catalogo Compartilhado](./walkthrough/governanca_catalogo_compartilhado.md)
 
 - **Catalogo Oficial Preservado:** `GET /api/produtos/:codigo` continua lendo exclusivamente de `produtos`.
@@ -388,3 +389,11 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Trilha Operacional em Node/JS CLI:** Implementados `aplicar_migrations.ts`, `carregar_catalogo_inicial.ts`, `validar_banco_remoto.ts` e `orquestrar_validacao_remota.ts` em `lib/scripts/database/`, sem expandir Python e sem expor endpoints HTTP para operar banco.
 - **Infraestrutura Compartilhada Corrigida:** `ambiente` foi consolidado em `infra/ambiente/`, `lib/database/banco.ts` passou a reutilizar essa base e a camada nova deixou de depender semanticamente de `api/_lib/`.
 - **Validação Local Completa:** Build aprovado e execução validada via Docker dos quatro comandos da trilha, incluindo a orquestração completa com `12/12` migrations registradas, `30196` registros lidos no catálogo e escrita controlada com rollback.
+
+### 09/03: [Features Premium e Histórico](./walkthrough/release_features_premium.md) 💎
+
+- **Entitlement Centralizado:** Fluxo premium agora deriva do cache validador `useEntitlementPremium` (Server-Side + Local TTL) substituindo verificações isoladas de hash na UI.
+- **Histórico Assinante:** Migração completa da persistência de histórico para o `IndexedDB` e criação do `ModalHistoricoCompras` com acesso exclusivo a assinantes.
+- **Limite Gratuito Inteligente:** Implementada trava client-side de 15 _itens distintos_ no carrinho para usuários free (`ModalBloqueio`), sem afetar a alteração de quantidade de itens já presentes.
+- **Limpeza Textual Visual:** Script `fix_accents.cjs` implementado com correção de acentuação massiva em todos os modais da UI, restaurando "Café", "Pêndulo", "Automático" do mojibake nativo.
+- **Validação de Fluxos:** O botão do coração agora se oculta graciosamente via _gating_ visual reativo na barra de navegação quando o prêmio é reconhecido como ativo e validado.
