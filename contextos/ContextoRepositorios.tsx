@@ -8,9 +8,9 @@
 import { ReactNode, createContext, useContext, useMemo } from 'react';
 import { Repositorios, RepositorioProdutos } from '../repositorios/tipos-repositorio';
 import {
-  RepositorioCarrinhoLocalStorage,
-  RepositorioHistoricoLocalStorage
+  RepositorioCarrinhoLocalStorage
 } from '../repositorios/local-storage';
+import { RepositorioHistoricoIndexedDB } from '../repositorios/historico-indexed-db';
 import { RepositorioProdutosIndexedDB } from '../repositorios/indexed-db';
 import { RepositorioProdutosOfflineFirst } from '../repositorios/offline-first';
 import { RepositorioProdutosPostgres } from '../repositorios/postgres';
@@ -65,7 +65,7 @@ export function ProvedorRepositorios({
     return {
       produtos,
       carrinho: new RepositorioCarrinhoLocalStorage(),
-      historico: new RepositorioHistoricoLocalStorage(),
+      historico: new RepositorioHistoricoIndexedDB(),
       premium: new RepositorioPremiumLocalStorage(),
     };
   }, [repositoriosCustomizados]);

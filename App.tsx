@@ -651,7 +651,7 @@ export default function App() {
                   className="bg-amber-50 text-amber-700 p-2 [@media(max-height:700px)]:p-1.5 rounded-xl text-xs font-bold border border-amber-100 hover:bg-amber-100 transition-colors flex items-center justify-center shadow-sm"
                   title={`Histórico premium • ${estadoPremium.diasRestantes} dias restantes`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6" fill="none" stroke="url(#history-gradient)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="2 2 20 20" className="w-6 h-6" fill="none" stroke="url(#history-gradient)" strokeWidth={2.25} strokeLinecap="round" strokeLinejoin="round">
                     <defs>
                       <linearGradient id="history-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
                         <stop offset="0%" stopColor="#9C27B0" />
