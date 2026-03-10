@@ -1,23 +1,18 @@
-﻿---
+---
 description: Salva o artefato de walkthrough e atualiza o histórico de documentação.
 ---
 
-# Workflow: Sincronização de Walkthrough e Histórico:
+# Walkthrough / Fechamento de Tarefa
 
-> **Atenção:** Siga os passos abaixo com precisão absoluta para manter a integridade da documentação e não quebrar o padrão existente.
+Este workflow utiliza a skill `fecha_feature` para documentar suas entregas.
 
-## 1: Captura e Salvamento do Artefato
-- Extraia o conteúdo exato do artefato gerado chamado `walkthrough`.
-- Salve este conteúdo como um novo arquivo dentro do diretório `.metadocs/walkthrough/`.
+## Como usar:
 
-## 2: Regra de Nomenclatura
-- O nome do novo arquivo deve ser representativo e conter **no máximo 3 palavras** (ex: `setup_banco_dados.md` ou `refatoracao_auth.md`).
-- **Ação Obrigatória:** Analise os arquivos já existentes no diretório `.metadocs/walkthrough/` e utilize estritamente o mesmo padrão de nomenclatura (snake_case) que já está sendo usado.
+1. **Tarefas Planejadas**: Se você terminou algo que estava no `feat/`, este comando promoverá o arquivo para `walkthrough/`.
+2. **Tarefas Ad-hoc**: Se você fez algo espontâneo, este comando criará um novo registro de documentação diretamente no histórico.
 
-## 3: Atualização do Histórico
-- Abra e analise as últimas inserções do arquivo `historico.md` (localizado na raiz ou em `.metadocs/`).
-- Crie um resumo do arquivo que você acabou de salvar na Etapa 1.
-- **Ação Obrigatória:** Adicione esse resumo ao `historico.md` seguindo **exatamente** o mesmo padrão visual e de formatação das entradas anteriores. 
-- **Trava de Segurança:** É estritamente obrigatório que o resumo contenha um link Markdown válido apontando para o novo arquivo criado (ex: `[Resumo da feature](.metadocs/walkthrough/nome_do_arquivo.md)`).
+## Ação Obrigatória
 
-> Use caminhos relativos.
+**Delegue imediatamente** a execução para a skill `fecha_feature` (localizada em `.agents/skills/fecha_feature/`).
+
+Leia o `SKILL.md` da skill e identifique se deve seguir o **Fluxo A (Promoção)** ou **Fluxo B (Criação Ad-hoc)**.

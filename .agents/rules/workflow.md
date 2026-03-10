@@ -39,6 +39,7 @@ trigger: always_on
 
 - Implemente somente o que foi aprovado no plano.
 - Siga o plano à risca.
+- **Uso de Skills**: Para tarefas complexas (Docker, Git, PRs, etc), utilize as Skills apropriadas em `/.agents/skills/`.
 - Se surgir um bloqueio não previsto durante a execução, pare e retorne à etapa de discussão.
 
 ---
