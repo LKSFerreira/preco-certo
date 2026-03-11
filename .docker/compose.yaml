@@ -10,7 +10,7 @@ services:
   # ---------------------------------------------------------------------------
   # DATABASE - PostgreSQL para desenvolvimento local
   # ---------------------------------------------------------------------------
-  database:
+  database-sem-susto:
     build:
       context: ../
       dockerfile: .docker/Dockerfile.postgres
@@ -25,27 +25,9 @@ services:
       - APP_ENV=local
 
   # ---------------------------------------------------------------------------
-  # backend - Ambiente Python legado para rollback de scripts deprecados
-  # ---------------------------------------------------------------------------
-  backend:
-    build:
-      context: ../
-      dockerfile: .docker/Dockerfile.python
-    volumes:
-      - ../:/app
-    working_dir: /app
-    environment:
-      - APP_ENV=local
-      - DATABASE_URL=postgresql://postgres:postgres@database:5432/sem_susto
-      - INIT_DB_IMPORTAR_DADOS=true
-      - INIT_DB_RESETAR_BANCO=false
-    # Mantém o container vivo para rodarmos comandos manuais ou roda o script direto
-    command: tail -f /dev/null
-
-  # ---------------------------------------------------------------------------
   # APP - Node.js com Vite (Build via Dockerfile)
   # ---------------------------------------------------------------------------
-  app:
+  app-sem-susto:
     build:
       context: ../
       dockerfile: .docker/Dockerfile.node
@@ -63,14 +45,13 @@ services:
       - APP_ENV=local
       - VITE_APP_ENV=local
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@database:5432/sem_susto
       - VITE_USAR_BANCO_POSTGRES=true
       - WATCHPACK_POLLING=true
       - HOST_IP=${HOST_IP:-}
     env_file:
       - ../.env
     depends_on:
-      - database
+      - database-sem-susto
 
 volumes:
   postgres-data:

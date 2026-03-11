@@ -205,30 +205,32 @@ export default function App() {
     };
   }, [mostrarHistoricoCompras, premiumAtivo, repositorioHistorico]);
 
-  const abrirHistoricoPremium = useCallback(async () => {
-    const estadoPremiumAtual = await revalidarEstadoPremium(false);
+  const abrirHistoricoPremium = useCallback(() => {
+    // Dispara revalidação em background, mas decide a abertura com base no estado atual (fluido)
+    void revalidarEstadoPremium(false);
 
-    if (estadoPremiumAtual.ativo) {
+    if (premiumAtivo) {
       setMostrarHistoricoCompras(true);
       return;
     }
 
     setMostrarModalPlano(true);
-  }, [revalidarEstadoPremium]);
+  }, [premiumAtivo, revalidarEstadoPremium]);
 
-  const solicitarAberturaScanner = useCallback(async () => {
-    const estadoPremiumAtual = await revalidarEstadoPremium(false);
-    const premiumLiberado = estadoPremiumAtual.ativo;
+  const solicitarAberturaScanner = useCallback(() => {
+    // Revalida em background sem travar
+    void revalidarEstadoPremium(false);
 
-    if (!premiumLiberado && carrinho.length >= LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO) {
+    if (!premiumAtivo && carrinho.length >= LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO) {
       setMostrarBloqueioCarrinhoPremium(true);
       return;
     }
 
-    const { acordarAPIsSilenciosamente } = await import('./services/warmup');
-    acordarAPIsSilenciosamente();
+    import('./services/warmup').then(({ acordarAPIsSilenciosamente }) => {
+      acordarAPIsSilenciosamente();
+    });
     setTelaAtual('SCANNER');
-  }, [carrinho.length, revalidarEstadoPremium]);
+  }, [carrinho.length, premiumAtivo, revalidarEstadoPremium]);
 
   // --- Funções de Join (Carrinho + Catálogo) ---
 
@@ -273,11 +275,12 @@ export default function App() {
     // (usa a referência do carrinho no momento da chamada)
     const itemExistente = carrinho.find(item => item.codigo_barras === codigo_barras);
     const novaQuantidade = itemExistente ? itemExistente.quantidade + 1 : 1;
-    const estadoPremiumAtual = await revalidarEstadoPremium(false);
-    const premiumLiberado = estadoPremiumAtual.ativo;
+    
+    // Revalidação assíncrona
+    void revalidarEstadoPremium(false);
 
     if (
-      !premiumLiberado &&
+      !premiumAtivo &&
       !itemExistente &&
       carrinho.length >= LIMITE_ITENS_DISTINTOS_CARRINHO_GRATUITO
     ) {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRepositorios } from '../contextos/ContextoRepositorios';
 import type { EstadoPremiumCacheado } from '../repositorios/premium';
 
@@ -46,6 +46,7 @@ export function useEntitlementPremium() {
     premium.obterEstadoPremium()
   );
   const [carregandoPremium, setCarregandoPremium] = useState(false);
+  const estaValidando = useRef(false);
 
   const aplicarEstadoGratuito = useCallback(() => {
     premium.limparAcesso();
@@ -62,11 +63,20 @@ export function useEntitlementPremium() {
         return aplicarEstadoGratuito();
       }
 
+      // Se não forçar e o cache ainda for válido, retorna o cache IMEDIATAMENTE.
+      // A revalidação assíncrona garante que o cache se mantenha atualizado "por trás".
       if (!forcar && cachePremiumAindaValido(estadoCacheado)) {
+        // Se já está validando em background, não dispara outra
+        if (estaValidando.current) return estadoCacheado;
+
         setEstadoPremium(estadoCacheado);
         return estadoCacheado;
       }
 
+      // Se já houver uma validação em curso, evita duplicidade (Single Flight)
+      if (estaValidando.current) return estadoCacheado;
+
+      estaValidando.current = true;
       setCarregandoPremium(true);
 
       try {
@@ -81,7 +91,6 @@ export function useEntitlementPremium() {
           if ([400, 404, 410].includes(resposta.status)) {
             return aplicarEstadoGratuito();
           }
-
           throw new Error(`Falha ao consultar premium: ${resposta.status}`);
         }
 
@@ -104,7 +113,7 @@ export function useEntitlementPremium() {
         setEstadoPremium(novoEstado);
         return novoEstado;
       } catch (erro) {
-        console.warn('⚠️ [Premium] Falha ao revalidar estado premium. Mantendo cache local se ainda válido.', erro);
+        console.warn('⚠️ [Premium] Falha ao revalidar estado premium assincronamente.', erro);
 
         if (tokenPremiumAindaValido(estadoCacheado)) {
           setEstadoPremium(estadoCacheado);
@@ -114,6 +123,7 @@ export function useEntitlementPremium() {
         return aplicarEstadoGratuito();
       } finally {
         setCarregandoPremium(false);
+        estaValidando.current = false;
       }
     },
     [aplicarEstadoGratuito, premium]
@@ -121,21 +131,15 @@ export function useEntitlementPremium() {
 
   useEffect(() => {
     const estadoInicial = premium.obterEstadoPremium();
-
-    if (!tokenPremiumAindaValido(estadoInicial)) {
-      setEstadoPremium(ESTADO_GRATUITO);
-      return;
-    }
-
     setEstadoPremium(estadoInicial);
-  }, [premium]);
-
-  useEffect(() => {
+    
+    // Dispara a primeira validação em background se necessário
     void revalidarEstadoPremium(false);
-  }, [revalidarEstadoPremium]);
+  }, [premium, revalidarEstadoPremium]);
 
   useEffect(() => {
     const aoMudarVisibilidade = () => {
+      // Revalida em background ao voltar para a aba, sem travar a UI
       if (document.visibilityState === 'visible') {
         void revalidarEstadoPremium(false);
       }
