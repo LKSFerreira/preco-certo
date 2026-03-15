@@ -10,7 +10,7 @@ const unidadesAceitas = Object.keys(UNIT_MAP)
   .join('|');
 
 export const REGEX_UNIDADE = new RegExp(
-  `^\\d+([.,]\\d+)?\\s?(${unidadesAceitas})$`, 'iu'
+  `^(\\d+([.,]\\d+)?\\s?)?(${unidadesAceitas})$`, 'iu'
 );
 
 // Chave para persistência no LocalStorage
@@ -54,6 +54,10 @@ export const NOMES_INVALIDOS = new Set([
   'descricao',
   'descrição',
   'sem detalhes',
+  'produto sem rótulo',
+  'sem rótulo',
+  'sem marca',
+  'produto genérico',
 
   // en (genéricos)
   'product',

@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Produto } from '../types';
-import { REGEX_UNIDADE } from '../constants';
+import { REGEX_UNIDADE, NOMES_INVALIDOS } from '../constants';
 import { extrairDadosDoRotulo } from '../services/ia';
 import { normalizarTamanho } from '../services/utilitarios';
 import { ModalRecorte } from './ModalRecorte';
@@ -106,6 +106,7 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
   }, [dadosPrePreenchidos]);
 
   const temCamposFaltantes = camposFaltantes.length > 0;
+  const veioDeFonteConfiavel = !!produtoExistente || !!dadosPrePreenchidos;
 
   const liberarUrlBlobRecorte = () => {
     const urlBlob = referenciaUrlBlobRecorte.current;
@@ -440,7 +441,18 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
     const tamanhoFinal = normalizarTamanho(tamanho.trim());
 
     if (!imagem) { setErro('A foto do produto é obrigatória.'); return; }
-    if (!descricao.trim()) { setErro('O nome do produto é obrigatório.'); setCampoComErro('descricao'); refDescricao.current?.focus(); return; }
+    
+    const descLimpa = descricao.trim();
+    if (!descLimpa) { setErro('O nome do produto é obrigatório.'); setCampoComErro('descricao'); refDescricao.current?.focus(); return; }
+    
+    // Bloqueia nomes genéricos apenas se for entrada manual pura
+    if (!veioDeFonteConfiavel && NOMES_INVALIDOS.has(descLimpa.toLowerCase())) {
+      setErro('Por favor, informe um nome mais específico para o produto.');
+      setCampoComErro('descricao');
+      refDescricao.current?.focus();
+      return;
+    }
+
     if (!marca.trim()) { setErro('A marca é obrigatória.'); setCampoComErro('marca'); refMarca.current?.focus(); return; }
     if (!tamanhoFinal) { setErro('O tamanho é obrigatório.'); setCampoComErro('tamanho'); refTamanho.current?.focus(); return; }
     if (!REGEX_UNIDADE.test(tamanhoFinal)) {
@@ -478,12 +490,17 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
 
   const formularioPodeSalvar = useMemo(() => {
     if (!imagem) return false;
-    if (!descricao.trim()) return false;
+    const d = descricao.trim();
+    if (!d) return false;
+    
+    // Se for manual, não deixa salvar nomes da lista de inválidos
+    if (!veioDeFonteConfiavel && NOMES_INVALIDOS.has(d.toLowerCase())) return false;
+
     if (!marca.trim()) return false;
     if (!tamanhoValido) return false;
     if (Number.isNaN(precoNumerico) || precoNumerico <= 0) return false;
     return true;
-  }, [imagem, descricao, marca, tamanhoValido, precoNumerico]);
+  }, [imagem, descricao, marca, tamanhoValido, precoNumerico, veioDeFonteConfiavel]);
 
   const classeEspacamentoSalvar = tecladoAtivo
     ? 'pt-2 pb-[calc(env(safe-area-inset-bottom)+8.5rem)]'

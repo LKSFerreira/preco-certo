@@ -46,11 +46,6 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
         const produto = OpenFoodFactsAdapter.paraDominio(dados);
 
         // 2. Padronização via IA (Melhoria de Qualidade de Dados)
-        if (produto.descricao && NOMES_INVALIDOS.has(produto.descricao.toLowerCase().trim())) {
-            console.warn(`[OFF] Nome inválido detectado: "${produto.descricao}". Limpando campo.`);
-            produto.descricao = ''; // Força o app a tratar como campo vazio
-        }
-
         if (produto.descricao) {
             // Monta um contexto rico para a IA
             const contexto = `Produto: ${produto.descricao}. Marca: ${produto.marca || '?'}. Tamanho: ${produto.tamanho || '?'}`;
@@ -79,11 +74,6 @@ export async function buscarProdutoOFF(gtin: string): Promise<Produto | null> {
                 console.warn('[OFF] Falha na padronização IA (usando dados originais):', err);
             }
         }
-
-        // Validação Final (Pós IA ou Pós Adapter)
-        // Garante que se o adapter ou a IA retornaram lixo, limpamos.
-        if (produto.marca && NOMES_INVALIDOS.has(produto.marca.toLowerCase().trim())) produto.marca = '';
-        if (produto.tamanho && NOMES_INVALIDOS.has(produto.tamanho.toLowerCase().trim())) produto.tamanho = '';
 
         return produto;
 
