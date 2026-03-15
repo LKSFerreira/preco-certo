@@ -20,18 +20,25 @@ function criarPool(): Pool {
         );
     }
 
-    return new Pool({
+    const configuracao: any = {
         connectionString: databaseUrl,
-
         // Serverless: limita conexões para não esgotar o pool do banco
         max: 5,
-
         // Fecha conexões ociosas após 30 segundos
         idleTimeoutMillis: 30000,
-
         // Timeout de 10 segundos para estabelecer conexão
         connectionTimeoutMillis: 10000,
-    });
+    };
+
+    // Supabase e outros provedores de nuvem exigem SSL para conexões externas
+    // Ativamos apenas se não for ambiente local ou se a URL exigir explicitamente
+    if (ambiente === 'producao' || databaseUrl.includes('supabase.com') || databaseUrl.includes('pooler.supabase.com')) {
+        configuracao.ssl = {
+            rejectUnauthorized: false, // Necessário para certificados auto-assinados de poolers
+        };
+    }
+
+    return new Pool(configuracao);
 }
 
 function obterPool(): Pool {

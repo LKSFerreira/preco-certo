@@ -10,12 +10,21 @@ export function criarPoolDatabase(): Pool {
     throw new Error(`DATABASE_URL não definida para APP_ENV=${ambiente}.`);
   }
 
-  return new Pool({
+  const configuracao: any = {
     connectionString: databaseUrl,
     max: 5,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000
-  });
+  };
+
+  // SSL obrigatório para Supabase/Nuvem
+  if (ambiente === 'producao' || databaseUrl.includes('supabase.com') || databaseUrl.includes('pooler.supabase.com')) {
+    configuracao.ssl = {
+      rejectUnauthorized: false
+    };
+  }
+
+  return new Pool(configuracao);
 }
 
 export async function encerrarPoolDatabase(pool: Pool): Promise<void> {
