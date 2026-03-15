@@ -39,7 +39,7 @@ export default defineConfig({
       usePolling: true,
     },
     proxy: {
-      // Em dev, o Vite precisa fazer proxy para as serverless functions.
+      // Em desenvolvimento, o Vite precisa fazer proxy para as serverless functions.
       // Em produção, a Vercel cuida disso automaticamente.
       '/api': {
         target: 'http://localhost:3000',
@@ -65,7 +65,7 @@ export default defineConfig({
     },
     // Mantém os arquivos pequenos agrupados para evitar múltiplas requisições HTTP
     cssCodeSplit: false,
-    // Deixamos o Vite gerenciar os chunks automaticamente para garantir 
+    // Deixamos o Vite gerenciar os chunks automaticamente para garantir
     // que o Lazy Loading dos modais (Scanner/Cropper) funcione isoladamente.
   }
 });
