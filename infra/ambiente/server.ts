@@ -1,6 +1,6 @@
-import { AmbienteOperacional, normalizarAmbiente } from './_comum';
+import { AmbienteOperacional, normalizarAmbiente } from './_comum.js';
 
-export type { AmbienteOperacional } from './_comum';
+export type { AmbienteOperacional } from './_comum.js';
 
 export function obterAmbienteOperacionalServidor(): AmbienteOperacional {
   if (process.env.APP_ENV) {

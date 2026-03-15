@@ -1,5 +1,5 @@
-import { GatewayPagamento, RespostaGatewayPagamento, RespostaGatewayStatus } from "./tipos";
-import { chavesPixEstaticas } from "./mock_dados";
+import { GatewayPagamento, RespostaGatewayPagamento, RespostaGatewayStatus } from "./tipos.js";
+import { chavesPixEstaticas } from "./mock_dados.js";
 
 interface ChavePix {
     plano: string;

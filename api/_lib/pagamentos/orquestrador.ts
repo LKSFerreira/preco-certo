@@ -1,5 +1,5 @@
 import pool from '../../../lib/database/banco.js';
-import { fabricaGatewayPagamento } from '../gateways/fabrica';
+import { fabricaGatewayPagamento } from '../gateways/fabrica.js';
 import { gerarCodigoToken, calcularHash, obterDuracaoPorPlano } from '../tokens.js';
 
 export type EstadoPagamentoDominio = 'pendente' | 'aprovado' | 'falha' | 'expirado' | 'pendente_manual';

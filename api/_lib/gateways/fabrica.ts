@@ -1,8 +1,8 @@
-import { GatewayPagamento } from "./tipos";
-import { GatewayMercadoPago } from "./mercado-pago";
-import { GatewayPagBank } from "./pagbank";
-import { GatewayMockado } from "./mockado";
-import { GatewayNubankFailover } from "./nubank-failover";
+import { GatewayPagamento } from "./tipos.js";
+import { GatewayMercadoPago } from "./mercado-pago.js";
+import { GatewayPagBank } from "./pagbank.js";
+import { GatewayMockado } from "./mockado.js";
+import { GatewayNubankFailover } from "./nubank-failover.js";
 
 class FabricaGatewayPagamento {
     private instancia: GatewayPagamento | null = null;

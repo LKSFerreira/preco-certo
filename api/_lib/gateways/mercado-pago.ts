@@ -1,4 +1,4 @@
-import { GatewayPagamento, RespostaGatewayPagamento, RespostaGatewayStatus } from "./tipos";
+import { GatewayPagamento, RespostaGatewayPagamento, RespostaGatewayStatus } from "./tipos.js";
 
 
 export class GatewayMercadoPago implements GatewayPagamento {

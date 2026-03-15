@@ -1,6 +1,6 @@
-import { AmbienteOperacional, normalizarAmbiente, resolverFlagBooleana } from './_comum';
+import { AmbienteOperacional, normalizarAmbiente, resolverFlagBooleana } from './_comum.js';
 
-export type { AmbienteOperacional } from './_comum';
+export type { AmbienteOperacional } from './_comum.js';
 
 export function obterAmbienteOperacionalCliente(): AmbienteOperacional {
   return normalizarAmbiente(import.meta.env.VITE_APP_ENV, 'local');

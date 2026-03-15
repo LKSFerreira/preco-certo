@@ -1,4 +1,4 @@
-import { GatewayPagamento, RespostaGatewayPagamento, RespostaGatewayStatus } from "./tipos";
+import { GatewayPagamento, RespostaGatewayPagamento, RespostaGatewayStatus } from "./tipos.js";
 
 export class GatewayPagBank implements GatewayPagamento {
     // Sandbox URL do PagBank
