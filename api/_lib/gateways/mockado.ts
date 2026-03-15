@@ -37,13 +37,17 @@ export class GatewayMockado implements GatewayPagamento {
 
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            const idPagamento = `PIX-MOCKADO_${Date.now()}_SEM-SUSTO`;
+            const sufixo = this.proximaTentativaDeveFalhar ? 'FAIL' : 'OK';
+            const idPagamento = `PIX-MOCKADO_${Date.now()}_${sufixo}_SEM-SUSTO`;
+
             this.statusSimulado[idPagamento] = {
                 status: 'pendente',
                 // Regra de negocio: falha -> aprova -> falha -> aprova.
                 deveFalhar: this.proximaTentativaDeveFalhar
             };
             this.proximaTentativaDeveFalhar = !this.proximaTentativaDeveFalhar;
+
+            console.info(`✅ [MOCK] Pagamento gerado: ${idPagamento} (Próxima tentativa deve falhar? ${this.proximaTentativaDeveFalhar})`);
 
             const qrCodeBase64 = dadosPixEstatico.dados_doacao?.qr_code_base64 ?? dadosPixEstatico.qr_code_base64;
             const qrCodeCopiaECola = dadosPixEstatico.dados_doacao?.qr_code_copia_e_cola ?? dadosPixEstatico.qr_code_copia_e_cola;
@@ -64,7 +68,19 @@ export class GatewayMockado implements GatewayPagamento {
     async consultarStatus(idPagamento: string): Promise<RespostaGatewayStatus> {
         const registro = this.statusSimulado[idPagamento];
 
+        // Se o registro não existir em memória (comum em serverless/Vercel entre requisições),
+        // deduzimos o status baseado no sufixo inserido no ID durante a criação.
         if (!registro) {
+            console.warn(`⚠️ [MOCK] Registro ${idPagamento} não encontrado em memória. Deduzindo status pelo ID.`);
+            
+            if (idPagamento.includes('_OK_')) {
+                return { pagamento_id: idPagamento, status: 'aprovado' };
+            }
+            
+            if (idPagamento.includes('_FAIL_')) {
+                return { pagamento_id: idPagamento, status: 'falha' };
+            }
+
             return { pagamento_id: idPagamento, status: 'falha' };
         }
 
