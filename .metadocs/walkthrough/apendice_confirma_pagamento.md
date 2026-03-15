@@ -1,3 +1,5 @@
+> **Nota:** Este é um apêndice arquitetural, executado e consolidado no dia 04/03 (ref: `walkthrough/confirmacao_token_pagamento.md`).
+
 # Finalização da Monetização — Fase 0.8.5
 
 Itens `0.8.5.14` e `0.8.5.21` do roadmap: integrar a [ModalPagamentoAprovado](file:///c:/Users/LKSFERREIRA/Documents/GitHub/sem-susto/components/ModalPagamentoAprovado.tsx#5-12) no fluxo real e gerar o token automaticamente após pagamento aprovado.

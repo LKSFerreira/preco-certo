@@ -1,3 +1,5 @@
+> **Nota:** Este é um apêndice arquitetural, executado e consolidado no dia 05/03 (ref: `walkthrough/refatoracao_fluxo_pagamento.md`).
+
 # Strategy Pattern no Backend — Explicação Visual
 
 ## O que você acertou ✅
