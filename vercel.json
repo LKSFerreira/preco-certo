@@ -4,6 +4,10 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/api/produtos/:codigo",
+      "destination": "/api/produtos/[codigo]"
+    },
+    {
       "source": "/api/cosmos/gtin/:codigo",
       "destination": "/api/cosmos/gtin/:codigo"
     },
@@ -22,6 +26,26 @@
     {
       "source": "/api/tokens/consultar",
       "destination": "/api/tokens/consultar"
+    },
+    {
+      "source": "/api/pagamentos/pix",
+      "destination": "/api/pagamentos/pix"
+    },
+    {
+      "source": "/api/pagamentos/status",
+      "destination": "/api/pagamentos/status"
+    },
+    {
+      "source": "/api/pagamentos/confirmar",
+      "destination": "/api/pagamentos/confirmar"
+    },
+    {
+      "source": "/api/pagamentos/manual/solicitar",
+      "destination": "/api/pagamentos/manual/solicitar"
+    },
+    {
+      "source": "/api/pagamentos/manual/aprovar",
+      "destination": "/api/pagamentos/manual/aprovar"
     },
     {
       "source": "/(.*)",
