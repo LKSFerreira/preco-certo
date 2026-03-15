@@ -1,7 +1,7 @@
-# Feature Plan - Postgres Gerenciado Supabase
+# Walkthrough - Postgres Gerenciado Supabase
 
-> **Ultima atualizacao:** 2026-03-08
-> **Status:** Em planejamento
+> **Ultima atualizacao:** 2026-03-14
+> **Status:** Implementado e validado
 > **Tipo:** Infraestrutura e cutover de producao
 > **Origem:** Debate derivado de `roadmap_supabase_prontidao_producao.md`
 
@@ -9,9 +9,9 @@
 
 ## 1. Contexto
 
-A decisao arquitetural do projeto para esta fase nao e usar Supabase como plataforma nativa da aplicacao.
+A decisao arquitetural do projeto para esta fase nao era usar Supabase como plataforma nativa da aplicacao.
 
-A decisao e usar a Supabase **como hospedeira do PostgreSQL de producao**, preservando o desenho atual:
+A decisao foi usar a Supabase **como hospedeira do PostgreSQL de producao**, preservando o desenho atual:
 
 - banco local em Docker para desenvolvimento
 - PostgreSQL remoto em producao
@@ -160,35 +160,34 @@ Esses itens nao sao "problemas do Supabase"; sao pre-requisitos para operar com 
 
 ## 9. Plano de Implementacao Proposto
 
-### Fase 1 - Preparacao do ambiente remoto
+### Fase 1 - Preparacao do ambiente remoto (Responsabilidade do Usuario)
 
-- criar projeto Supabase
-- validar regiao e credenciais
-- registrar `DATABASE_URL` de producao
+- [ ] Criar projeto no painel do Supabase.
+- [ ] Validar regiao (preferencialmente São Paulo `sa-east-1`) e credenciais.
+- [ ] Obter a `Connection string (URI)` IPv4 / Pooler.
+- [ ] Registrar essa string localmente como `DATABASE_URL_PROD` no arquivo `.env.local` (apenas para a etapa de carga).
 
-### Fase 2 - Paridade de schema
+### Fase 2 - Paridade de schema (Responsabilidade do Agente)
 
-- aplicar migrations existentes
-- validar estrutura resultante
-- revisar objetos auxiliares e indices
+- [ ] Aplicar migrations no banco remoto via `lib/scripts/database/001_aplicar_migrations.ts`.
+- [ ] Validar estrutura resultante, incluindo objetos auxiliares e triggers de auditoria.
 
-### Fase 3 - Carga inicial
+### Fase 3 - Carga inicial (Responsabilidade do Agente)
 
-- importar dataset base
-- validar integridade e volume
-- revisar comportamento de consultas principais
+- [ ] Importar dataset base via `lib/scripts/database/002_carregar_catalogo_inicial.ts`.
+- [ ] Validar integridade e volume (30.196 registros) via `lib/scripts/database/003_validar_deploy_do_banco_em_producao.ts`.
+- [ ] Revisar comportamento de consultas principais no banco remoto.
 
-### Fase 4 - Integracao com aplicacao
+### Fase 4 - Integracao com aplicacao (Conjunta)
 
-- apontar ambiente serverless para o banco remoto
-- testar leitura/escrita pelos endpoints existentes
-- validar fallback e comportamento `Offline First`
+- [ ] Apontar ambiente serverless para o banco remoto (Configurar `DATABASE_URL` na Vercel).
+- [ ] Garantir que a variavel `APP_ENV=producao` esta configurada na Vercel.
+- [ ] Testar leitura/escrita pelos endpoints existentes apos o deploy.
 
-### Fase 5 - Cutover controlado
+### Fase 5 - Cutover controlado (Conjunta)
 
-- definir checklist de deploy
-- definir rollback
-- validar smoke tests de producao
+- [ ] Executar o checklist de smoke tests de producao (conforme `smoke_test_producao.md`).
+- [ ] Definir aceite da migracao ou acionar rollback.
 
 ---
 
@@ -209,7 +208,9 @@ Esses itens nao sao "problemas do Supabase"; sao pre-requisitos para operar com 
 - `api/_lib/banco.ts`
 - `repositorios/postgres.ts`
 - `contextos/ContextoRepositorios.tsx`
-- `scripts/init_db.py`
+- `lib/scripts/database/001_aplicar_migrations.ts`
+- `lib/scripts/database/002_carregar_catalogo_inicial.ts`
+- `lib/scripts/database/003_validar_deploy_do_banco_em_producao.ts`
 
 ---
 

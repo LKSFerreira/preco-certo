@@ -1,7 +1,7 @@
-# Feature Plan - Plano Implementação Postgres Produção
+# Walkthrough - Plano Implementação Postgres Produção
 
-> **Última atualização:** 2026-03-09
-> **Status:** Consolidado para execução futura
+> **Última atualização:** 2026-03-14
+> **Status:** Implementado e validado
 > **Tipo:** Plano mestre de implementação
 > **Escopo:** Introduzir PostgreSQL remoto oficial em produção usando Supabase como Postgres gerenciado
 

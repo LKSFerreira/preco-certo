@@ -397,3 +397,12 @@ Se você, Agente, está assumindo agora, siga estas regras sagradas:
 - **Limite Gratuito Inteligente:** Implementada trava client-side de 15 _itens distintos_ no carrinho para usuários free (`ModalBloqueio`), sem afetar a alteração de quantidade de itens já presentes.
 - **Limpeza Textual Visual:** Script `fix_accents.cjs` implementado com correção de acentuação massiva em todos os modais da UI, restaurando "Café", "Pêndulo", "Automático" do mojibake nativo.
 - **Validação de Fluxos:** O botão do coração agora se oculta graciosamente via _gating_ visual reativo na barra de navegação quando o prêmio é reconhecido como ativo e validado.
+
+### 14/03: [Postgres Gerenciado no Supabase](./walkthrough/postgres_gerenciado_supabase.md) ☁️
+
+- **Plano Mestre Executado:** O roadmap definido em [Plano Implementação Postgres Produção](./walkthrough/plano_implementacao_postgres_producao.md) foi concluído.
+- **Cutover de Infraestrutura:** Banco de dados de produção criado e migrado com sucesso para o Supabase usando a estratégia de *Postgres Gerenciado* (sem uso de SDK ou dependência de Auth no cliente).
+- **Trilha Operacional Validada:** Execução real da nossa trilha Node.js (`001_aplicar_migrations`, `002_carregar_catalogo_inicial`, `003_validar_deploy_do_banco_em_producao`) via pipeline limpa com `exec.sh` usando a string do `Pooler` (porta 6543).
+- **Governança de Setup:** Garantia de que nenhuma chave do banco (`anon_key`, `service_role`) trafegue no frontend; a Vercel atua como proxy seguro e exclusivo.
+- **Resiliência e Ferramental:** Adicionado script `000_testar_conexao.ts` para análise semântica prévia de conectividade (DNS, TCP, Auth).
+- **Validação de Produção:** O [Smoke Test de Produção](./walkthrough/smoke_test_producao.md) está configurado como artefato definitivo para ser executado manualmente após deploys.

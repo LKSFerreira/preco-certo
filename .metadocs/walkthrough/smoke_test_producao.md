@@ -1,7 +1,7 @@
-# Feature Plan - Smoke Test Produção
+# Walkthrough - Smoke Test Produção
 
-> **Última atualização:** 2026-03-09
-> **Status:** Em planejamento
+> **Última atualização:** 2026-03-14
+> **Status:** Pronto para uso
 > **Tipo:** Operação de validação pós-cutover
 > **Origem:** Debate derivado de `roadmap_supabase_prontidao_producao.md`
 

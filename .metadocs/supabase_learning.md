@@ -15,76 +15,75 @@ O maior medo é a fatura de R$ 100k. Para evitar isso:
     *   *Ação:* Verificar explicitamente se o Spend Cap está ATIVO no painel.
 3.  **Monitoramento:** Configurar alertas de uso (se possível via dashboard).
 
-### 🔐 Segurança (Row Level Security - RLS)
-O Supabase expõe o banco via API. Sem RLS, **qualquer um pode ler/escrever tudo**.
-1.  **Regra de Ouro:** NENHUMA tabela pública sem RLS ativado.
-2.  **Política Inicial (Leitura):** Public (`anon`) pode ler `produtos`.
-3.  **Política Inicial (Escrita):** Apenas `service_role` (backend) ou Admin pode escrever.
-4.  **Chaves de API:**
-    *   `ANON_KEY`: Pode ir para o frontend (com RLS configurado).
-    *   `SERVICE_ROLE_KEY`: **JAMAIS** expor no frontend. Apenas variáveis de ambiente do servidor (`.env.local` e Vercel).
+### 🔐 Segurança na Abordagem "Postgres Gerenciado"
+Conforme definido no `plano_implementacao_postgres_producao.md`, **não utilizaremos o SDK do Supabase nem sua API REST no frontend nesta fase**. O Supabase será tratado exclusivamente como um banco PostgreSQL remoto.
+
+Isso altera nosso modelo de ameaça:
+1.  **Sem Chaves no Frontend:** As chaves `ANON_KEY` e `SERVICE_ROLE_KEY` **não serão utilizadas** pela aplicação. O frontend continuará se comunicando apenas com a nossa API na Vercel.
+2.  **Conexão Direta:** A Vercel acessará o Supabase via string de conexão direta (Connection Pooler/URI IPv4) armazenada na variável `DATABASE_URL`.
+3.  **Blindagem Total:** Como o banco de dados não está exposto diretamente à internet pública (acesso indireto via Vercel), a segurança da nossa própria API Serverless passa a ser a nossa principal linha de defesa (CORS, Rate Limiting, Validação de Dados).
+
+*Nota sobre RLS:* O Row Level Security (RLS) perde protagonismo nessa abordagem, já que não temos usuários do frontend acessando o banco diretamente com a `ANON_KEY`. Toda operação no banco é feita pelo backend (equivalente à role de serviço). No entanto, ativar o RLS por padrão continua sendo uma boa prática de "Defesa em Profundidade" caso a API venha a ser exposta no futuro.
 
 ---
 
-## 2. Checklist de Implementação 🚀
+## 2. Checklist de Implementação (Foco em Postgres Remoto) 🚀
 
-### A. Configuração do Projeto
+### A. Configuração do Projeto (Painel Supabase)
 - [ ] Criar conta/organização no Supabase.
-- [ ] Criar projeto na região **São Paulo (sa-east-1)** (Melhor latência).
-- [ ] Guardar credenciais (`Project URL`, `Anon Key`, `Service Role Key`, `Database Password`) no gerenciador de senhas.
+- [ ] Criar projeto na região **São Paulo (sa-east-1)** (Melhor latência com a Vercel).
+- [ ] Definir senha forte para o banco de dados.
+- [ ] Guardar credenciais no gerenciador de senhas.
+- [ ] Copiar a **Connection string (URI)** em `Project Settings -> Database`. (Preferir IPv4 ou Connection Pooler compatível com Node.js).
 
-### B. Banco de Dados
-- [ ] Rodar migrations SQL existentes (estrutura idêntica ao dev local).
-- [ ] Verificar se tabelas criadas estão com RLS habilitado por padrão.
-- [ ] Importar dataset `produtos` (30k itens).
+### B. Banco de Dados (Operação via Node/JS CLI)
+> A execução dessas etapas será feita localmente apontando para o banco remoto usando nossa trilha operacional em `lib/scripts/database/`.
 
-### C. Integração Aplicação
-- [ ] Instalar SDK: `npm install @supabase/supabase-js`.
-- [ ] Configurar `RepositorioProdutosSupabase.ts`.
-- [ ] Testar conexão.
+- [ ] Configurar `DATABASE_URL_PROD` localmente (não commitar).
+- [ ] Executar migrations no banco remoto (`aplicar_migrations.ts`).
+- [ ] Executar carga inicial do catálogo (`carregar_catalogo_inicial.ts`).
+- [ ] Executar script de validação para garantir integridade e schema (`validar_banco_remoto.ts`).
+
+### C. Integração Produção (Cutover)
+- [ ] Configurar a variável `DATABASE_URL` no painel da Vercel com a string de conexão do Supabase.
+- [ ] Garantir que `APP_ENV=producao` na Vercel.
+- [ ] Fazer um novo deploy (Cutover).
+- [ ] Executar Smoke Test em produção.
 
 ---
 
 ## 3. Diário de Bordo (Log) 📝
 
-### [Data Atual] - Início
-*   Documento criado.
-*   Definido foco em **Spend Cap** e **RLS**.
+### [Fevereiro/2026] - Início
+*   Documento criado com foco em Spend Cap e RLS.
+
+### [Março/2026] - Revisão Arquitetural
+*   Decisão registrada em `plano_implementacao_postgres_producao.md`: Supabase será usado como **Postgres Gerenciado**.
+*   Documento atualizado para remover referências ao SDK (`@supabase/supabase-js`) e focar na conexão direta via `DATABASE_URL` pela Vercel. A segurança baseada em ocultação total de chaves e conexão proxy via backend mitiga os riscos de exposição.
 
 ---
 
 ## 4. Casos de Estudo e Prevenção (Security Hardening) 🛡️
 
 ### O Caso "OpenClaw" e Vazamento de Chaves
-Usuários relataram incidentes (como no caso OpenClaw/OpenAI wrappers) onde chaves de API com permissões de administração total foram expostas por erro simples:
-1.  **Erro:** Commitar chaves no GitHub ou expô-las no Client-Side.
-2.  **Consequência:** Atacantes usaram as chaves para consumir cotas (R$ 100k+) ou roubar dados.
-3.  **No nosso contexto:** Expor a `SERVICE_ROLE_KEY` no frontend permitiria que qualquer um apagasse nosso banco inteiro ("Bypass RLS").
+Usuários relataram incidentes (como no caso OpenClaw/OpenAI wrappers) onde chaves de API com permissões de administração total foram expostas por erro simples.
+*   **Nossa Proteção Atual:** Como não usamos as chaves `ANON_KEY` e `SERVICE_ROLE_KEY` do Supabase, nós eliminamos completamente esse vetor de ataque no frontend. Nossa string de conexão `DATABASE_URL` ficará **exclusivamente** na Vercel e NUNCA no frontend.
 
-### 🚫 Os 3 Pecados Capitais do Supabase
-Para não acordarmos com uma dívida de 100k, **JAMAIS** faremos isso:
+### 🚫 O Pecado Capital da String de Conexão
+Para não acordarmos com uma dívida ou banco apagado, **JAMAIS** faremos isso:
 
-1.  **Service Role no Frontend:**
-    *   *Errado:* `import { createClient } from '@supabase/supabase-js'; const supabase = createClient(url, SERVICE_KEY);`
-    *   *Certo:* Apenas `ANON_KEY` no frontend. `SERVICE_ROLE` morre no servidor (`.env.local` não commitado).
+1.  **Expor a `DATABASE_URL` no Frontend ou Repositório:**
+    *   *Errado:* Commitar `.env.local` ou colocar a string em variáveis prefixadas com `VITE_` (ex: `VITE_DATABASE_URL`). Variáveis `VITE_` vão para o código fonte do cliente!
+    *   *Certo:* A `DATABASE_URL` não tem prefixo e só existe nos servidores (Vercel) e no `.env.local` da máquina do desenvolvedor (que já está no `.gitignore`).
 
-2.  **RLS Desativado (O "Portão Aberto"):**
-    *   Mesmo com `ANON_KEY`, se o RLS estiver *OFF* ou mal configurado, qualquer um lê tudo.
-    *   *Regra:* Toda tabela deve ter RLS habilitado (`ALTER TABLE produtos ENABLE ROW LEVEL SECURITY;`).
-
-3.  **Políticas RLS "Permissivas Demais":**
-    *   *Perigoso:* `CREATE POLICY "Public Access" ON produtos FOR ALL USING (true);` (Permite Delete/Update para qualquer um).
-    *   *Seguro:* `For SELECT USING (true)` (Apenas leitura). Escrita só para Admin.
-
-### ✅ Checklist de Blindagem (Antes do Deploy)
-- [ ] **Lint de Secrets:** Verificar se não há chaves hardcoded no código (`git grep "eyJ"`).
-- [ ] **RLS Audit:** Rodar script verificando se todas as tabelas têm RLS ativo.
-- [ ] **Network Restrictions:** Se possível, restringir acesso ao banco apenas aos IPs da Vercel (Supabase Pro, mas bom saber).
-- [ ] **Backup:** Garantir que o script de seed local (`produtos_higienizados.json`) seja nossa fonte de verdade e backup frio.
+### ✅ Checklist de Blindagem (Antes do Deploy de Cutover)
+- [ ] **Lint de Secrets:** Verificar se não há strings de conexão ou senhas hardcoded no código.
+- [ ] **Network Restrictions:** Restringir conexões do banco, se possível e viável no Free Tier, para minimizar IPs que podem tentar brute force.
+- [ ] **Backup Frio:** Garantir que o script de seed local (`produtos_higienizados.json`) continua sendo nossa fonte de verdade para a carga inicial.
 
 ---
 
 ## 5. Glossário Rápido
 *   **GTIN:** Global Trade Item Number (Código de Barras).
-*   **RLS:** Row Level Security (Segurança a nível de linha no Postgres).
-*   **PITR:** Point in Time Recovery (Backup - geralmente pago, não teremos no free).
+*   **Postgres Gerenciado:** Abordagem onde o banco roda na nuvem, mas acessamos ele como se fosse um Postgres comum (via TCP/IP), sem usar as APIs REST proprietárias do provedor.
+*   **Connection Pooler:** Serviço (como o PgBouncer, incluído no Supabase) que gerencia conexões de forma eficiente, vital para ambientes Serverless (como a Vercel) que podem abrir muitas conexões simultâneas.
