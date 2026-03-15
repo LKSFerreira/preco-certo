@@ -175,8 +175,14 @@ const ModalFormularioProduto: React.FC<PropsFormulario> = ({
         setPrecoInput((origem.preco_estimado ?? 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 }));
       }
 
-      setImagem(imagemValidada);
       setInicializado(true);
+
+      // Valida imagem em background para não travar a UI
+      void validarImagemInicial(origem.imagem).then((imagemValidada) => {
+        if (ativo && imagemValidada) {
+          setImagem(imagemValidada);
+        }
+      });
     };
 
     hidratarEstadoInicial();

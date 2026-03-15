@@ -219,7 +219,7 @@ export const UNIT_MAP: Record<string, string> = {
   'mm': 'mm', 'mms': 'mm'
 };
 
-const REGEX_UNIDADES = /^(?<val>\d+(?:[.,]\d+)?)\s*(?<unit>[\p{L}.]+)$/u;
+const REGEX_UNIDADES = /^(?<val>\d+(?:[.,]\d+)?)?\s*(?<unit>[\p{L}.]+)$/u;
 
 export function normalizarTamanho(entrada: string): string {
   if (!entrada) return '';
@@ -230,7 +230,7 @@ export function normalizarTamanho(entrada: string): string {
     return entradaLimpa;
   }
 
-  const valor = correspondencia.groups.val.replace(',', '.');
+  const valorBruto = correspondencia.groups.val;
   const unidadeBruta = correspondencia.groups.unit.trim();
   const unidadeLimpa = unidadeBruta.toLowerCase().replace(/\.$/, '');
   const unidadeCanonica = UNIT_MAP[unidadeLimpa];
@@ -239,6 +239,11 @@ export function normalizarTamanho(entrada: string): string {
     return entradaLimpa;
   }
 
+  if (!valorBruto) {
+    return unidadeCanonica;
+  }
+
+  const valor = valorBruto.replace(',', '.');
   const valorNumerico = parseFloat(valor);
   const valorFinal = Number.isInteger(valorNumerico) ? valorNumerico.toString() : valor;
   return `${valorFinal}${unidadeCanonica}`;
