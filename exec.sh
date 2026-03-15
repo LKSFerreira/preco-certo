@@ -13,4 +13,4 @@ if [ "$#" -eq 0 ]; then
     exit 1
 fi
 
-docker compose -f .docker/compose.yaml exec app "$@"
+docker compose -f .docker/compose.yaml exec app-sem-susto "$@"
