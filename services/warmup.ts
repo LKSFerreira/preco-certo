@@ -1,7 +1,7 @@
 /**
  * Serviço de Warm-up (Despertador) para APIs Serverless.
- * 
- * Finalidade: Mitigar o atraso de "Cold Start" na Vercel enviando uma 
+ *
+ * Finalidade: Mitigar o atraso de "Cold Start" na Vercel enviando uma
  * requisição silenciosa no momento em que o usuário clica em "Ler Código".
  */
 
@@ -9,8 +9,8 @@ const CHAVE_TIMESTAMP = 'sem_susto_ultimo_warmup';
 const INTERVALO_10_MIN_MS = 10 * 60 * 1000;
 
 /**
- * Dispara uma requisição HEAD (mais leve que GET/POST) para "acordar"
- * as serverless functions da Vercel.
+ * Dispara uma requisição leve para "acordar" as serverless functions.
+ * Endpoints GET recebem HEAD; endpoints POST recebem POST com body vazio.
  */
 export async function acordarAPIsSilenciosamente() {
     // 1. Verifica se o recurso está desabilitado via Variável de Ambiente
@@ -37,16 +37,14 @@ export async function acordarAPIsSilenciosamente() {
 
     try {
         const endpoints = [
-            '/api/ia/analisar',
-            '/api/cosmos/gtin/7891234567890' // Ping com um GTIN fictício
+            { url: '/api/ia/analisar', method: 'POST' },
+            { url: '/api/cosmos/gtin/000000000000001', method: 'HEAD' },
         ];
 
         await Promise.allSettled(
-            endpoints.map(url =>
-                fetch(url, {
-                    method: 'HEAD', // HEAD é o método mais leve possível (só headers)
-                    cache: 'no-store'
-                }).catch(() => {/* silencia erros de rede no ping */ })
+            endpoints.map(({ url, method }) =>
+                fetch(url, { method, cache: 'no-store' })
+                    .catch(() => {/* silencia erros de rede no ping */ })
             )
         );
 
