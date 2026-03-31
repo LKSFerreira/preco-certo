@@ -114,6 +114,7 @@ export default function App() {
    * durante fase de validação com usuários.
    */
   useEffect(() => {
+    /* 
     // DEBUG controlado: simula primeiro acesso no máximo 1x a cada 5 minutos
     const CHAVE_DEBUG_ULTIMA_LIMPEZA = 'sem_susto_debug_ultima_limpeza_localstorage';
     const INTERVALO_MINIMO_LIMPEZA_MS = 5 * 60 * 1000;
@@ -138,7 +139,8 @@ export default function App() {
       }
     } catch (erroLimpeza) {
       console.warn('⚠️ Falha ao executar limpeza debug com throttle:', erroLimpeza);
-    }
+    } 
+    */
 
     const carregarDados = async () => {
       try {
@@ -275,7 +277,7 @@ export default function App() {
     // (usa a referência do carrinho no momento da chamada)
     const itemExistente = carrinho.find(item => item.codigo_barras === codigo_barras);
     const novaQuantidade = itemExistente ? itemExistente.quantidade + 1 : 1;
-    
+
     // Revalidação assíncrona
     void revalidarEstadoPremium(false);
 
